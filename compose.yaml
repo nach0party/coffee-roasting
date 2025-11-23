@@ -9,22 +9,25 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   api:
     image: coffee-roasting-api
     build: .
-    command: >
-      sh -c "python manage.py makemigrations &&
-             python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - .:/app
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     ports:
       - "8000:8000"
+    volumes:
+      - ./app:/usr/src/app 
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     environment:
-      DATABASE_URL: postgres://user:password@db:5432/mydjangodb
+      DATABASE_URL: postgres://user:password@database:5432/mydjangodb
 
 volumes:
   postgres_data:
