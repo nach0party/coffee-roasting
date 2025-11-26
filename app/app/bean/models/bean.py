@@ -12,9 +12,10 @@ class Bean(TimeStampMixin):
     Where did it come from?
     What did it cost?
     Country of origin, anything people who roast care about more or less...
-    """
 
-    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    TODO I do think separating country / region / municipality into its own model is likely a good idea
+    TODO maybe have a database of country / region / municipality to do validation against
+    """
 
     class ProcessingMethods(Enum):
         """
@@ -25,7 +26,7 @@ class Bean(TimeStampMixin):
         NATURAL = "natural"
         HONEY = "honey"
 
-    class SCAGScore(Enum):
+    class SCALetterGrade(Enum):
         """
         Not sure on the right terminology here but
         the G scale is common from third party sourcing.
@@ -45,14 +46,35 @@ class Bean(TimeStampMixin):
         choices=[(country.name, country.name) for country in countries],
         help_text="The country of origin of the bean",
     )
-    # G1 (specialty is >= 80 points)
-    # G2 (Premium is 70-79.75)
+    country_code = models.CharField(
+        max_length=255,
+        # choices=[(country.code, country.code) for country in countries],
+        help_text="The country of origin of the bean",
+        null=True,
+        blank=True,
+    )
     sca_grade = models.IntegerField(
         help_text="Uses the Specialty Coffee Association grade system to score the quality",
         null=True,
         blank=True,
     )
-    sca_letter_grade = models.CharField(max_length=255, choices=[])
+    # Region / Municipality is a better compromise that state / city / town since
+    # most beans are sourced outside of the US
+    region = models.CharField(
+        max_length=255, null=True, blank=True, help_text="Essentially the US concept of a `state`"
+    )
+    municipality = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text="Essentially the US concept of a `town` or `city`",
+    )
+    sca_letter_grade = models.CharField(
+        max_length=255,
+        choices=[(grade.name, grade.value) for grade in SCALetterGrade],
+        null=True,
+        blank=True,
+    )
     processing = models.CharField(
         max_length=255,
         choices=[
@@ -62,6 +84,8 @@ class Bean(TimeStampMixin):
             )
             for processing_method in ProcessingMethods
         ],
+        null=True,
+        blank=True,
     )
 
     class Meta:
@@ -72,15 +96,19 @@ class Bean(TimeStampMixin):
         force_insert: bool = False,
         force_update: bool = False,
         using: str = None,
-        update_fields: Iterable[str] = [],
+        update_fields: Iterable[str] = None,
     ):
-        # Just provide a little extra context, the user shouldn't have to worry too much about knowing both the number grade and the G grade
-        # TODO maybe allow either / or to be filled out, but, I think this is less complex?
+        """
+        Just provide a little extra context, the user shouldn't have to worry
+        too much about knowing both the number grade and the G grade.
+
+        TODO maybe allow either / or to be filled out, but, I think this is less complex?
+        """
         if self.sca_grade:
-            if self.sca_grade >= 79.75:
-                self.sca_letter_grade = self.SCAGScore.SPECIALTY_GRADE.value
-            elif self.sca_grade >= 70 and self.sca_grade > 79.75:
-                self.sca_letter_grade = self.SCAGScore.PREMIUM_GRADE.value
+            if self.sca_grade >= 80:
+                self.sca_letter_grade = self.SCALetterGrade.SPECIALTY_GRADE.value
+            elif self.sca_grade >= 70 and self.sca_grade < 80:
+                self.sca_letter_grade = self.SCALetterGrade.PREMIUM_GRADE.value
             else:
-                self.sca_letter_grade = self.SCAGScore.COMMERCIAL_GRADE
+                self.sca_letter_grade = self.SCALetterGrade.COMMERCIAL_GRADE
         return super().save(force_insert, force_update, using, update_fields)

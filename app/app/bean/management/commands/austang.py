@@ -8,4 +8,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options) -> None:
         countries
         for country in countries:
-            country: Country = country
+            print(country.code)

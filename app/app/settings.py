@@ -28,12 +28,33 @@ DEBUG = False
 # TODO need to establish a good domain / host / CORS setup
 ALLOWED_HOSTS = ["localhost"]
 
+APPEND_SLASH = False
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,  # Sets the default number of items per page globally
 }
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
 
 # Application definition
 INSTALLED_APPS = [
