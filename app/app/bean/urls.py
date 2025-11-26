@@ -1,5 +1,5 @@
 from rest_framework.routers import DefaultRouter
-from app.beans.views import BeansViewSet
+from app.bean.views import BeansViewSet
 
 router = DefaultRouter()
 router.register(r"beans", BeansViewSet, basename="beans")
