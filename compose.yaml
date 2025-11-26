@@ -1,17 +1,21 @@
 version: '3.8'
 
+# TODO obviously change user / password as this continues and make some sort 
+# of way for A user to set this manually to their own preferences
 services:
   database:
     image: postgres:14-alpine
     container_name: coffee-roasting-database
     environment:
-      POSTGRES_DB: mydjangodb
+      POSTGRES_DB: coffee-roasting
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -20,16 +24,16 @@ services:
     image: coffee-roasting-api
     container_name: coffee-roasting-api
     build: .
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    command: [ "python", "manage.py", "runserver", "0.0.0.0:8000" ]
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/usr/src/app 
+      - ./app:/usr/src/app
     depends_on:
       database:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgres://user:password@database:5432/mydjangodb
+      DATABASE_URL: postgres://user:password@coffee-roasting:5432/coffee-roasting
 
 volumes:
   postgres_data:

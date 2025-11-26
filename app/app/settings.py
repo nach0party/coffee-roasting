@@ -25,11 +25,11 @@ SECRET_KEY = "django-insecure-xf6q5nzs0=ux2hgo2s2)$*#_3=*+^vlhufu#(gc7bi*pv0ifcv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# TODO need to establish a good domain / host / CORS setup
 ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -74,8 +74,12 @@ WSGI_APPLICATION = "app.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "coffee-roasting",
+        "USER": "user",
+        "PASSWORD": "password",
+        "HOST": "database",
+        "PORT": "5432",
     }
 }
 
