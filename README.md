@@ -12,6 +12,7 @@ docker exec -it coffee-roasting-api bash
 docker exec -it coffee-roasting-database bash
 ```
 
+Need to figure out a good / best way to run this 
 Once exec'd into the main container:
 ```bash
 python manage.py migrate

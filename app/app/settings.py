@@ -23,10 +23,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-xf6q5nzs0=ux2hgo2s2)$*#_3=*+^vlhufu#(gc7bi*pv0ifcv"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # TODO need to establish a good domain / host / CORS setup
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost"]
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 100,  # Sets the default number of items per page globally
+}
 
 
 # Application definition
@@ -37,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "app.beans",
 ]
 
 MIDDLEWARE = [
@@ -120,7 +127,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+# TODO find a way to audo GUID for PK's
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# DEFAULT_AUTO_FIELD = "django.db.models.UUIDField"
