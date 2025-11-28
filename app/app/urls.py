@@ -17,8 +17,12 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from app.beans.urls import urlpatterns
+from app.bean.urls import urlpatterns as bean_urlpatterns
+from app.origin.urls import urlpatterns as origin_urlpatterns
 
-# from .beans import url
 
-urlpatterns = [path("admin/", admin.site.urls), *urlpatterns]
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    *bean_urlpatterns,
+    *origin_urlpatterns,
+]
