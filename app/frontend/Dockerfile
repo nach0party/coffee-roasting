@@ -1,37 +1,26 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS development-dependencies-env
+COPY . /app
+WORKDIR /app
+RUN npm ci
 
-WORKDIR /app/frontend
+FROM node:20-alpine AS production-dependencies-env
+COPY ./package.json package-lock.json /app/
+WORKDIR /app
+RUN npm ci --omit=dev
 
-# 1. Copy package files first to optimize Docker layer caching.
-#    If only the source code changes, npm install won't re-run.
-COPY package.json .
-COPY package-lock.json .
-
-# 2. Install dependencies (using --production flag if you only need production dependencies)
-RUN npm install
-
-# 3. Copy the rest of the application source code
-COPY . .
-
-# 4. Run the production build command
-#    This creates the static HTML, CSS, and JS files in the 'build' directory.
+FROM node:20-alpine AS build-env
+COPY . /app/
+COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+WORKDIR /app
 RUN npm run build
 
-# Stage 2: The Production Server Environment (Final Image)
-###################################################
-# Use a tiny Nginx image to serve the static files. This image is very small (under 20MB).
-FROM nginx:alpine
+FROM node:20-alpine
 
-# 1. Copy the custom Nginx configuration (essential for client-side routing like React Router)
-#    This file must be created locally (e.g., frontend/nginx.conf).
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 3000 
 
-# 2. Copy the built static files from the 'builder' stage
-#    --from=builder tells Docker to pull files from the previous stage.
-COPY --from=builder /app/frontend/build /usr/share/nginx/html
+COPY ./package.json package-lock.json /app/
+COPY --from=production-dependencies-env /app/node_modules /app/node_modules
+COPY --from=build-env /app/build /app/build
+WORKDIR /app
 
-# Expose port 80 (the default Nginx port)
-EXPOSE 80
-
-# The default Nginx CMD runs the web server.
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "start", "--", "--host", "0.0.0.0"]

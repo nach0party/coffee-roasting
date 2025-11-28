@@ -42,7 +42,7 @@ services:
     build:
       context: ./app/frontend
     ports:
-      - "3000:80"
+      - "3000:3000"
     environment:
       # TODO consider remapping this, or having some sort of fancy local DNS that allows you to name it whatever you want
       REACT_APP_API_URL: http://localhost:8000
