@@ -40,16 +40,6 @@ class Bean(TimeStampMixin):
     name = models.CharField(
         max_length=255,
         help_text="The name of the origin of the bean.",
-    )
-    country = models.CharField(
-        max_length=255,
-        choices=[(country.name, country.name) for country in countries],
-        help_text="The country of origin of the bean",
-    )
-    country_code = models.CharField(
-        max_length=255,
-        # choices=[(country.code, country.code) for country in countries],
-        help_text="The country of origin of the bean",
         null=True,
         blank=True,
     )
@@ -57,17 +47,6 @@ class Bean(TimeStampMixin):
         help_text="Uses the Specialty Coffee Association grade system to score the quality",
         null=True,
         blank=True,
-    )
-    # Region / Municipality is a better compromise that state / city / town since
-    # most beans are sourced outside of the US
-    region = models.CharField(
-        max_length=255, null=True, blank=True, help_text="Essentially the US concept of a `state`"
-    )
-    municipality = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        help_text="Essentially the US concept of a `town` or `city`",
     )
     sca_letter_grade = models.CharField(
         max_length=255,
@@ -87,7 +66,15 @@ class Bean(TimeStampMixin):
         null=True,
         blank=True,
     )
+    origin = models.OneToOneField(
+        "origin.Origin",
+        null=True,
+        blank=True,
+        on_delete=models.DO_NOTHING,
+    )
 
+    # TODO probably want to setup a unique constraint
+    # name / grade / processing method / origin constraint would be the "same bean" basically.
     class Meta:
         db_table = "beans"
 
@@ -97,12 +84,13 @@ class Bean(TimeStampMixin):
         force_update: bool = False,
         using: str = None,
         update_fields: Iterable[str] = None,
-    ):
+    ) -> None:
         """
         Just provide a little extra context, the user shouldn't have to worry
         too much about knowing both the number grade and the G grade.
 
         TODO maybe allow either / or to be filled out, but, I think this is less complex?
+        TODO maybe just handle the validation in the serializers
         """
         if self.sca_grade:
             if self.sca_grade >= 80:
