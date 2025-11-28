@@ -2,7 +2,7 @@
 
 run:
 ```bash
-docker build -t coffee-roasting-api .
+docker build -t coffee-roasting-api ./app/backend/
 docker compose up --build
 ```
 
