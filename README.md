@@ -3,6 +3,7 @@
 run:
 ```bash
 docker build -t coffee-roasting-api ./app/backend/
+docker build -t coffee-roasting-frontend ./app/frontend/
 docker compose up --build
 ```
 
