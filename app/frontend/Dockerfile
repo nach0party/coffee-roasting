@@ -14,13 +14,26 @@ COPY --from=development-dependencies-env /app/node_modules /app/node_modules
 WORKDIR /app
 RUN npm run build
 
+# --- FINAL STAGE (Development Server) ---
+
 FROM node:20-alpine
 
-EXPOSE 3000 
+# Use the confirmed Vite port (5173) instead of 3000
+EXPOSE 5173 
 
+# Copy package files
 COPY ./package.json package-lock.json /app/
-COPY --from=production-dependencies-env /app/node_modules /app/node_modules
+
+# CRITICAL FIX: Copy all source code and configuration files (vite.config.js, src/, index.html, etc.)
+COPY . /app/ 
+
+# Copy development dependencies (needed for 'npm run dev')
+COPY --from=development-dependencies-env /app/node_modules /app/node_modules 
+
+# Copy the production build (optional for dev, but harmless)
 COPY --from=build-env /app/build /app/build
+
 WORKDIR /app
 
-CMD ["npm", "run", "start", "--", "--host", "0.0.0.0"]
+CMD ["npm", "run", "dev"]
+# CMD ["npm", "run", "start", "--", "--host", "0.0.0.0"]
