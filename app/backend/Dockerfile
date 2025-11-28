@@ -7,12 +7,13 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1 
+ENV PYTHONUNBUFFERED=1 
+ENV PYTHONPATH=/usr/src/backend
 
 # Set the working directory to the container's application root
 # This will be where manage.py is located inside the container.
-WORKDIR /usr/src/app
+WORKDIR /usr/src/app/backend/
 
 # Copy the requirements file and install dependencies
 COPY requirements.txt .
@@ -22,7 +23,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Local path: ./app/  --> Container path: /usr/src/app/
 # NOTE: The leading dot '.' means "from the directory the Dockerfile is in"
 # The trailing dot '.' means "to the current WORKDIR"
-COPY app/. /usr/src/app/ 
+COPY . . 
 
 # Expose the port
 EXPOSE 8000
