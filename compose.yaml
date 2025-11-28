@@ -36,20 +36,18 @@ services:
     environment:
       PYTHONPATH: /usr/src/backend
       DATABASE_URL: postgres://user:password@coffee-roasting:5432/coffee-roasting
-  # frontend:
-  #   container_name: coffee-roasting-frontend
-  #   build:
-  #     context: ./frontend # Build context is the frontend directory
-  #     dockerfile: Dockerfile # Assumes the Dockerfile is named Dockerfile inside the frontend folder
-  #   ports:
-  #     - "3000:80" # Map host port 3000 to container's Nginx port 80
-  #   volumes:
-  #     - ./frontend:/usr/src/app # Volume mount for development (optional for prod)
-  #   environment:
-  #     # This is crucial for React to know where the API is located
-  #     # It should point to the host/port used by the API service.
-  #     REACT_APP_API_URL: http://localhost:8000 # Use 8000 for local browser access
-  #   depends_on:
-  #     - api # Ensure the API is running before starting the frontend server (optional, but helpful)
+
+  frontend:
+    container_name: coffee-roasting-frontend
+    build:
+      context: ./app/frontend
+    ports:
+      - "3000:80"
+    environment:
+      # TODO consider remapping this, or having some sort of fancy local DNS that allows you to name it whatever you want
+      REACT_APP_API_URL: http://localhost:8000
+    depends_on:
+      - api
+
 volumes:
   postgres_data:

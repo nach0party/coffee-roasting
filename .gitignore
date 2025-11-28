@@ -208,3 +208,6 @@ __marimo__/
 
 # Ignore developers settings for IDE on vsc
 .vscode/
+
+# Ignore node modules
+node_modules

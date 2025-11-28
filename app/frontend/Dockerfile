@@ -1,9 +1,5 @@
-# Stage 1: The Build Environment (Named 'builder')
-###################################################
-# Use a Node.js image to install dependencies and compile the React code.
 FROM node:20-alpine AS builder
 
-# Set the working directory inside the container for the build process
 WORKDIR /app/frontend
 
 # 1. Copy package files first to optimize Docker layer caching.
@@ -32,7 +28,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 2. Copy the built static files from the 'builder' stage
 #    --from=builder tells Docker to pull files from the previous stage.
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=builder /app/frontend/build /usr/share/nginx/html
 
 # Expose port 80 (the default Nginx port)
 EXPOSE 80
