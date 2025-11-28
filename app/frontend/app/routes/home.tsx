@@ -8,7 +8,7 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
-console.log('taco')
+
 export default function Home() {
   return <Welcome />;
 }

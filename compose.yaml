@@ -43,8 +43,9 @@ services:
       context: ./app/frontend
     ports:
       - "5173:5173"
-    # volumes:
-    #   - ./app/frontend:/app
+    volumes:
+      - ./app/frontend:/app
+      - /app/node_modules
     environment:
       # TODO consider remapping this, or having some sort of fancy local DNS that allows you to name it whatever you want
       REACT_APP_API_URL: http://localhost:8000

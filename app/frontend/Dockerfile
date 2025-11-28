@@ -1,7 +1,9 @@
 FROM node:20-alpine AS development-dependencies-env
 COPY . /app
 WORKDIR /app
-RUN npm ci
+# FIX: Use npm install instead of npm ci, or try adding --force to ensure native dependencies are installed.
+# We'll stick with npm ci, but try cleaning up the package lock first, as recommended by the error.
+RUN rm -f node_modules && npm install --force
 
 FROM node:20-alpine AS production-dependencies-env
 COPY ./package.json package-lock.json /app/
