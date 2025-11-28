@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   server: {
     host: '0.0.0.0',
-    port: 5173,
+    port: 8080,
     watch: {
       usePolling: true,
       interval: 100,
