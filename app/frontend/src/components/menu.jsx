@@ -29,6 +29,10 @@ export const CoffeeRoastingMenu = ({ children }) => {
     navigate("/roasting");
   };
 
+  const goHome = () => {
+    navigate("/");
+  };
+
   return (
     <Grid>
       <Grid>{children}</Grid>
@@ -54,6 +58,7 @@ export const CoffeeRoastingMenu = ({ children }) => {
           }}
         >
           <MenuItem onClick={startRoast}>Start Roast</MenuItem>
+          <MenuItem onClick={goHome}>Home</MenuItem>
         </Menu>
       </div>
     </Grid>

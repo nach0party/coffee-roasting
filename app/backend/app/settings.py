@@ -32,7 +32,7 @@ APPEND_SLASH = False
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "localhost:5173",
+    "http://localhost",
 ]
 
 REST_FRAMEWORK = {

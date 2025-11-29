@@ -29,7 +29,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app/backend:/usr/src/backend
+      - ./app/backend:/usr/src/app/backend
     depends_on:
       database:
         condition: service_healthy
