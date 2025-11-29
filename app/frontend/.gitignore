@@ -1,3 +1,4 @@
+# TODO either move into central gitignore, or differentiate gitignores per frontend / backend in stack
 # Logs
 logs
 *.log
