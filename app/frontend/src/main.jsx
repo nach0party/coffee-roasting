@@ -1,15 +1,26 @@
-import { createRoot } from 'react-dom/client'
-import { createBrowserRouter } from 'react-router'
-import { RouterProvider } from 'react-router/dom'
-import './index.css'
-import App from './App.jsx'
+import { createRoot } from "react-dom/client";
+import { createBrowserRouter } from "react-router";
+import { RouterProvider } from "react-router/dom";
 
-const router = createBrowserRouter([{
-  path: '/',
-  element: <App />
-}])
+// Internal app routes
+import { BeanPage } from "./pages/beans.jsx";
+import { CoffeeRoastingDashboard } from "./pages/dashboard.jsx";
+import { CoffeeRoasting } from "./pages/roasting.jsx";
 
-console.log('hot reload?')
-createRoot(document.getElementById('root')).render(
+import "./index.css";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <CoffeeRoastingDashboard />,
+  },
+  { path: "/beans", element: <BeanPage /> },
+  {
+    path: "/roasting",
+    element: <CoffeeRoasting />,
+  },
+]);
+
+createRoot(document.getElementById("root")).render(
   <RouterProvider router={router} />
-)
+);

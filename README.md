@@ -7,6 +7,16 @@ docker build -t coffee-roasting-frontend ./app/frontend/
 docker compose up --build
 ```
 
+restarting the containers
+```bash
+docker compose down && docker compose up
+```
+
+restarting the containers and full rebuild
+```bash
+docker compose down && docker compose up --build
+```
+
 exec:
 ```bash
 docker exec -it coffee-roasting-api bash

@@ -48,7 +48,7 @@ services:
       - /app/node_modules
     environment:
       # TODO consider remapping this, or having some sort of fancy local DNS that allows you to name it whatever you want
-      REACT_APP_API_URL: http://localhost:8000
+      REACT_APP_API_URL: http://api:8000
     depends_on:
       - api
 
