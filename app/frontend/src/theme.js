@@ -236,3 +236,131 @@ export const coffeeTheme = createTheme({
     },
   },
 });
+
+// --- Analytics Dashboard Dark Color Palette ---
+const analyticsColors = {
+  // Deep Blue/Black for the canvas
+  background: {
+    default: '#0A1929', // Very dark background
+    paper: '#132F4C',   // Lighter, deep blue for cards and surfaces
+  },
+  // Vibrant Blue for primary elements (charts, buttons)
+  primary: {
+    main: '#00BFFF', // Sky Blue/Deep Cyan
+    light: '#66DFFF',
+    dark: '#009ACD',
+  },
+  // Secondary color for accents (e.g., secondary charts) - often a warm contrast
+  secondary: {
+    main: '#FFB74D', // Amber/Orange
+  },
+  // Status Colors (Green for Growth, Red for Decline)
+  success: {
+    main: '#00E396', // Neon Green
+  },
+  error: {
+    main: '#FF4560', // Vibrant Red
+  },
+  // Text Colors
+  text: {
+    primary: '#FFFFFF',     // Pure white for major titles
+    secondary: '#9EAFB8',   // Soft light gray/blue for body text and labels
+    disabled: 'rgba(255, 255, 255, 0.3)',
+  },
+  divider: 'rgba(255, 255, 255, 0.1)',
+};
+
+// --- Custom Theme Definition ---
+export const analyticsDarkTheme = createTheme({
+  // 1. PALETTE (Colors and Dark Mode Settings)
+  palette: {
+    mode: 'dark',
+    ...analyticsColors,
+  },
+
+  // 2. TYPOGRAPHY
+  typography: {
+    fontFamily: ['"Inter", "Roboto", "Helvetica", "Arial", sans-serif'].join(','),
+    h4: {
+      fontWeight: 600, // Slightly bolder headings
+    },
+    h5: {
+      fontWeight: 500,
+    },
+  },
+
+  // 3. SHAPE (Small radius for professional look)
+  shape: {
+    borderRadius: 8,
+  },
+
+  // 4. COMPONENTS (Overrides for global and component styles)
+  components: {
+    // Apply the very dark blue/black background globally
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundColor: analyticsColors.background.default,
+        }
+      }
+    },
+
+    // Customize Cards (Paper)
+    MuiPaper: {
+      defaultProps: {
+        elevation: 6, // Subtle 3D lift
+      },
+      styleOverrides: {
+        root: {
+          backgroundColor: analyticsColors.background.paper, // Lighter blue-black surface
+          // Setting up a very subtle border, typical for these themes
+          border: `1px solid ${analyticsColors.divider}`,
+          boxShadow: 'none', // Rely on the border and background contrast
+        },
+      },
+    },
+
+    // Customize Buttons 
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          borderRadius: 8,
+          fontWeight: 600,
+          padding: '8px 20px',
+        },
+      },
+    },
+
+    // Customize Chip for status labels
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          fontWeight: 600,
+        },
+        // Custom styling for the 'Online' look
+        colorPrimary: {
+          backgroundColor: analyticsColors.success.main + '20', // Light background tint
+          color: analyticsColors.success.main, // Neon Green text
+        },
+        // Custom styling for the 'Offline'/'Default' look
+        colorSecondary: {
+          backgroundColor: analyticsColors.text.secondary + '20',
+          color: analyticsColors.text.secondary,
+        }
+      }
+    },
+
+    // Customize Icons to use the secondary text color by default
+    MuiSvgIcon: {
+      defaultProps: {
+        color: 'inherit',
+      },
+      styleOverrides: {
+        root: {
+          color: analyticsColors.text.secondary,
+        }
+      }
+    }
+  },
+});

@@ -9,5 +9,9 @@ export class Beans extends Resource {
     list = async () => {
         return await this.client.get(`/beans`)
     }
+    
+    create = async (data) => {
+        return await this.client.post(`beans`, data)
+    }
 
 }

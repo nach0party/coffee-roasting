@@ -5,21 +5,18 @@ import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-// import CircleIcon from "@mui/icons-material/Circle";
 
 import api from "../../api/coffee-roasting-api";
 import { CoffeeRoastingMenu } from "../../components/menu";
+import Radio from "@mui/material/Radio";
+import { CoffeeTableContainer } from "../../components/styled/table-container";
+import { useNavigate } from "react-router";
 
-/**
- * Component for starting a new roast, more or less the majority
- * of the apps functionality is going to be in here as this is the
- * main purpose of it all.
- */
 export const BeanSelection = () => {
+  let navigate = useNavigate();
   const [existingBeans, setExistingBeans] = useState([]);
   const [selectedBean, setSelectedBean] = useState();
   const [loading, setLoading] = useState(true);
@@ -43,12 +40,17 @@ export const BeanSelection = () => {
     setSelectedBean(id);
   };
 
+  // TODO add pagination
+  // TODO add searching
+  // TODO add extra bean creation
+  // TODO add unselection?
+  // TODO add some bean popup / drawer (would be nice / useful)
   return (
     <CoffeeRoastingMenu>
       {!loading && (
         <>
           <Grid>Choose Bean:</Grid>
-          <TableContainer component={Paper}>
+          <CoffeeTableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
@@ -70,8 +72,11 @@ export const BeanSelection = () => {
                       }}
                     >
                       <TableCell>
-                        {/** TODO go ahead and use an icon */}
-                        <Button></Button>
+                        <Radio
+                          name="selected-bean-group"
+                          value={bean.id}
+                          checked={selectedBean === bean.id}
+                        />
                       </TableCell>
                       <TableCell>{bean.name}</TableCell>
                       <TableCell>{bean.sca_letter_grade}</TableCell>
@@ -83,8 +88,15 @@ export const BeanSelection = () => {
                 })}
               </TableBody>
             </Table>
-          </TableContainer>
+          </CoffeeTableContainer>
           <Button disabled={!selectedBean}>Start</Button>
+          <Button
+            onClick={() => {
+              navigate("/bean/add");
+            }}
+          >
+            Is your bean missing? Add a new Bean!
+          </Button>
         </>
       )}
     </CoffeeRoastingMenu>

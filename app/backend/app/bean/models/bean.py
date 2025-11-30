@@ -50,7 +50,7 @@ class Bean(TimeStampMixin):
     )
     sca_letter_grade = models.CharField(
         max_length=255,
-        choices=[(grade.name, grade.value) for grade in SCALetterGrade],
+        choices=[(grade.value, grade.name) for grade in SCALetterGrade],
         null=True,
         blank=True,
     )
@@ -58,8 +58,8 @@ class Bean(TimeStampMixin):
         max_length=255,
         choices=[
             (
-                processing_method.name,
                 processing_method.value,
+                processing_method.name,
             )
             for processing_method in ProcessingMethods
         ],
