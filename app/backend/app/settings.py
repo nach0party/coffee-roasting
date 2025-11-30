@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "app.bean",
     "app.origin",
+    "app.roast",
 ]
 
 MIDDLEWARE = [
