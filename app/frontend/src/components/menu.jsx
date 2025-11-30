@@ -11,6 +11,7 @@ import Grid from "@mui/material/Grid";
  * Can be not used if decided for a bit of flexibility per component.
  *
  * TODO handle this differently in a phone vs web app.
+ * TODO change this to be CoffeeRoastingAppWrapper and change the menu to be its own component (but still include it)
  */
 export const CoffeeRoastingMenu = ({ children }) => {
   let navigate = useNavigate();
@@ -26,7 +27,7 @@ export const CoffeeRoastingMenu = ({ children }) => {
   };
 
   const startRoast = () => {
-    navigate("/bean/selection");
+    navigate("/bean/select");
   };
 
   const goHome = () => {
