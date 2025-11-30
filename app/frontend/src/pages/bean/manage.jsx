@@ -1,29 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { CoffeeRoastingMenu } from "../../components/menu";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import api from "../../api/coffee-roasting-api";
+import { useNavigate, useParams } from "react-router";
 
 // TODO make the coffee roasting menu provide wrapper / padding / productionize the styling!
 // TODO remove inline styling obviously...
-export const AddBean = () => {
-  // We could make this an endpoint so we can control it via api call instead...
-  const availableProcessing = ["washed", "natural", "honey"];
-
-  const [name, setName] = useState();
-  const [grade, setGrade] = useState();
-  const [errors, setErrors] = useState({});
-  const [processing, setProcessing] = useState(availableProcessing[0]);
-  // TODO setup origin, separate component?
-  // const [origin, setOrigin] = useState(); // TODO origin must (likely) be populated via dropdown or created on this page... for now?
-  const [saving, setSaving] = useState(false);
-
+export const ManageBean = () => {
+  let navigate = useNavigate();
+  const params = useParams();
+  const id = params.id;
+  const availableProcessing = ["washed", "natural", "honey"]; // TCDO consider pulling from API
   const gradeRange = {
     MIN: 0,
     MAX: 100,
   };
+  const [name, setName] = useState();
+  const [grade, setGrade] = useState();
+  const [errors, setErrors] = useState({});
+  const [processing, setProcessing] = useState(availableProcessing[0]);
+  const [saving, setSaving] = useState(false);
+
+  const getAndSetBean = useCallback(async () => {
+    const response = await api.beans.get(id);
+    setName(response.data.name);
+    setGrade(response.data.sca_grade);
+    setProcessing(response.data.processing);
+  });
+
+  useEffect(() => {
+    const initialize = async () => {
+      if (id) {
+        await getAndSetBean();
+      }
+    };
+    initialize();
+  }, []);
 
   const handleNameChange = (newValue) => {
     setName(newValue);
@@ -74,6 +89,9 @@ export const AddBean = () => {
     return false;
   };
 
+  /**
+   * If we have the id, create a new one, if not, then we're updating...
+   */
   const handleSave = async () => {
     try {
       setSaving(true);
@@ -82,7 +100,7 @@ export const AddBean = () => {
         sca_grade: grade,
         processing: processing,
       });
-      console.log(response, "response");
+      navigate("/bean/select");
     } finally {
       setSaving(false);
     }
@@ -102,6 +120,12 @@ export const AddBean = () => {
           <TextField
             disabled={disableForm()}
             label="Name"
+            value={name}
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              },
+            }}
             onChange={(event) => {
               handleNameChange(event.target.value);
             }}

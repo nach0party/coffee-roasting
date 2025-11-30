@@ -15,7 +15,7 @@ class ApiClient {
     /**
      * How do we want to handle certain types of status codes / exceptions?
      * @param {*} request 
-     * @returns 
+     * @returns {response}
      */
     handleError = async (request) => {
         try {

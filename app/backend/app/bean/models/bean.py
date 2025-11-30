@@ -77,6 +77,7 @@ class Bean(TimeStampMixin):
     # name / grade / processing method / origin constraint would be the "same bean" basically.
     class Meta:
         db_table = "beans"
+        ordering = ["-created_when"]
 
     def save(
         self,

@@ -6,7 +6,7 @@ import { ThemeProvider } from "@mui/material/styles";
 
 // TODO avoid relative imports
 // Internal app routes
-import { AddBean } from "./pages/bean/add.jsx";
+import { ManageBean } from "./pages/bean/manage.jsx";
 import { CoffeeRoastingDashboard } from "./pages/dashboard.jsx";
 import { coffeeTheme, deepBlueTheme, analyticsDarkTheme } from "./theme.js";
 import { BeanSelection } from "./pages/roasting/beanSelection.jsx";
@@ -19,14 +19,17 @@ const router = createBrowserRouter([
     path: "/",
     element: <CoffeeRoastingDashboard />,
   },
-  { path: "/bean/add", element: <AddBean /> },
+  // both of thse can probably just be /bean/:id
+  { path: "/bean/add", element: <ManageBean /> },
+  { path: "/bean/:id", element: <ManageBean /> },
   {
-    path: "/bean/selection",
+    path: "/bean/select",
     element: <BeanSelection />,
   },
+  // continue the roast....
   {
-    path: "/roasting/:id",
-    element: <div>test</div>,
+    path: "/roast/:id",
+    element: <div>Starting / continuing a roast!</div>,
   },
 ]);
 

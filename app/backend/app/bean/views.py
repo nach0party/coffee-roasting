@@ -1,4 +1,6 @@
+from typing import Type
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.serializers import ModelSerializer
 from app.bean.models import Bean
 from app.bean.serializers import BeanReadSerializer, BeanUpsertDeleteSerializer
 
@@ -11,7 +13,7 @@ class BeansViewSet(ModelViewSet):
 
     queryset = Bean.objects.all()
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> Type[ModelSerializer]:
         if self.action in ["retrieve", "list"]:
             return BeanReadSerializer
         return BeanUpsertDeleteSerializer

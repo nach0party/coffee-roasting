@@ -27,7 +27,7 @@ export const CoffeeRoastingMenu = ({ children }) => {
   };
 
   const startRoast = () => {
-    navigate("/bean/selection");
+    navigate("/bean/select");
   };
 
   const goHome = () => {
