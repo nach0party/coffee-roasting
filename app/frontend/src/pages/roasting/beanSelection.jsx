@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { CoffeeRoastingMenu } from "../components/menu";
 import Grid from "@mui/material/Grid";
-import api from "../api/coffee-roasting-api";
+
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -10,13 +9,17 @@ import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+// import CircleIcon from "@mui/icons-material/Circle";
+
+import api from "../../api/coffee-roasting-api";
+import { CoffeeRoastingMenu } from "../../components/menu";
 
 /**
  * Component for starting a new roast, more or less the majority
  * of the apps functionality is going to be in here as this is the
  * main purpose of it all.
  */
-export const CoffeeRoasting = () => {
+export const BeanSelection = () => {
   const [existingBeans, setExistingBeans] = useState([]);
   const [selectedBean, setSelectedBean] = useState();
   const [loading, setLoading] = useState(true);
@@ -49,6 +52,7 @@ export const CoffeeRoasting = () => {
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell></TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Grade</TableCell>
                   <TableCell>Country</TableCell>
@@ -65,6 +69,10 @@ export const CoffeeRoasting = () => {
                         await selectBean(bean.id);
                       }}
                     >
+                      <TableCell>
+                        {/** TODO go ahead and use an icon */}
+                        <Button></Button>
+                      </TableCell>
                       <TableCell>{bean.name}</TableCell>
                       <TableCell>{bean.sca_letter_grade}</TableCell>
                       <TableCell>{bean.origin?.country}</TableCell>
