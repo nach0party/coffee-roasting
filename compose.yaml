@@ -29,7 +29,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app/backend:/usr/src/backend
+      - ./app/backend:/usr/src/app/backend
     depends_on:
       database:
         condition: service_healthy
@@ -42,13 +42,13 @@ services:
     build:
       context: ./app/frontend
     ports:
-      - "8080:8080"
+      - "5173:5173"
     volumes:
       - ./app/frontend:/app
       - /app/node_modules
     environment:
       # TODO consider remapping this, or having some sort of fancy local DNS that allows you to name it whatever you want
-      REACT_APP_API_URL: http://localhost:8000
+      REACT_APP_API_URL: http://api:8000
     depends_on:
       - api
 
