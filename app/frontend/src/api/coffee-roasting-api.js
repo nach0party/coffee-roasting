@@ -1,5 +1,5 @@
-import axios from 'axios'
 import { Beans } from './beans'
+import { Roasts } from './roasts'
 
 /**
  * Constructs and exposes the API ready to handle / 
@@ -9,12 +9,7 @@ class CoffeeRoastingApi{
     
     // paths
     beans = new Beans()
-    roasts = null
-
-    constructor(){
-        console.log(this.test)
-    }
-    
+    roasts = new Roasts()
 }
     
 const api = new CoffeeRoastingApi()

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
-import Grid from "@mui/material/Grid";
+import { useNavigate } from "react-router";
 
+import Grid from "@mui/material/Grid";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -8,12 +9,11 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+import Radio from "@mui/material/Radio";
 
 import api from "../../api/coffee-roasting-api";
 import { CoffeeRoastingMenu } from "../../components/menu";
-import Radio from "@mui/material/Radio";
 import { CoffeeTableContainer } from "../../components/styled/table-container";
-import { useNavigate } from "react-router";
 
 export const BeanSelection = () => {
   let navigate = useNavigate();
@@ -38,6 +38,16 @@ export const BeanSelection = () => {
 
   const selectBean = async (id) => {
     setSelectedBean(id);
+  };
+
+  const startRoast = async () => {
+    try {
+      const response = await api.roasts.create({ bean: selectedBean });
+      navigate(`/roast/${response.data.id}`);
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
   };
 
   // TODO add pagination
@@ -89,7 +99,14 @@ export const BeanSelection = () => {
               </TableBody>
             </Table>
           </CoffeeTableContainer>
-          <Button disabled={!selectedBean}>Start</Button>
+          <Button
+            disabled={!selectedBean}
+            onClick={async () => {
+              await startRoast();
+            }}
+          >
+            Start
+          </Button>
           <Button
             onClick={() => {
               navigate("/bean/add");

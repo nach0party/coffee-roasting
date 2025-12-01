@@ -15,6 +15,13 @@ class RoastEvent(TimeStampMixin):
     """
 
     class Type(Enum):
+        """
+        Each event type, more or less when an event has a started_when -> ended when timespan,
+        we view that as the events lifecycle, a start roast up until the next event (technically)
+        would
+        """
+
+        BEGIN = "begin"
         PAUSE = "pause"
         DRY_PHASE = "dry_phase"
         FIRST_CRACK = "first_crack"
