@@ -11,10 +11,10 @@ class Roast(TimeStampMixin):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    bean = models.OneToOneField(
+    bean = models.ForeignKey(
         "bean.Bean",
         on_delete=models.DO_NOTHING,
-        related_name="roast",
+        related_name="roasts",
     )
     # we separate start / end for sanities sake. We manage the roast but once they actually "start it"
     started_when = models.DateTimeField(null=True, blank=True)

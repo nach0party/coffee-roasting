@@ -19,6 +19,7 @@ class RoastEvent(TimeStampMixin):
         DRY_PHASE = "dry_phase"
         FIRST_CRACK = "first_crack"
         SECOND_CRACK = "second_crack"
+        DROP = "drop"
 
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     roast = models.OneToOneField(

@@ -1,10 +1,10 @@
-from rest_framework.viewsets import ModelViewSet
 from app.roast.models.roast import Roast
 from app.roast.models.roast_event import RoastEvent
 from app.roast.serializers import RoastSerializer, RoastEventSerializer
+from app.shared.viewsets import CoffeeRoastingModelViewSet
 
 
-class RoastViewSet(ModelViewSet):
+class RoastViewSet(CoffeeRoastingModelViewSet):
     """
     Provides endpoints for a `roast` aka
     the concept of roasting beans.
@@ -14,7 +14,7 @@ class RoastViewSet(ModelViewSet):
     serializer_class = RoastSerializer
 
 
-class RoastEventViewSet(ModelViewSet):
+class RoastEventViewSet(CoffeeRoastingModelViewSet):
     """
     Provides endpoints for a roast event, tied to a roast
     that explains that a certain type of event happened over
@@ -23,3 +23,7 @@ class RoastEventViewSet(ModelViewSet):
 
     queryset = RoastEvent.objects.all()
     serializer_class = RoastEventSerializer
+    filterset_fields = (
+        "roast",
+        "type",
+    )

@@ -1,11 +1,11 @@
 from typing import Type
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.serializers import ModelSerializer
+from app.shared.viewsets import CoffeeRoastingModelViewSet
 from app.bean.models import Bean
 from app.bean.serializers import BeanReadSerializer, BeanUpsertDeleteSerializer
 
 
-class BeansViewSet(ModelViewSet):
+class BeansViewSet(CoffeeRoastingModelViewSet):
     """
     For Tracking the different possible types
     of beans that can be roasted.
