@@ -29,7 +29,7 @@ class RoastEvent(TimeStampMixin):
         DROP = "drop"
 
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    roast = models.OneToOneField(
+    roast = models.ForeignKey(
         "roast.Roast",
         on_delete=models.DO_NOTHING,
         related_name="roast_event",

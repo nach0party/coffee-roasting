@@ -1,3 +1,4 @@
+import toast, { Toaster } from "react-hot-toast";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
@@ -32,8 +33,11 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <ThemeProvider theme={analyticsDarkTheme}>
-    <CssBaseline />
+  // <ThemeProvider theme={analyticsDarkTheme}>
+  <>
+    // <CssBaseline />
+    <Toaster toastOptions={{ style: { zIndex: 999999 } }} />
     <RouterProvider router={router} />
-  </ThemeProvider>
+  </>
+  // </ThemeProvider>
 );

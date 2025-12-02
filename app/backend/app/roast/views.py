@@ -1,14 +1,17 @@
 from typing import cast
 
 from django.db import transaction
+from django.utils import timezone
 
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 from app.roast.models.roast import Roast
 from app.roast.models.roast_event import RoastEvent
-from app.roast.serializers import RoastSerializer, RoastEventSerializer
+from app.roast.serializers import RoastSerializer, RoastEventSerializer, RetrieveListRoastSerializer
 from app.shared.viewsets import CoffeeRoastingModelViewSet
 
 
@@ -16,10 +19,16 @@ class RoastViewSet(CoffeeRoastingModelViewSet):
     """
     Provides endpoints for a `roast` aka
     the concept of roasting beans.
+
+    TODO should we be applying
     """
 
-    queryset = Roast.objects.all()
-    serializer_class = RoastSerializer
+    queryset = Roast.objects.prefetch_related("roast_event").all()
+
+    def get_serializer_class(self):
+        if self.action in ["retrieve", "list"]:
+            return RetrieveListRoastSerializer
+        return RoastSerializer
 
     @transaction.atomic()
     @action(methods=["post"], detail=True)
@@ -31,11 +40,23 @@ class RoastViewSet(CoffeeRoastingModelViewSet):
                 - We also make sure that event is the start type
         """
         roast = cast(Roast, self.get_object())
+        if roast.started_when:
+            raise ValidationError({"started_when": ["Roast has already started"]})
+
         event = RoastEvent()
+        event.roast = roast
 
         start_time = timezone.now()
-        print(roast, "roast")
-        return Response("yay")
+
+        # trigger the first event
+        roast.started_when = start_time
+        event.started_when = start_time
+        event.type = RoastEvent.Type.BEGIN.value
+
+        roast.save()
+        event.save()
+
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class RoastEventViewSet(CoffeeRoastingModelViewSet):

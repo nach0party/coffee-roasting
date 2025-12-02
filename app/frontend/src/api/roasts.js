@@ -14,8 +14,7 @@ export class Roasts extends Resource {
         return await this.client.post(`/roasts`, data)
     }
 
-    beginRoast = async (data) => {
-        return await this.client.post(`/roasts/begin`)
+    beginRoast = async (id) => {
+        return await this.client.post(`/roasts/${id}/begin`)
     }
-
 }
