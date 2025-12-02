@@ -12,6 +12,8 @@ from rest_framework.exceptions import ValidationError
 from app.roast.models.roast import Roast
 from app.roast.models.roast_event import RoastEvent
 from app.roast.serializers import RoastSerializer, RoastEventSerializer, RetrieveListRoastSerializer
+from app.roast.filters import RoastFilter
+
 from app.shared.viewsets import CoffeeRoastingModelViewSet
 
 
@@ -19,11 +21,10 @@ class RoastViewSet(CoffeeRoastingModelViewSet):
     """
     Provides endpoints for a `roast` aka
     the concept of roasting beans.
-
-    TODO should we be applying
     """
 
     queryset = Roast.objects.prefetch_related("roast_event").all()
+    filterset_class = RoastFilter
 
     def get_serializer_class(self):
         if self.action in ["retrieve", "list"]:
