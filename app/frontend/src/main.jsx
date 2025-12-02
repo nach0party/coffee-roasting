@@ -33,11 +33,11 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-  // <ThemeProvider theme={analyticsDarkTheme}>
-  <>
-    // <CssBaseline />
-    <Toaster toastOptions={{ style: { zIndex: 999999 } }} />
-    <RouterProvider router={router} />
-  </>
-  // </ThemeProvider>
+  <ThemeProvider theme={analyticsDarkTheme}>
+    <>
+      <CssBaseline />
+      <Toaster toastOptions={{ style: { zIndex: 999999 } }} />
+      <RouterProvider router={router} />
+    </>
+  </ThemeProvider>
 );
