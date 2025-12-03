@@ -13,7 +13,9 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import WhatshotOutlinedIcon from "@mui/icons-material/WhatshotOutlined";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
 
 /**
  * This is more or less the default component that should be the main wrapper component.
@@ -54,10 +56,26 @@ export const CoffeeRoastingMenu = ({ children }) => {
           onClick={(e) => {
             toggleDrawer(e, true);
           }}
+          // Position the button absolutely within the viewport
+          sx={{
+            // top: 20, // 16px from the top
+            // left: 20, // 16px from the left
+            borderRadius: 1, // Optional: make it a square button
+            marginTop: 2,
+            marginLeft: 2,
+            marginBottom: 2,
+            boxShadow: 3,
+            height: 40,
+            width: 40,
+            paddingRight: 5,
+            paddingLeft: 5,
+          }}
+          aria-label="open drawer"
+          startIcon={<MenuIcon />}
         >
-          Open Menu
+          Menu
         </Button>
-        <SwipeableDrawer
+        <Drawer
           anchor={"left"}
           open={openMenu}
           onClose={(e) => {
@@ -66,7 +84,7 @@ export const CoffeeRoastingMenu = ({ children }) => {
         >
           <Box
             sx={{
-              width: "left" === "top" || "left" === "bottom" ? "auto" : 250,
+              width: 300,
             }}
             role="presentation"
             onClick={(e) => {
@@ -110,7 +128,7 @@ export const CoffeeRoastingMenu = ({ children }) => {
               </ListItem>
             </List>
           </Box>
-        </SwipeableDrawer>
+        </Drawer>
       </Fragment>
       <Grid sx={{ padding: "10px" }}>{children}</Grid>
     </Grid>

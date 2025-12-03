@@ -6,8 +6,8 @@ export class Roasts extends Resource {
         return this.client.get(`/roasts/${id}`)
     }
 
-    list = async () => {
-        return await this.client.get(`/roasts`)
+    list = async (params) => {
+        return await this.client.get(`/roasts`, params)
     }
     
     create = async (data) => {

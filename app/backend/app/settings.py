@@ -26,7 +26,9 @@ SECRET_KEY = "django-insecure-xf6q5nzs0=ux2hgo2s2)$*#_3=*+^vlhufu#(gc7bi*pv0ifcv
 DEBUG = False
 
 # TODO need to establish a good domain / host / CORS setup
-ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = [
+    "*",
+]
 
 APPEND_SLASH = False
 
@@ -35,9 +37,16 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",
 ]
 
+# This matches the IP followed by ANY port
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http:\/\/192\.168\.1\.\d{1,3}(:\d+)?$",
+    r"^http:\/\/127\.0\.0\.1(:\d+)?$",
+    r"^http:\/\/localhost(:\d+)?$",
+]
+
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 100,  # Sets the default number of items per page globally
+    "PAGE_SIZE": 100,
 }
 
 LOGGING = {
