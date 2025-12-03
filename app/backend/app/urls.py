@@ -19,10 +19,12 @@ from django.contrib import admin
 from django.urls import path
 from app.bean.urls import urlpatterns as bean_urlpatterns
 from app.origin.urls import urlpatterns as origin_urlpatterns
+from app.roast.urls import urlpatterns as roast_urlpatterns
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     *bean_urlpatterns,
     *origin_urlpatterns,
+    *roast_urlpatterns,
 ]

@@ -1,22 +1,22 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { CoffeeRoastingMenu } from "../components/menu";
+import { useNavigate } from "react-router";
+
 import Grid from "@mui/material/Grid";
-import api from "../api/coffee-roasting-api";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+import Radio from "@mui/material/Radio";
 
-/**
- * Component for starting a new roast, more or less the majority
- * of the apps functionality is going to be in here as this is the
- * main purpose of it all.
- */
-export const CoffeeRoasting = () => {
+import api from "../../api/coffee-roasting-api";
+import { CoffeeRoastingMenu } from "../../components/menu";
+import { CoffeeTableContainer } from "../../components/styled/table-container";
+
+export const BeanSelection = () => {
+  let navigate = useNavigate();
   const [existingBeans, setExistingBeans] = useState([]);
   const [selectedBean, setSelectedBean] = useState();
   const [loading, setLoading] = useState(true);
@@ -40,15 +40,31 @@ export const CoffeeRoasting = () => {
     setSelectedBean(id);
   };
 
+  const startRoast = async () => {
+    try {
+      const response = await api.roasts.create({ bean: selectedBean });
+      navigate(`/roast/${response.data.id}`);
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
+  };
+
+  // TODO add pagination
+  // TODO add searching
+  // TODO add extra bean creation
+  // TODO add unselection?
+  // TODO add some bean popup / drawer (would be nice / useful)
   return (
     <CoffeeRoastingMenu>
       {!loading && (
         <>
           <Grid>Choose Bean:</Grid>
-          <TableContainer component={Paper}>
+          <CoffeeTableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell></TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Grade</TableCell>
                   <TableCell>Country</TableCell>
@@ -65,6 +81,13 @@ export const CoffeeRoasting = () => {
                         await selectBean(bean.id);
                       }}
                     >
+                      <TableCell>
+                        <Radio
+                          name="selected-bean-group"
+                          value={bean.id}
+                          checked={selectedBean === bean.id}
+                        />
+                      </TableCell>
                       <TableCell>{bean.name}</TableCell>
                       <TableCell>{bean.sca_letter_grade}</TableCell>
                       <TableCell>{bean.origin?.country}</TableCell>
@@ -75,8 +98,22 @@ export const CoffeeRoasting = () => {
                 })}
               </TableBody>
             </Table>
-          </TableContainer>
-          <Button disabled={!selectedBean}>Start</Button>
+          </CoffeeTableContainer>
+          <Button
+            disabled={!selectedBean}
+            onClick={async () => {
+              await startRoast();
+            }}
+          >
+            Start
+          </Button>
+          <Button
+            onClick={() => {
+              navigate("/bean/add");
+            }}
+          >
+            Is your bean missing? Add a new Bean!
+          </Button>
         </>
       )}
     </CoffeeRoastingMenu>

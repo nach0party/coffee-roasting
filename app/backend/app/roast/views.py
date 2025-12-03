@@ -1,0 +1,75 @@
+from typing import cast
+
+from django.db import transaction
+from django.utils import timezone
+
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+
+from app.roast.models.roast import Roast
+from app.roast.models.roast_event import RoastEvent
+from app.roast.serializers import RoastSerializer, RoastEventSerializer, RetrieveListRoastSerializer
+from app.roast.filters import RoastFilter
+
+from app.shared.viewsets import CoffeeRoastingModelViewSet
+
+
+class RoastViewSet(CoffeeRoastingModelViewSet):
+    """
+    Provides endpoints for a `roast` aka
+    the concept of roasting beans.
+    """
+
+    queryset = Roast.objects.prefetch_related("roast_event").all()
+    filterset_class = RoastFilter
+
+    def get_serializer_class(self):
+        if self.action in ["retrieve", "list"]:
+            return RetrieveListRoastSerializer
+        return RoastSerializer
+
+    @transaction.atomic()
+    @action(methods=["post"], detail=True)
+    def begin(self, request: Request, pk: str | None = None) -> Response:
+        """
+        When we `begin` a roast, we do a things like:
+            1. Start the counter (when did it start)
+            2. Create the first event indicating things have begun
+                - We also make sure that event is the start type
+        """
+        roast = cast(Roast, self.get_object())
+        if roast.started_when:
+            raise ValidationError({"started_when": ["Roast has already started"]})
+
+        event = RoastEvent()
+        event.roast = roast
+
+        start_time = timezone.now()
+
+        # trigger the first event
+        roast.started_when = start_time
+        event.started_when = start_time
+        event.type = RoastEvent.Type.BEGIN.value
+
+        roast.save()
+        event.save()
+
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class RoastEventViewSet(CoffeeRoastingModelViewSet):
+    """
+    Provides endpoints for a roast event, tied to a roast
+    that explains that a certain type of event happened over
+    the course of a certain time period.
+    """
+
+    queryset = RoastEvent.objects.all()
+    serializer_class = RoastEventSerializer
+    filterset_fields = (
+        "roast",
+        "type",
+    )

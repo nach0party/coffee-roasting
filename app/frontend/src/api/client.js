@@ -5,7 +5,7 @@ class ApiClient {
     // TOOD fix the baseURL
     constructor() {
         this.client = axios.create({
-            baseURL: 'http://localhost:8000/',
+            baseURL: 'http://10.0.0.199:8000',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -20,30 +20,28 @@ class ApiClient {
     handleError = async (request) => {
         try {
             const response = await request
-            console.log(response, 'response')
             return response
         } catch (error) {
-            // TODO may want to consider transforming this into a more useful error message that
-            // we can bubble up
+            // TODO may want to consider transforming this into a more useful 
+            // error message (or multiple error messages) that we can bubble up
             console.error(error)
-            throw Error(error)
+            throw error
         }
-
     }
 
-    get = async (url) => {
-        return await this.handleError(this.client.get(url))
+    get = async (url, params = {}) => {
+        return await this.handleError(this.client.get(url, { 'params': params }))
     }
 
-    post = async (url, data) => {
+    post = async (url, data = {}) => {
         return await this.handleError(this.client.post(url, data))
     }
 
-    put = async (url, data) => {
+    put = async (url, data = {}) => {
         return await this.handleError(this.client.put(url, data))
     }
 
-    patch = async (url, data) => {
+    patch = async (url, data = {}) => {
         return await this.handleError(this.client.patch(url, data))
     }
 
