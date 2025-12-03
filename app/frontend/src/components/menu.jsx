@@ -16,18 +16,25 @@ import WhatshotOutlinedIcon from "@mui/icons-material/WhatshotOutlined";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import CoffeRoastingModal from "./modal";
+import Typography from "@mui/material/Typography";
 
 /**
  * This is more or less the default component that should be the main wrapper component.
  * Provides menu functionality and the base of the app in general for navigating around.
  * Can be not used if decided for a bit of flexibility per component.
  *
+ * You can query / pass in hasActiveRoasts to prevent start roast (where applicable) from triggering
+ * a new roast if needed.
+ *
+ * TODO there might be a better way to handle that but in the meantime this should be fine.
  * TODO handle this differently in a phone vs web app.
  * TODO change this to be CoffeeRoastingAppWrapper and change the menu to be its own component (but still include it)
  */
-export const CoffeeRoastingMenu = ({ children }) => {
+export const CoffeeRoastingMenu = ({ children, hasActiveRoasts = false }) => {
   let navigate = useNavigate();
   const [openMenu, setOpenMenu] = useState(false);
+  const [openRoastWarningModal, setOpenRoastWarningModal] = useState(false);
 
   const toggleDrawer = (event, shouldOpen = false) => {
     if (
@@ -46,6 +53,10 @@ export const CoffeeRoastingMenu = ({ children }) => {
   };
 
   const startRoast = () => {
+    if (hasActiveRoasts) {
+      setOpenRoastWarningModal(true);
+      return;
+    }
     navigate("/bean/select");
   };
 
@@ -131,6 +142,40 @@ export const CoffeeRoastingMenu = ({ children }) => {
         </Drawer>
       </Fragment>
       <Grid sx={{ padding: "10px" }}>{children}</Grid>
+      <CoffeRoastingModal
+        open={openRoastWarningModal}
+        setOpen={setOpenRoastWarningModal}
+        title="Active Roast: Warning"
+        content={
+          <>
+            <Typography gutterBottom>
+              You have active roasts, are you sure you would like to proceed and
+              start another roast?
+            </Typography>
+          </>
+        }
+        actions={
+          <>
+            <Button
+              autoFocus
+              onClick={() => {
+                setOpenRoastWarningModal(false);
+              }}
+            >
+              Close
+            </Button>
+            <Button
+              autoFocus
+              onClick={() => {
+                setOpenRoastWarningModal(false);
+                navigate("/bean/select");
+              }}
+            >
+              Continue
+            </Button>
+          </>
+        }
+      />
     </Grid>
   );
 };

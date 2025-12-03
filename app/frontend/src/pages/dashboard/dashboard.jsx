@@ -19,7 +19,6 @@ export function CoffeeRoastingDashboard() {
   // the concept of checking for "an active roast"
   const checkForActiveRoasts = useCallback(async () => {
     const response = await api.roasts.list({ has_begun: true });
-    console.log(response, "response");
     setActiveRoasts(response.data.results);
   });
 
@@ -30,89 +29,99 @@ export function CoffeeRoastingDashboard() {
     initialize();
   }, []);
 
-  console.log(activeRoasts, "activeRoasts");
-
-  // Dummy data for active and completed roasts
-  const roastEvents = [
-    {
-      id: 1,
-      bean: "Ethiopia Yirgacheffe",
-      status: "active",
-      temp: "405°F",
-      time: "12:30",
-      progress: 85,
-    },
-    {
-      id: 2,
-      bean: "Guatemala Huehuetenango",
-      status: "active",
-      temp: "250°F",
-      time: "05:45",
-      progress: 30,
-    },
-    {
-      id: 3,
-      bean: "Colombia Supremo",
-      status: "completed",
-      temp: "415°F",
-      time: "15:00",
-      progress: 100,
-    },
-  ];
+  // console.log(activeRoasts, "activeRoasts");
 
   // TODO remove all the inline styling...
   return (
-    <CoffeeRoastingMenu>
+    <CoffeeRoastingMenu hasActiveRoasts={activeRoasts.length > 0}>
       <Box sx={{ p: 4 }}>
         <Typography variant="h4" gutterBottom>
           Active Roasting Events: ({activeRoasts.length})
         </Typography>
         <Grid container spacing={3} sx={{ mb: 5 }}>
           {activeRoasts.map((roast) => (
-            <Grid key={roast.id}>
-              <ActiveRoastCard roast={roast} />
-            </Grid>
+            <ActiveRoastCard roast={roast} />
           ))}
         </Grid>
 
-        {/* <Typography variant="h4" gutterBottom>
-          Completed Roasts ({completedRoasts.length})
+        <Typography variant="h4" gutterBottom>
+          Completed Roasts ({activeRoasts.length})
         </Typography>
         <Grid container spacing={3}>
-          {completedRoasts.map((roast) => (
+          {activeRoasts.map((roast) => (
             <Grid item xs={12} sm={6} md={4} key={roast.id}>
-              <ActiveRoastCard roast={roast} />
+              <CompletedRoastCard roast={roast} />
             </Grid>
           ))}
-        </Grid> */}
+        </Grid>
       </Box>
     </CoffeeRoastingMenu>
   );
 }
 
+// TODO make inactive roast card...
 const ActiveRoastCard = ({ roast }) => {
-  const isActive = true;
-
+  console.log(roast, "roast");
   return (
     <Card
       sx={{
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        // Apply conditional styling for the glow effect
-        ...(isActive && {
-          // Use the class defined in the CSS file
-          "&.MuiCard-root": {
-            // You need a way to integrate the CSS class,
-            // here we manually apply a high-contrast border and background for the active state
-            // The actual glow class should be applied via className="active-roast-card"
-          },
-        }),
-        // Basic styling
-        border: isActive ? "2px solid orange" : "1px solid #ddd",
+        border: "2px solid orange",
       }}
-      // Apply the CSS class for the animation
-      className={isActive ? "active-roast-card" : ""}
+      className={"active-roast-card"}
+    >
+      <CardActionArea>
+        <CardMedia
+          component="img"
+          height={140}
+          image="/coffee-being-roasted.jpg"
+        />
+      </CardActionArea>
+      <CardContent>
+        <Typography variant="h6" component="div">
+          {roast.name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+          Status: {"In Progress"}
+        </Typography>
+
+        <Box sx={{ mt: 2 }}>
+          {/** Roast temp / time would be awesome, expected time and the expected temp */}
+          <Typography variant="caption" color="primary">
+            Current Temp: 455 | Time Elapsed: 12:50
+          </Typography>
+          <LinearProgress
+            variant="determinate"
+            value={"50"} // TODO figure out how to determine general progress based on time, start collectin averages
+            color="warning"
+            sx={{ height: 10, borderRadius: 5, mt: 1 }}
+          />
+          <Typography variant="body2" align="right">
+            {roast.progress}%
+          </Typography>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          Final Temp: {roast.temp} | Total Time: {roast.time}
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+};
+
+// TODO make inactive roast card...
+const CompletedRoastCard = ({ roast }) => {
+  return (
+    <Card
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        border: "2px solid blue",
+      }}
+      // className={"active-roast-card"}
     >
       <CardActionArea>
         <CardMedia
@@ -123,34 +132,31 @@ const ActiveRoastCard = ({ roast }) => {
       </CardActionArea>
       <CardContent>
         <Typography variant="h6" component="div">
-          {roast.bean}
+          {roast.name}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-          Status: {isActive ? "In Progress" : "Completed"}
+          Status: {"In Progress"}
         </Typography>
 
-        {isActive && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="caption" color="primary">
-              Current Temp: {roast.temp} | Time Elapsed: {roast.time}
-            </Typography>
-            <LinearProgress
-              variant="determinate"
-              value={roast.progress}
-              color="warning"
-              sx={{ height: 10, borderRadius: 5, mt: 1 }}
-            />
-            <Typography variant="body2" align="right">
-              {roast.progress}%
-            </Typography>
-          </Box>
-        )}
-
-        {!isActive && (
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            Final Temp: {roast.temp} | Total Time: {roast.time}
+        <Box sx={{ mt: 2 }}>
+          {/** Roast temp / time would be awesome, expected time and the expected temp */}
+          <Typography variant="caption" color="primary">
+            Current Temp: 455 | Time Elapsed: 12:50
           </Typography>
-        )}
+          <LinearProgress
+            variant="determinate"
+            value={"50"} // TODO figure out how to determine general progress based on time, start collectin averages
+            color="warning"
+            sx={{ height: 10, borderRadius: 5, mt: 1 }}
+          />
+          <Typography variant="body2" align="right">
+            {roast.progress}%
+          </Typography>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          Final Temp: {roast.temp} | Total Time: {roast.time}
+        </Typography>
       </CardContent>
     </Card>
   );
