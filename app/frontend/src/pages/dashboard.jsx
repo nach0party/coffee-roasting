@@ -9,7 +9,6 @@ export const CoffeeRoastingDashboard = () => {
       <Grid>
         <Typography>Dashboard</Typography>
       </Grid>
-      <div>This is where you select what you'd like to do</div>
     </CoffeeRoastingMenu>
   );
 };

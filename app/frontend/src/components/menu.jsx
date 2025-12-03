@@ -1,18 +1,19 @@
 import React, { Fragment, useState } from "react";
+
 import { useNavigate } from "react-router";
+
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import WhatshotOutlinedIcon from "@mui/icons-material/WhatshotOutlined";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
 /**
  * This is more or less the default component that should be the main wrapper component.
@@ -23,8 +24,8 @@ import MailIcon from "@mui/icons-material/Mail";
  * TODO change this to be CoffeeRoastingAppWrapper and change the menu to be its own component (but still include it)
  */
 export const CoffeeRoastingMenu = ({ children }) => {
+  let navigate = useNavigate();
   const [openMenu, setOpenMenu] = useState(false);
-  // const [state, setState] = useState({ left: false });
 
   const toggleDrawer = (event, shouldOpen = false) => {
     if (
@@ -34,6 +35,16 @@ export const CoffeeRoastingMenu = ({ children }) => {
       return;
     }
     setOpenMenu(shouldOpen);
+  };
+
+  // TODO it wouldn't hurt to maybe write something that maps routes
+  // to the actual routes and some functions to
+  const goToDashboard = () => {
+    navigate("/");
+  };
+
+  const startRoast = () => {
+    navigate("/bean/select");
   };
 
   return (
@@ -46,7 +57,7 @@ export const CoffeeRoastingMenu = ({ children }) => {
         >
           Open Menu
         </Button>
-        <Drawer
+        <SwipeableDrawer
           anchor={"left"}
           open={openMenu}
           onClose={(e) => {
@@ -66,85 +77,42 @@ export const CoffeeRoastingMenu = ({ children }) => {
             }}
           >
             <List>
-              {["Inbox", "Starred", "Send email", "Drafts"].map(
-                (text, index) => (
-                  <ListItem key={text} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                      </ListItemIcon>
-                      <ListItemText primary={text} />
-                    </ListItemButton>
-                  </ListItem>
-                )
-              )}
+              <ListItem onClick={startRoast} key={"roast-menu"} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <LocalFireDepartmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Start Roast"} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem onClick={goToDashboard} key={"Beans"} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <WhatshotOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Beans"} />
+                </ListItemButton>
+              </ListItem>
             </List>
             <Divider />
             <List>
-              {["All mail", "Trash", "Spam"].map((text, index) => (
-                <ListItem key={text} disablePadding>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
+              <ListItem
+                onClick={goToDashboard}
+                key={"dashboard"}
+                disablePadding
+              >
+                <ListItemButton>
+                  <ListItemIcon>
+                    <LocalFireDepartmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Dashboard"} />
+                </ListItemButton>
+              </ListItem>
             </List>
           </Box>
-        </Drawer>
+        </SwipeableDrawer>
       </Fragment>
+      <Grid sx={{ padding: "10px" }}>{children}</Grid>
     </Grid>
   );
-  // let navigate = useNavigate();
-  // const [anchorEl, setAnchorEl] = useState(null);
-  // const open = Boolean(anchorEl);
-
-  // const handleClick = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
-
-  // const startRoast = () => {
-  //   navigate("/bean/select");
-  // };
-
-  // const goToDashboard = () => {
-  //   navigate("/");
-  // };
-
-  // return (
-  //   <Grid>
-  //     <Grid>{children}</Grid>
-  //     <div>
-  //       <Button
-  //         id="basic-button"
-  //         aria-controls={open ? "basic-menu" : undefined}
-  //         aria-haspopup="true"
-  //         aria-expanded={open ? "true" : undefined}
-  //         onClick={handleClick}
-  //       >
-  //         Menu
-  //       </Button>
-  //       <Menu
-  //         id="basic-menu"
-  //         anchorEl={anchorEl}
-  //         open={open}
-  //         onClose={handleClose}
-  //         slotProps={{
-  //           list: {
-  //             "aria-labelledby": "basic-button",
-  //           },
-  //         }}
-  //       >
-  //         <MenuItem onClick={startRoast}>Start Roast</MenuItem>
-  //         <MenuItem onClick={goToDashboard}>Dashboard</MenuItem>
-  //       </Menu>
-  //     </div>
-  //   </Grid>
-  // );
 };
