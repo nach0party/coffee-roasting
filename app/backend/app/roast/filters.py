@@ -9,9 +9,10 @@ class RoastFilter(FilterSet):
     Provides some nice filterable information for the roast itself.
     """
 
-    has_begun = BooleanFilter(method="has_roast_begun")
+    started = BooleanFilter(method="has_roast_started")
+    ended = BooleanFilter(method="has_roast_ended")
 
-    def has_roast_begun(
+    def has_roast_started(
         self, queryset: QuerySet[Roast], name: str, value: datetime | None
     ) -> QuerySet:
         if value:
@@ -19,6 +20,14 @@ class RoastFilter(FilterSet):
         else:
             return queryset.filter(Q(started_when__isnull=True))
 
+    def has_roast_ended(
+        self, queryset: QuerySet[Roast], name: str, value: datetime | None
+    ) -> QuerySet:
+        if value:
+            return queryset.filter(Q(ended_when__isnull=False))
+        else:
+            return queryset.filter(Q(ended_when__isnull=True))
+
     class Meta:
         model = Roast
-        fields = ["has_begun"]
+        fields = ["started", "ended"]

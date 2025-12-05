@@ -59,6 +59,38 @@ class RoastViewSet(CoffeeRoastingModelViewSet):
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
+    @transaction.atomic()
+    @action(methods=["post"], detail=True)
+    def end(self, request: Request, pk: str | None = None) -> Response:
+        """
+        When we `end` a roast, we do a things like:
+            1. Essentially we end the roast
+            2. Create the last event indicating things have finally completed,
+                - We've dropped the roast
+                - We also make sure that event is the correct start type
+        """
+        roast = cast(Roast, self.get_object())
+        if not roast.started_when:
+            raise ValidationError({"started_when": ["Roast has not yet started"]})
+        if roast.ended_when:
+            raise ValidationError({"ended_when": ["Roast has already been"]})
+
+        event = RoastEvent()
+        event.roast = roast
+
+        end_time = timezone.now()
+
+        # trigger the last event, which is essentially the completion of the roast.
+        roast.ended_when = end_time
+        event.started_when = end_time
+        event.ended_when = end_time
+        event.type = RoastEvent.Type.DROP.value
+
+        roast.save()
+        event.save()
+
+        return Response(status=status.HTTP_202_ACCEPTED)
+
 
 class RoastEventViewSet(CoffeeRoastingModelViewSet):
     """
