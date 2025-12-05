@@ -1,4 +1,4 @@
-import React from "react";
+import { useNavigate } from "react-router";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
@@ -12,6 +12,12 @@ import CardMedia from "@mui/material/CardMedia";
  * a card to manage a roast in general.
  */
 export const CompletedRoastCard = ({ roast }) => {
+  let navigate = useNavigate();
+
+  const openRoast = (id) => {
+    navigate(`/roast/${id}`);
+  };
+
   return (
     <Card
       sx={{
@@ -21,7 +27,11 @@ export const CompletedRoastCard = ({ roast }) => {
         border: "2px solid blue",
       }}
     >
-      <CardActionArea>
+      <CardActionArea
+        onClick={() => {
+          openRoast(roast.id);
+        }}
+      >
         <CardMedia
           component="img"
           height={140}

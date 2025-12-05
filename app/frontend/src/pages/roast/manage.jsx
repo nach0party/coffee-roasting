@@ -1,4 +1,5 @@
-import React, { useEffect, useCallback, useState } from "react";
+import { Fragment, useEffect, useCallback, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -13,7 +14,6 @@ import Button from "@mui/material/Button";
 
 import api from "../../api/coffee-roasting-api";
 import toast from "react-hot-toast";
-import { useParams } from "react-router";
 
 import { CoffeeRoastingMenu } from "../../components/menu";
 import CoffeRoastingModal from "../../components/modal";
@@ -21,6 +21,7 @@ import MenuItem from "@mui/material/MenuItem";
 
 // TODO if this roast is "completed" we should mark everything as read only
 export const ManageRoast = () => {
+  let navigate = useNavigate();
   const params = useParams();
   const id = params.id;
 
@@ -51,6 +52,7 @@ export const ManageRoast = () => {
   const [selectedEventType, setSelectedEventType] = useState(
     availableEventTypes[0]
   );
+  const [openDeleteRoastModal, setOpenDeleteRoastModal] = useState(false);
 
   const getRoast = async () => {
     const response = await api.roasts.get(id);
@@ -110,6 +112,15 @@ export const ManageRoast = () => {
     }
   };
 
+  const deleteRoast = async () => {
+    try {
+      const response = await api.roasts.delete(id);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   /**
    * Returns a nicely named event type.
    */
@@ -139,6 +150,13 @@ export const ManageRoast = () => {
     }
   };
 
+  const disableStartRoast = () => {
+    if (roast.started_when) {
+      return true;
+    }
+    return false;
+  };
+
   /***
    * Only allow events if we've started a raost but have not dropped / completed it.
    */
@@ -147,6 +165,13 @@ export const ManageRoast = () => {
       return false;
     }
     return true;
+  };
+
+  const disableEndRoast = () => {
+    if (!roast.started_when || roast.ended_when) {
+      return true;
+    }
+    return false;
   };
 
   console.log(roast, "roast");
@@ -164,7 +189,7 @@ export const ManageRoast = () => {
             onClick={async () => {
               await beginRoast();
             }}
-            disabled={roast.started_when}
+            disabled={disableStartRoast()}
           >
             Begin Roast
           </Button>
@@ -188,7 +213,7 @@ export const ManageRoast = () => {
                       event.ended_when ? event.ended_when : "--"
                     }`}
                     secondary={
-                      <React.Fragment>
+                      <Fragment>
                         <Typography
                           component="span"
                           variant="body2"
@@ -197,10 +222,11 @@ export const ManageRoast = () => {
                           Notes:
                         </Typography>
                         {event.notes}
-                      </React.Fragment>
+                      </Fragment>
                     }
                   />
                   <Button
+                    disabled={disableEvents()}
                     onClick={() => {
                       console.log(`clicked ${event.id}`);
                     }}
@@ -212,6 +238,7 @@ export const ManageRoast = () => {
             })}
           </List>
           <Button
+            disabled={disableEvents()}
             onClick={async () => {
               setOpenNewEventModal(true);
             }}
@@ -219,11 +246,20 @@ export const ManageRoast = () => {
             Add Event
           </Button>
           <Button
+            disabled={disableEndRoast()}
             onClick={async () => {
               await endRoast();
             }}
           >
             End Roast
+          </Button>
+          <Button
+            onClick={async () => {
+              setOpenDeleteRoastModal(true);
+              // await deleteRoast();
+            }}
+          >
+            Delete Roast
           </Button>
         </>
       )}
@@ -271,6 +307,34 @@ export const ManageRoast = () => {
               }}
             >
               Start Event
+            </Button>
+          </>
+        }
+      />
+      <CoffeRoastingModal
+        open={openDeleteRoastModal}
+        setOpen={setOpenDeleteRoastModal}
+        title={<Typography>Delete Roast?</Typography>}
+        content={
+          <Typography>
+            Are you absolutely certain you want to delete the roast?
+          </Typography>
+        }
+        actions={
+          <>
+            <Button
+              onClick={() => {
+                setOpenDeleteRoastModal(false);
+              }}
+            >
+              Nope
+            </Button>
+            <Button
+              onClick={async () => {
+                await deleteRoast(selectedEventType);
+              }}
+            >
+              I've made my peace
             </Button>
           </>
         }
