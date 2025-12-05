@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
-
 import Grid from "@mui/material/Grid";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -10,7 +9,6 @@ import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Radio from "@mui/material/Radio";
-
 import api from "../../api/coffee-roasting-api";
 import { CoffeeRoastingMenu } from "../../components/menu";
 import { CoffeeTableContainer } from "../../components/styled/table-container";

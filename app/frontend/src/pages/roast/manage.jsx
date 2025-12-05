@@ -18,6 +18,8 @@ import toast from "react-hot-toast";
 import { CoffeeRoastingMenu } from "../../components/menu";
 import CoffeRoastingModal from "../../components/modal";
 import MenuItem from "@mui/material/MenuItem";
+import { RoastBar } from "../../components/roastBar";
+import { RoastTargetTimePicker } from "../../components/roastTargetTimePicker";
 
 // TODO if this roast is "completed" we should mark everything as read only
 export const ManageRoast = () => {
@@ -178,6 +180,7 @@ export const ManageRoast = () => {
   console.log(currentEvent, "currentEvent");
   console.log(selectedEventType, "selectedEventType");
 
+  // TODO need to set a target temperature!
   // https://mui.com/x/react-charts/ definitely want to leverage this
   // TODO need a bean component
   // TODO need roast events / add / edit events
@@ -185,6 +188,7 @@ export const ManageRoast = () => {
     <CoffeeRoastingMenu>
       {!loading && (
         <>
+          <RoastTargetTimePicker />
           <Button
             onClick={async () => {
               await beginRoast();
@@ -261,6 +265,7 @@ export const ManageRoast = () => {
           >
             Delete Roast
           </Button>
+          <RoastBar />
         </>
       )}
       <CoffeRoastingModal

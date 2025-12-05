@@ -4,11 +4,12 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 
-import api from "../../api/coffee-roasting-api";
 import { CoffeeRoastingMenu } from "../../components/menu";
 import { ActiveRoastCard } from "../../components/activeRoastCard/activeRoastCard";
 import { CompletedRoastCard } from "../../components/completedRoastCard";
 import { PendingRoastCard } from "../../components/pendingRoastCard/pendingRoastCard";
+
+import api from "../../api/coffee-roasting-api";
 
 export function CoffeeRoastingDashboard() {
   const [activeRoasts, setActiveRoasts] = useState([]);

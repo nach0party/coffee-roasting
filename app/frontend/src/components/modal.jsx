@@ -1,4 +1,4 @@
-import * as React from "react";
+import { Fragment } from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -30,7 +30,7 @@ export default function CoffeRoastingModal({
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
@@ -54,6 +54,6 @@ export default function CoffeRoastingModal({
         <DialogContent dividers>{content}</DialogContent>
         <DialogActions>{actions}</DialogActions>
       </BootstrapDialog>
-    </React.Fragment>
+    </Fragment>
   );
 }

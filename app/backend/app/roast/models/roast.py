@@ -23,9 +23,16 @@ class Roast(TimeStampMixin):
         on_delete=models.DO_NOTHING,
         related_name="roasts",
     )
+
     # we separate start / end for sanities sake. We manage the roast but once they actually "start it"
     started_when = models.DateTimeField(null=True, blank=True)
     ended_when = models.DateTimeField(null=True, blank=True)
+    target_when = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="This is a timestamp to represent the target amount of time from start to end (when they would like to stop the roast)",
+    )
+
     notes = models.TextField(
         blank=True,
         null=True,
