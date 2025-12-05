@@ -8,10 +8,12 @@ import api from "../../api/coffee-roasting-api";
 import { CoffeeRoastingMenu } from "../../components/menu";
 import { ActiveRoastCard } from "../../components/activeRoastCard/activeRoastCard";
 import { CompletedRoastCard } from "../../components/completedRoastCard";
+import { PendingRoastCard } from "../../components/pendingRoastCard/pendingRoastCard";
 
 export function CoffeeRoastingDashboard() {
   const [activeRoasts, setActiveRoasts] = useState([]);
   const [completedRoasts, setCompletedRoasts] = useState([]);
+  const [pendingRoasts, setPendingRoasts] = useState([]);
 
   // TODO 2 api calls to the same endpoint isnt' ideal, however, we do have 2 separate
   // concepts and want a total count
@@ -28,18 +30,42 @@ export function CoffeeRoastingDashboard() {
     setCompletedRoasts(response.data.results);
   };
 
+  /**
+   * User started a roast, we created a record, but technically
+   * speaking they didn't actually "start" it.  We want to use this
+   * to avoid "clogging" up the app with unstarted roasts.
+   */
+  const checkForPendingRoasts = async () => {
+    const response = await api.roasts.list({ started: false, ended: false });
+    setPendingRoasts(response.data.results);
+  };
+
   useEffect(() => {
     const initialize = async () => {
       checkForActiveRoasts();
       checkForCompletedRoasts();
+      checkForPendingRoasts();
     };
     initialize();
   }, []);
 
   // TODO remove all the inline styling...
   return (
-    <CoffeeRoastingMenu hasActiveRoasts={activeRoasts.length > 0}>
+    <CoffeeRoastingMenu
+      hasActiveRoasts={activeRoasts.length + pendingRoasts.length > 0}
+    >
       <Box sx={{ p: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Pending Roasts: ({pendingRoasts.length})
+        </Typography>
+        <Grid container spacing={3} sx={{ mb: 5 }}>
+          {pendingRoasts.map((roast) => (
+            <Grid key={roast.id}>
+              <PendingRoastCard roast={roast} />
+            </Grid>
+          ))}
+        </Grid>
+
         <Typography variant="h4" gutterBottom>
           Active Roasting Events: ({activeRoasts.length})
         </Typography>

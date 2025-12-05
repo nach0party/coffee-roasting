@@ -57,7 +57,7 @@ class RoastViewSet(CoffeeRoastingModelViewSet):
         roast.save()
         event.save()
 
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(RetrieveListRoastSerializer(roast).data, status=status.HTTP_202_ACCEPTED)
 
     @transaction.atomic()
     @action(methods=["post"], detail=True)
@@ -89,7 +89,7 @@ class RoastViewSet(CoffeeRoastingModelViewSet):
         roast.save()
         event.save()
 
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(RetrieveListRoastSerializer(roast).data, status=status.HTTP_202_ACCEPTED)
 
 
 class RoastEventViewSet(CoffeeRoastingModelViewSet):
