@@ -17,4 +17,12 @@ export class Roasts extends Resource {
     beginRoast = async (id) => {
         return await this.client.post(`/roasts/${id}/begin`)
     }
+
+    endRoast = async (id) => {
+        return await this.client.post(`/roasts/${id}/end`)
+    }
+
+    delete = async (id) => {
+        return await this.client.delete(`/roasts/${id}`)
+    }
 }

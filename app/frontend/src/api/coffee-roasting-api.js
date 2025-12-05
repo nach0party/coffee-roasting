@@ -1,4 +1,5 @@
 import { Beans } from './beans'
+import { RoastEvents } from './roastEvents'
 import { Roasts } from './roasts'
 
 /**
@@ -10,6 +11,7 @@ class CoffeeRoastingApi{
     // paths
     beans = new Beans()
     roasts = new Roasts()
+    roastEvents = new RoastEvents()
 }
     
 const api = new CoffeeRoastingApi()

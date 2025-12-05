@@ -60,6 +60,10 @@ export const CoffeeRoastingMenu = ({ children, hasActiveRoasts = false }) => {
     navigate("/bean/select");
   };
 
+  // const continueRoast = () => {
+  //   navigate("/roast/manage");
+  // };
+
   return (
     <Grid>
       <Fragment key={"anchor"}>
@@ -67,6 +71,7 @@ export const CoffeeRoastingMenu = ({ children, hasActiveRoasts = false }) => {
           onClick={(e) => {
             toggleDrawer(e, true);
           }}
+          // TODO remove all the inline styling
           // Position the button absolutely within the viewport
           sx={{
             // top: 20, // 16px from the top
@@ -142,6 +147,7 @@ export const CoffeeRoastingMenu = ({ children, hasActiveRoasts = false }) => {
         </Drawer>
       </Fragment>
       <Grid sx={{ padding: "10px" }}>{children}</Grid>
+
       <CoffeRoastingModal
         open={openRoastWarningModal}
         setOpen={setOpenRoastWarningModal}
