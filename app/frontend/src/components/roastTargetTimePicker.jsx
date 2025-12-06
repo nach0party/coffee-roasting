@@ -7,7 +7,8 @@ const populateMinutes = () => {
   let newMinute = 10;
   const minuteArray = [];
   while (newMinute <= 20) {
-    minuteArray.push(newMinute);
+    let stringMinute = String(newMinute);
+    minuteArray.push(stringMinute);
     newMinute = newMinute + 1;
   }
   return minuteArray;
@@ -16,10 +17,14 @@ const populateMinutes = () => {
 const minutes = populateMinutes();
 
 const populateSeconds = () => {
-  let newSecond = 1;
+  let newSecond = 0;
   const secondArray = [];
   while (newSecond <= 60) {
-    secondArray.push(newSecond);
+    let stringSecond = String(newSecond);
+    if (newSecond <= 9) {
+      stringSecond = `0${stringSecond}`;
+    }
+    secondArray.push(stringSecond);
     newSecond = newSecond + 1;
   }
   return secondArray;
@@ -38,6 +43,7 @@ export const RoastTargetTimePicker = ({
   setMinute,
   second,
   setSecond,
+  disabled,
 }) => {
   return (
     <Box
@@ -49,6 +55,7 @@ export const RoastTargetTimePicker = ({
       {minutes && (
         <div>
           <TextField
+            disabled={disabled}
             select
             label="Minutes"
             defaultValue={minute}
@@ -68,6 +75,7 @@ export const RoastTargetTimePicker = ({
             ))}
           </TextField>
           <TextField
+            disabled={disabled}
             select
             label="Seconds"
             defaultValue={second}

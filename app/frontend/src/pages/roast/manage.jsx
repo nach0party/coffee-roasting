@@ -54,8 +54,11 @@ export const ManageRoast = () => {
     availableEventTypes[0]
   );
   const [openDeleteRoastModal, setOpenDeleteRoastModal] = useState(false);
-  const [targetMinute, setTargetMinute] = useState(15);
-  const [targetSecond, setTargetSecond] = useState(1);
+
+  // We use strings to handle the 00 and also it concatenates all
+  // into a string to be passed to the API, easier this way.
+  const [targetMinute, setTargetMinute] = useState("13");
+  const [targetSecond, setTargetSecond] = useState("00");
 
   const getRoast = async () => {
     const response = await api.roasts.get(id);
@@ -71,9 +74,12 @@ export const ManageRoast = () => {
     initialize();
   }, []);
 
+  // TOOD make less api calls if needed
   const beginRoast = async () => {
-    // setLoading(true);
     try {
+      await api.roasts.partialUpdate(id, {
+        target_duration: `${targetMinute}:${targetSecond}`,
+      });
       await api.roasts.beginRoast(id);
       await getRoast();
       toast.success("Roast has begun");
@@ -81,23 +87,18 @@ export const ManageRoast = () => {
       // TODO setup a service for using toast...
       toast.error("There was an error");
       console.error(error);
-    } finally {
-      // setLoading(false);
     }
   };
 
   // I hate making 2 api calls, however, for some reason setRoast on the
   // response.data of the start / end endpoints did not refresh the data...
   const endRoast = async () => {
-    // setLoading(true);
     try {
       await api.roasts.endRoast(id);
       await getRoast();
     } catch (error) {
       toast.error("There was an error");
       console.error(error);
-    } finally {
-      // setLoading(false);
     }
   };
 
@@ -154,7 +155,13 @@ export const ManageRoast = () => {
   };
 
   const disableStartRoast = () => {
-    if (roast.started_when) {
+    if (
+      roast.started_when ||
+      targetMinute === null ||
+      targetMinute === undefined ||
+      targetSecond === null ||
+      targetSecond === undefined
+    ) {
       return true;
     }
     return false;
@@ -177,6 +184,13 @@ export const ManageRoast = () => {
     return false;
   };
 
+  const disableTargets = () => {
+    if (roast.started_when) {
+      return true;
+    }
+    return false;
+  };
+
   const hideRoastBar = () => {
     if (!roast.started_when) {
       return true;
@@ -184,21 +198,20 @@ export const ManageRoast = () => {
     return false;
   };
 
-  // console.log(roast, "roast");
-  // console.log(currentEvent, "currentEvent");
-  // console.log(selectedEventType, "selectedEventType");
-  console.log(targetMinute, "targetMinute");
-
-  // TODO use django minute / second time field?
   // TODO need to set a target temperature!
-  // https://mui.com/x/react-charts/ definitely want to leverage this
   // TODO need a bean component
-  // TODO need roast events / add / edit events
   return (
     <CoffeeRoastingMenu>
       {!loading && (
         <>
+          {/** TODO consider hiding the targets and changing around the UI once the roast is started as
+           * a less interactive but more display driven roasting app.
+           */}
+          <Typography>
+            This is a Target, once the roast is started the target is locked in.
+          </Typography>
           <RoastTargetTimePicker
+            disabled={disableTargets()}
             minute={targetMinute}
             setMinute={setTargetMinute}
             second={targetSecond}
@@ -282,8 +295,8 @@ export const ManageRoast = () => {
           </Button>
           <RoastBar
             hide={hideRoastBar()}
-            startedTime={roast.started_when}
-            targetTime={roast.target_when}
+            startedWhen={roast.started_when}
+            targetWhen={roast.target_when}
           />
         </>
       )}

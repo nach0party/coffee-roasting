@@ -35,6 +35,7 @@ class RetrieveListRoastSerializer(serializers.ModelSerializer):
             "updated_when",
             "deleted_when",
             "target_duration",
+            "target_when",
         )
 
 

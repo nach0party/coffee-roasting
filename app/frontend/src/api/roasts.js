@@ -14,6 +14,10 @@ export class Roasts extends Resource {
         return await this.client.post(`/roasts`, data)
     }
 
+    partialUpdate = async (id, data) => {
+        return await this.client.patch(`/roasts/${id}`, data)
+    }
+
     beginRoast = async (id) => {
         return await this.client.post(`/roasts/${id}/begin`)
     }
