@@ -29,6 +29,27 @@ LinearProgressWithLabel.propTypes = {
 };
 
 /**
+ * Calculates the progress bar, consider using date-fns to help simplify this but this does work right now.
+ * @returns
+ */
+const calculateProgress = (startedWhen, targetWhen) => {
+  const start = new Date(startedWhen);
+  const target = new Date(targetWhen);
+  const now = new Date();
+
+  const startMs = start.getTime();
+  const targetMs = target.getTime();
+  const currentMs = now.getTime();
+  const totalDuration = targetMs - startMs;
+
+  const elapsedTimeMs = currentMs - startMs;
+  const progressRatio = elapsedTimeMs / totalDuration;
+
+  const percentage = Math.round(progressRatio * 100);
+  return Math.max(0, Math.min(100, percentage));
+};
+
+/**
  * TODO this will become a lot more complex, but, this should show what we TRIED to do vs what we did...
  * TODO how to display "over" target (I think we change the bar and the way it works...)
  * @param {*} param0
@@ -39,15 +60,15 @@ export const RoastBar = ({ startedWhen, targetWhen, hide }) => {
     return null;
   }
 
-  const [progress, setProgress] = useState(10);
-  const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(
+    calculateProgress(startedWhen, targetWhen)
+  );
 
   // TODO we should stop calculating IF we have an ended when time, and keep the bar still
   // TODO we can use start / end / target to determine accuracy and closeness of value of the prediction vs what was done
   useEffect(() => {
     const timer = setInterval(() => {
-      setProgress(calculateProgress());
-      setLoading(false);
+      setProgress(calculateProgress(startedWhen, targetWhen));
     }, 800);
 
     return () => {
@@ -55,30 +76,9 @@ export const RoastBar = ({ startedWhen, targetWhen, hide }) => {
     };
   }, []);
 
-  /**
-   * Calculates the progress bar, consider using date-fns to help simplify this but this does work right now.
-   * @returns
-   */
-  const calculateProgress = () => {
-    const start = new Date(startedWhen);
-    const target = new Date(targetWhen);
-    const now = new Date();
-
-    const startMs = start.getTime();
-    const targetMs = target.getTime();
-    const currentMs = now.getTime();
-    const totalDuration = targetMs - startMs;
-
-    const elapsedTimeMs = currentMs - startMs;
-    const progressRatio = elapsedTimeMs / totalDuration;
-
-    const percentage = Math.round(progressRatio * 100);
-    return Math.max(0, Math.min(100, percentage));
-  };
-
   return (
     <Box sx={{ width: "100%" }}>
-      {!loading && <LinearProgressWithLabel value={progress} />}
+      <LinearProgressWithLabel value={progress} />
     </Box>
   );
 };
