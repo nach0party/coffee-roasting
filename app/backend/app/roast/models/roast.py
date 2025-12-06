@@ -27,7 +27,7 @@ class Roast(TimeStampMixin):
     # we separate start / end for sanities sake. We manage the roast but once they actually "start it"
     started_when = models.DateTimeField(null=True, blank=True)
     ended_when = models.DateTimeField(null=True, blank=True)
-    target_when = models.DateTimeField(
+    target_duration = models.DateTimeField(
         null=True,
         blank=True,
         help_text="This is a timestamp to represent the target amount of time from start to end (when they would like to stop the roast)",

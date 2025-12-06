@@ -26,8 +26,6 @@ const populateSeconds = () => {
 };
 
 const seconds = populateSeconds();
-console.log(minutes, "minutes");
-console.log(seconds, "seconds");
 
 /**
  * Allows you to pick expected minutes - seconds that the roast will go for.
@@ -35,7 +33,12 @@ console.log(seconds, "seconds");
  * having their roast completed when they view the page.
  * @returns
  */
-export const RoastTargetTimePicker = () => {
+export const RoastTargetTimePicker = ({
+  minute,
+  setMinute,
+  second,
+  setSecond,
+}) => {
   return (
     <Box
       component="form"
@@ -48,24 +51,38 @@ export const RoastTargetTimePicker = () => {
           <TextField
             select
             label="Minutes"
-            defaultValue={15}
+            defaultValue={minute}
             helperText="Please select your minutes to roast"
           >
-            {minutes.map((minute) => (
-              <MenuItem key={minute} value={minute} defaultValue={minute[13]}>
-                {minute}
+            {minutes.map((possibleMinute) => (
+              <MenuItem
+                onClick={() => {
+                  setMinute(possibleMinute);
+                }}
+                key={possibleMinute}
+                value={possibleMinute}
+                defaultValue={minute}
+              >
+                {possibleMinute}
               </MenuItem>
             ))}
           </TextField>
           <TextField
             select
             label="Seconds"
-            defaultValue={seconds[0]}
+            defaultValue={second}
             helperText="Please select your seconds to roast"
           >
-            {seconds.map((second) => (
-              <MenuItem key={second} value={second} defaultValue={second[0]}>
-                {second}
+            {seconds.map((availableSecond) => (
+              <MenuItem
+                onClick={async () => {
+                  setSecond(availableSecond);
+                }}
+                key={availableSecond}
+                value={availableSecond}
+                defaultValue={second}
+              >
+                {availableSecond}
               </MenuItem>
             ))}
           </TextField>

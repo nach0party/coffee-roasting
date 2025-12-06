@@ -28,11 +28,13 @@ LinearProgressWithLabel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export const RoastBar = ({ startTime, currentTime, targetTime }) => {
-  //   console.log(startTime, "startTime");
-  //   console.log(currentTime, "currentTime");
-  //   console.log(targetTime, "targetTime");
-  //   console.log(new Date(), "new Date()");
+export const RoastBar = ({ startedTime, targetTime, hide }) => {
+  console.log(startedTime, "startedTime");
+  console.log(targetTime, "targetTime");
+  console.log(new Date(), "new Date()");
+  if (hide) {
+    return null;
+  }
 
   const [progress, setProgress] = useState(10);
 

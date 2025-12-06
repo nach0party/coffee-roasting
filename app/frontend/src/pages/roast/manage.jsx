@@ -3,12 +3,10 @@ import { useNavigate, useParams } from "react-router";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
@@ -20,6 +18,7 @@ import CoffeRoastingModal from "../../components/modal";
 import MenuItem from "@mui/material/MenuItem";
 import { RoastBar } from "../../components/roastBar";
 import { RoastTargetTimePicker } from "../../components/roastTargetTimePicker";
+import Grid from "@mui/material/Grid";
 
 // TODO if this roast is "completed" we should mark everything as read only
 export const ManageRoast = () => {
@@ -55,6 +54,8 @@ export const ManageRoast = () => {
     availableEventTypes[0]
   );
   const [openDeleteRoastModal, setOpenDeleteRoastModal] = useState(false);
+  const [targetMinute, setTargetMinute] = useState(15);
+  const [targetSecond, setTargetSecond] = useState(1);
 
   const getRoast = async () => {
     const response = await api.roasts.get(id);
@@ -176,10 +177,19 @@ export const ManageRoast = () => {
     return false;
   };
 
-  console.log(roast, "roast");
-  console.log(currentEvent, "currentEvent");
-  console.log(selectedEventType, "selectedEventType");
+  const hideRoastBar = () => {
+    if (!roast.started_when) {
+      return true;
+    }
+    return false;
+  };
 
+  // console.log(roast, "roast");
+  // console.log(currentEvent, "currentEvent");
+  // console.log(selectedEventType, "selectedEventType");
+  console.log(targetMinute, "targetMinute");
+
+  // TODO use django minute / second time field?
   // TODO need to set a target temperature!
   // https://mui.com/x/react-charts/ definitely want to leverage this
   // TODO need a bean component
@@ -188,7 +198,12 @@ export const ManageRoast = () => {
     <CoffeeRoastingMenu>
       {!loading && (
         <>
-          <RoastTargetTimePicker />
+          <RoastTargetTimePicker
+            minute={targetMinute}
+            setMinute={setTargetMinute}
+            second={targetSecond}
+            setSecond={setTargetSecond}
+          />
           <Button
             onClick={async () => {
               await beginRoast();
@@ -265,7 +280,11 @@ export const ManageRoast = () => {
           >
             Delete Roast
           </Button>
-          <RoastBar />
+          <RoastBar
+            hide={hideRoastBar()}
+            startedTime={roast.started_when}
+            targetTime={roast.target_when}
+          />
         </>
       )}
       <CoffeRoastingModal
