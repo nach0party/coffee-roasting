@@ -111,7 +111,7 @@ export const ManageBean = () => {
   };
 
   return (
-    <CoffeeRoastingMenu>
+    <CoffeeRoastingMenu title="Bean Management">
       <Grid sx={{ p: 5 }}>
         {/**
          * TODO somewhat of a code smell but I wonder if name isn't really a great implementation right now...

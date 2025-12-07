@@ -16,6 +16,8 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import CoffeRoastingModal from "./modal";
 import Typography from "@mui/material/Typography";
+import SettingsIcon from "@mui/icons-material/Settings";
+import Snackbar from "@mui/material/Snackbar";
 
 /**
  * This is more or less the default component that should be the main wrapper component.
@@ -52,6 +54,10 @@ export const CoffeeRoastingMenu = ({
   // to the actual routes and some functions to
   const goToDashboard = () => {
     navigate("/");
+  };
+
+  const goToRawCoffeeBeanLibrary = () => {
+    navigate("/bean/library");
   };
 
   const startRoast = () => {
@@ -121,12 +127,16 @@ export const CoffeeRoastingMenu = ({
                   <ListItemText primary={"Start Roast"} />
                 </ListItemButton>
               </ListItem>
-              <ListItem onClick={goToDashboard} key={"Beans"} disablePadding>
+              <ListItem
+                onClick={goToRawCoffeeBeanLibrary}
+                key={"Raw Coffee Bean Library"}
+                disablePadding
+              >
                 <ListItemButton>
                   <ListItemIcon>
                     <WhatshotOutlinedIcon />
                   </ListItemIcon>
-                  <ListItemText primary={"Beans"} />
+                  <ListItemText primary={"Raw Coffee Bean Library"} />
                 </ListItemButton>
               </ListItem>
             </List>
@@ -142,6 +152,22 @@ export const CoffeeRoastingMenu = ({
                     <LocalFireDepartmentIcon />
                   </ListItemIcon>
                   <ListItemText primary={"Dashboard"} />
+                </ListItemButton>
+              </ListItem>
+            </List>
+            <List>
+              <ListItem
+                onClick={() => {
+                  console.log("eventually we go to settings here");
+                }}
+                key={"settings"}
+                disablePadding
+              >
+                <ListItemButton>
+                  <ListItemIcon>
+                    <SettingsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Settings"} />
                 </ListItemButton>
               </ListItem>
             </List>
@@ -183,6 +209,14 @@ export const CoffeeRoastingMenu = ({
             </Button>
           </>
         }
+      />
+      {/** This allows for full customization */}
+      <Snackbar
+        open={true}
+        autoHideDuration={6000}
+        // onClose={handleClose}
+        message="Note archived"
+        // action={action}
       />
     </Grid>
   );

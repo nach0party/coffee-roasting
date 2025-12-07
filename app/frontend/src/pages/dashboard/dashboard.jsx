@@ -53,6 +53,7 @@ export function CoffeeRoastingDashboard() {
   // TODO remove all the inline styling...
   return (
     <CoffeeRoastingMenu
+      title="Dashboard"
       hasActiveRoasts={activeRoasts.length + pendingRoasts.length > 0}
     >
       <Box sx={{ p: 4 }}>
