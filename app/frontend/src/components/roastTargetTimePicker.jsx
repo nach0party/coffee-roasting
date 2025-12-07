@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
+import Grid from "@mui/material/Grid";
 
 const populateMinutes = () => {
   let newMinute = 10;
@@ -53,48 +54,59 @@ export const RoastTargetTimePicker = ({
       autoComplete="off"
     >
       {minutes && (
-        <div>
-          <TextField
-            disabled={disabled}
-            select
-            label="Minutes"
-            defaultValue={minute}
-            helperText="Please select your minutes to roast"
-          >
-            {minutes.map((possibleMinute) => (
-              <MenuItem
-                onClick={() => {
-                  setMinute(possibleMinute);
-                }}
-                key={possibleMinute}
-                value={possibleMinute}
-                defaultValue={minute}
-              >
-                {possibleMinute}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            disabled={disabled}
-            select
-            label="Seconds"
-            defaultValue={second}
-            helperText="Please select your seconds to roast"
-          >
-            {seconds.map((availableSecond) => (
-              <MenuItem
-                onClick={async () => {
-                  setSecond(availableSecond);
-                }}
-                key={availableSecond}
-                value={availableSecond}
-                defaultValue={second}
-              >
-                {availableSecond}
-              </MenuItem>
-            ))}
-          </TextField>
-        </div>
+        <Grid
+          container
+          spacing={0.5}
+          columnGap={0}
+          sx={{ justifyContent: "flex-start" }}
+        >
+          <Grid size="auto">
+            {/* <Grid size={{ xs: 12, md: 12, lg: 6, xl: 6 }}> */}
+            <TextField
+              disabled={disabled}
+              select
+              label="Minutes"
+              defaultValue={minute}
+              helperText="Please select your minutes to roast"
+            >
+              {minutes.map((possibleMinute) => (
+                <MenuItem
+                  onClick={() => {
+                    setMinute(possibleMinute);
+                  }}
+                  key={possibleMinute}
+                  value={possibleMinute}
+                  defaultValue={minute}
+                >
+                  {possibleMinute}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid size="auto">
+            {/* <Grid size={{ xs: 12, md: 12, lg: 6, xl: 6 }}> */}
+            <TextField
+              disabled={disabled}
+              select
+              label="Seconds"
+              defaultValue={second}
+              helperText="Please select your seconds to roast"
+            >
+              {seconds.map((availableSecond) => (
+                <MenuItem
+                  onClick={async () => {
+                    setSecond(availableSecond);
+                  }}
+                  key={availableSecond}
+                  value={availableSecond}
+                  defaultValue={second}
+                >
+                  {availableSecond}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+        </Grid>
       )}
     </Box>
   );

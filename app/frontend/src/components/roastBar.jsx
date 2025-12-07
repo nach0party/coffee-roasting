@@ -1,53 +1,8 @@
 import { useState, useEffect } from "react";
-// import { compareAsc } from "date-fns";
-import PropTypes from "prop-types";
 import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-
-const LinearProgressWithLabel = (props) => {
-  return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ width: "100%", mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
-      </Box>
-      <Box sx={{ minWidth: 35 }}>
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {`${Math.round(props.value)}%`}
-        </Typography>
-      </Box>
-    </Box>
-  );
-};
-
-LinearProgressWithLabel.propTypes = {
-  /**
-   * The value of the progress indicator for the determinate and buffer variants.
-   * Value between 0 and 100.
-   */
-  value: PropTypes.number.isRequired,
-};
-
-/**
- * Calculates the progress bar, consider using date-fns to help simplify this but this does work right now.
- * @returns
- */
-const calculateProgress = (startedWhen, targetWhen) => {
-  const start = new Date(startedWhen);
-  const target = new Date(targetWhen);
-  const now = new Date();
-
-  const startMs = start.getTime();
-  const targetMs = target.getTime();
-  const currentMs = now.getTime();
-  const totalDuration = targetMs - startMs;
-
-  const elapsedTimeMs = currentMs - startMs;
-  const progressRatio = elapsedTimeMs / totalDuration;
-
-  const percentage = Math.round(progressRatio * 100);
-  return Math.max(0, Math.min(100, percentage));
-};
+import { calculateRoastProgress } from "./utils";
 
 /**
  * TODO this will become a lot more complex, but, this should show what we TRIED to do vs what we did...
@@ -55,20 +10,20 @@ const calculateProgress = (startedWhen, targetWhen) => {
  * @param {*} param0
  * @returns
  */
-export const RoastBar = ({ startedWhen, targetWhen, hide }) => {
+export const RoastBar = ({ startedWhen, targetWhen, endedWhen, hide }) => {
   if (hide) {
     return null;
   }
 
   const [progress, setProgress] = useState(
-    calculateProgress(startedWhen, targetWhen)
+    calculateRoastProgress(startedWhen, targetWhen, endedWhen)
   );
 
   // TODO we should stop calculating IF we have an ended when time, and keep the bar still
   // TODO we can use start / end / target to determine accuracy and closeness of value of the prediction vs what was done
   useEffect(() => {
     const timer = setInterval(() => {
-      setProgress(calculateProgress(startedWhen, targetWhen));
+      setProgress(calculateRoastProgress(startedWhen, targetWhen, endedWhen));
     }, 800);
 
     return () => {
@@ -78,7 +33,16 @@ export const RoastBar = ({ startedWhen, targetWhen, hide }) => {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <LinearProgressWithLabel value={progress} />
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ width: "100%", mr: 1 }}>
+          <LinearProgress variant="determinate" value={progress} />
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            {`${Math.round(progress)}%`}
+          </Typography>
+        </Box>
+      </Box>
     </Box>
   );
 };

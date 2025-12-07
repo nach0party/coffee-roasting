@@ -19,6 +19,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { RoastBar } from "../../components/roastBar";
 import { RoastTargetTimePicker } from "../../components/roastTargetTimePicker";
 import Grid from "@mui/material/Grid";
+import Divider from "@mui/material/Divider";
 
 // TODO if this roast is "completed" we should mark everything as read only
 export const ManageRoast = () => {
@@ -31,7 +32,7 @@ export const ManageRoast = () => {
   // TODO maybe rank them in an object or something to make it more clear / maintainable?
   const allEventTypes = {
     BEGIN: "begin",
-    PAUSE: "pause",
+    NOTE: "note",
     DRY_PHASE: "dry_phase",
     FIRST_CRACK: "first_crack",
     SECOND_CRACK: "second_crack",
@@ -39,7 +40,7 @@ export const ManageRoast = () => {
   };
 
   const availableEventTypes = [
-    "pause",
+    "note",
     "dry_phase",
     "first_crack",
     "second_crack",
@@ -141,8 +142,8 @@ export const ManageRoast = () => {
   const friendlyEventType = (name) => {
     if (name === allEventTypes.BEGIN) {
       return "Begin";
-    } else if (name === allEventTypes.PAUSE) {
-      return "Pause";
+    } else if (name === allEventTypes.NOTE) {
+      return "Note";
     } else if (name === allEventTypes.DRY_PHASE) {
       return "Dry Phase";
     } else if (name === allEventTypes.FIRST_CRACK) {
@@ -257,14 +258,14 @@ export const ManageRoast = () => {
                       </Fragment>
                     }
                   />
-                  <Button
+                  {/* <Button
                     disabled={disableEvents()}
                     onClick={() => {
                       console.log(`clicked ${event.id}`);
                     }}
                   >
                     Edit
-                  </Button>
+                  </Button> */}
                 </ListItem>
               );
             })}
@@ -297,7 +298,26 @@ export const ManageRoast = () => {
             hide={hideRoastBar()}
             startedWhen={roast.started_when}
             targetWhen={roast.target_when}
+            endedWhen={roast.ended_when}
           />
+          {roast.ended_when && (
+            <Grid>
+              <Divider>
+                <Typography>After Roast</Typography>
+              </Divider>
+              <Grid>
+                <TextField />
+              </Grid>
+              <Grid>
+                {/** TODO make text area */}
+                <TextField // disabled={disableForm()}
+                  label="Notes"
+                  defaultValue={""}
+                  helperText={`Do you have any overall notes regarding the roast?`}
+                />
+              </Grid>
+            </Grid>
+          )}
         </>
       )}
       <CoffeRoastingModal
