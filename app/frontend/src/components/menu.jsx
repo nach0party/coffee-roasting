@@ -2,7 +2,7 @@ import { Fragment, useState } from "react";
 import { useNavigate } from "react-router";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
+import Box from "@mui/material/Box"; // Used for the Header Strip
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
@@ -18,21 +18,14 @@ import CoffeRoastingModal from "./modal";
 import Typography from "@mui/material/Typography";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Snackbar from "@mui/material/Snackbar";
+import WidgetsOutlinedIcon from "@mui/icons-material/WidgetsOutlined"; // Using this for the logo
 
 /**
- * This is more or less the default component that should be the main wrapper component.
- * Provides menu functionality and the base of the app in general for navigating around.
- * Can be not used if decided for a bit of flexibility per component.
- *
- * You can query / pass in hasActiveRoasts to prevent start roast (where applicable) from triggering
- * a new roast if needed.
- *
- * TODO there might be a better way to handle that but in the meantime this should be fine.
- * TODO handle this differently in a phone vs web app.
- * TODO change this to be CoffeeRoastingAppWrapper and change the menu to be its own component (but still include it)
+ * Main wrapper component for the app, including the header strip and menu.
  */
 export const CoffeeRoastingMenu = ({
   title,
+  rightSideMenuBar,
   children,
   hasActiveRoasts = false,
 }) => {
@@ -50,16 +43,12 @@ export const CoffeeRoastingMenu = ({
     setOpenMenu(shouldOpen);
   };
 
-  // TODO it wouldn't hurt to maybe write something that maps routes
-  // to the actual routes and some functions to
   const goToDashboard = () => {
     navigate("/");
   };
-
   const goToRawCoffeeBeanLibrary = () => {
     navigate("/bean/library");
   };
-
   const startRoast = () => {
     if (hasActiveRoasts) {
       setOpenRoastWarningModal(true);
@@ -68,55 +57,51 @@ export const CoffeeRoastingMenu = ({
     navigate("/bean/select");
   };
 
-  // const continueRoast = () => {
-  //   navigate("/roast/manage");
-  // };
-
   return (
     <Grid>
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          height: "64px",
+          backgroundColor: theme.palette.background.paper,
+          position: "sticky",
+          top: 0,
+          zIndex: 1100,
+          padding: theme.spacing(0, 3),
+          boxShadow: theme.shadows[1],
+        })}
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={(e) => toggleDrawer(e, true)}
+            edge="start"
+            sx={{ mr: 1 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <WidgetsOutlinedIcon color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" noWrap component="div">
+            {title}
+          </Typography>
+        </Box>
+        {rightSideMenuBar}
+      </Box>
       <Fragment key={"anchor"}>
-        <Button
-          onClick={(e) => {
-            toggleDrawer(e, true);
-          }}
-          // TODO remove all the inline styling
-          // Position the button absolutely within the viewport
-          sx={{
-            // top: 20, // 16px from the top
-            // left: 20, // 16px from the left
-            borderRadius: 1, // Optional: make it a square button
-            marginTop: 2,
-            marginLeft: 2,
-            marginBottom: 2,
-            boxShadow: 3,
-            // height: 40,
-            // width: 40,
-            paddingRight: 5,
-            // paddingLeft: 5,
-          }}
-          aria-label="open drawer"
-          startIcon={<MenuIcon />}
-        >
-          <Typography>{title}</Typography>
-        </Button>
         <Drawer
           anchor={"left"}
           open={openMenu}
-          onClose={(e) => {
-            toggleDrawer(e);
-          }}
+          onClose={(e) => toggleDrawer(e)}
         >
           <Box
-            sx={{
-              width: 300,
-            }}
+            sx={{ width: 300 }}
             role="presentation"
-            onClick={(e) => {
-              toggleDrawer(e);
-            }}
-            onKeyDown={() => {
-              toggleDrawer(e);
-            }}
+            onClick={(e) => toggleDrawer(e)}
+            onKeyDown={(e) => toggleDrawer(e)}
           >
             <List>
               <ListItem onClick={startRoast} key={"roast-menu"} disablePadding>
@@ -156,13 +141,7 @@ export const CoffeeRoastingMenu = ({
               </ListItem>
             </List>
             <List>
-              <ListItem
-                onClick={() => {
-                  console.log("eventually we go to settings here");
-                }}
-                key={"settings"}
-                disablePadding
-              >
+              <ListItem key={"settings"} disablePadding>
                 <ListItemButton>
                   <ListItemIcon>
                     <SettingsIcon />
@@ -174,50 +153,7 @@ export const CoffeeRoastingMenu = ({
           </Box>
         </Drawer>
       </Fragment>
-      <Grid sx={{ padding: "10px" }}>{children}</Grid>
-
-      <CoffeRoastingModal
-        open={openRoastWarningModal}
-        setOpen={setOpenRoastWarningModal}
-        title="Active Roast: Warning"
-        content={
-          <>
-            <Typography gutterBottom>
-              You have active roasts, are you sure you would like to proceed and
-              start another roast?
-            </Typography>
-          </>
-        }
-        actions={
-          <>
-            <Button
-              autoFocus
-              onClick={() => {
-                setOpenRoastWarningModal(false);
-              }}
-            >
-              Close
-            </Button>
-            <Button
-              autoFocus
-              onClick={() => {
-                setOpenRoastWarningModal(false);
-                navigate("/bean/select");
-              }}
-            >
-              Continue
-            </Button>
-          </>
-        }
-      />
-      {/** This allows for full customization */}
-      <Snackbar
-        open={true}
-        autoHideDuration={6000}
-        // onClose={handleClose}
-        message="Note archived"
-        // action={action}
-      />
+      <Grid sx={{ padding: "10px", marginTop: "10px" }}>{children}</Grid>
     </Grid>
   );
 };

@@ -7,6 +7,10 @@ import { RawBeanAvatar } from "../../../components/rawBeanAvatar/rawBeanAvatar";
 import Stack from "@mui/material/Stack";
 import { ManageBean } from "../manage";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from "@mui/icons-material/Search";
 
 // this is repeat of BeanSelection logic, should we centralize some generic functions?
 export const BeanLibrary = () => {
@@ -36,7 +40,27 @@ export const BeanLibrary = () => {
   };
 
   return (
-    <CoffeeRoastingMenu title={"Raw Coffee Bean Library"}>
+    <CoffeeRoastingMenu
+      title={"Library"}
+      rightSideMenuBar={
+        <TextField
+          onChange={async (e) => {
+            await getBeans(e.target.value);
+          }}
+          sx={{ pl: 1, pb: 3, cursor: "pointer" }}
+          label="Search"
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+      }
+    >
       <Grid>
         <Grid container>
           <Stack
