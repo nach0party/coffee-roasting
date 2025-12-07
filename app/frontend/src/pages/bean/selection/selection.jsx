@@ -60,7 +60,19 @@ export const BeanSelection = () => {
   // TODO add some bean popup / drawer (would be nice / useful)
 
   return (
-    <CoffeeRoastingMenu title="Coffee Bean Selection">
+    <CoffeeRoastingMenu
+      title="Coffee Bean Selection"
+      rightSideMenuBar={
+        <Button
+          disabled={!selectedBean}
+          onClick={async () => {
+            await startRoast();
+          }}
+        >
+          Start Roast
+        </Button>
+      }
+    >
       {!loading && (
         <>
           <TextField
@@ -79,14 +91,6 @@ export const BeanSelection = () => {
               },
             }}
           />
-          <Button
-            disabled={!selectedBean}
-            onClick={async () => {
-              await startRoast();
-            }}
-          >
-            Start Roast
-          </Button>
           <Grid container spacing={{ xs: 2, md: 3, lg: 4, xl: 4 }}>
             {existingBeans.map((bean) => {
               const isSelected = selectedBean === bean.id;

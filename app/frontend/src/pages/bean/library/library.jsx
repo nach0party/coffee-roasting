@@ -29,13 +29,16 @@ export const BeanLibrary = () => {
   useEffect(() => {
     const initialize = async () => {
       await getBeans();
-      setLoading(false);
     };
 
     initialize();
   }, []);
 
   const selectBean = async (id) => {
+    if (id === selectedBean) {
+      setSelectedBean();
+      return;
+    }
     setSelectedBean(id);
   };
 
@@ -44,10 +47,11 @@ export const BeanLibrary = () => {
       title={"Library"}
       rightSideMenuBar={
         <TextField
+          size="small"
           onChange={async (e) => {
             await getBeans(e.target.value);
           }}
-          sx={{ pl: 1, pb: 3, cursor: "pointer" }}
+          sx={{ cursor: "pointer", width: "75%" }}
           label="Search"
           slotProps={{
             input: {
@@ -67,6 +71,9 @@ export const BeanLibrary = () => {
             direction="row"
             spacing={2}
             sx={{
+              // Enforces the area to remain if there's no data
+              minHeight: 225,
+              maxHeight: 225,
               overflowX: "auto",
               width: "100%",
               paddingY: 2,
@@ -75,10 +82,14 @@ export const BeanLibrary = () => {
               marginBottom: 0,
             }}
           >
+            {existingBeans.length === 0 && (
+              <Typography variant="h5">No Beans Match This Search</Typography>
+            )}
             {existingBeans.map((bean) => {
               const isSelected = selectedBean === bean.id;
               return (
                 <RawBeanAvatar
+                  key={bean.id}
                   sx={{ width: 125, height: 125 }}
                   name={bean.name}
                   onClick={() => {

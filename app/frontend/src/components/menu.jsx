@@ -19,6 +19,7 @@ import Typography from "@mui/material/Typography";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Snackbar from "@mui/material/Snackbar";
 import WidgetsOutlinedIcon from "@mui/icons-material/WidgetsOutlined"; // Using this for the logo
+import Stack from "@mui/material/Stack";
 
 /**
  * Main wrapper component for the app, including the header strip and menu.
@@ -89,7 +90,22 @@ export const CoffeeRoastingMenu = ({
             {title}
           </Typography>
         </Box>
-        {rightSideMenuBar}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "right",
+            alignItems: "center",
+            height: "100%",
+            paddingY: 0,
+            marginY: 0,
+            "& > *": {
+              marginTop: 0,
+              marginBottom: 0,
+            },
+          }}
+        >
+          {rightSideMenuBar}
+        </Box>
       </Box>
       <Fragment key={"anchor"}>
         <Drawer
