@@ -10,7 +10,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 // Internal app routes
 import { ManageBean } from "./pages/bean/manage.jsx";
 import { CoffeeRoastingDashboard } from "./pages/dashboard/dashboard.jsx";
-import { BeanSelection } from "./pages/bean/selection.jsx";
+import { BeanSelection } from "./pages/bean/selection/selection.jsx";
 import { ManageRoast } from "./pages/roast/manage.jsx";
 
 // TODO consider changing / organizing the paths, this works for now but what's the best way to organize some of these?

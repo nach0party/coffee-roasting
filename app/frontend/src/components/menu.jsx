@@ -1,7 +1,5 @@
-import React, { Fragment, useState } from "react";
-
+import { Fragment, useState } from "react";
 import { useNavigate } from "react-router";
-
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -31,7 +29,11 @@ import Typography from "@mui/material/Typography";
  * TODO handle this differently in a phone vs web app.
  * TODO change this to be CoffeeRoastingAppWrapper and change the menu to be its own component (but still include it)
  */
-export const CoffeeRoastingMenu = ({ children, hasActiveRoasts = false }) => {
+export const CoffeeRoastingMenu = ({
+  title,
+  children,
+  hasActiveRoasts = false,
+}) => {
   let navigate = useNavigate();
   const [openMenu, setOpenMenu] = useState(false);
   const [openRoastWarningModal, setOpenRoastWarningModal] = useState(false);
@@ -81,15 +83,15 @@ export const CoffeeRoastingMenu = ({ children, hasActiveRoasts = false }) => {
             marginLeft: 2,
             marginBottom: 2,
             boxShadow: 3,
-            height: 40,
-            width: 40,
+            // height: 40,
+            // width: 40,
             paddingRight: 5,
-            paddingLeft: 5,
+            // paddingLeft: 5,
           }}
           aria-label="open drawer"
           startIcon={<MenuIcon />}
         >
-          Menu
+          <Typography>{title}</Typography>
         </Button>
         <Drawer
           anchor={"left"}

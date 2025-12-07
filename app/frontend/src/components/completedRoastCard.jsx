@@ -35,7 +35,7 @@ export const CompletedRoastCard = ({ roast }) => {
         <CardMedia
           component="img"
           height={140}
-          image="/public/coffee-being-roasted.jpg"
+          image="/coffee-being-roasted.jpg"
         />
       </CardActionArea>
       <CardContent>

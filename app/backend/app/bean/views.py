@@ -11,7 +11,15 @@ class BeansViewSet(CoffeeRoastingModelViewSet):
     of beans that can be roasted.
     """
 
-    queryset = Bean.objects.all()
+    queryset = Bean.objects.select_related("origin").all()
+    search_fields = [
+        "name",
+        "processing",
+        "sca_letter_grade",
+        "origin__country",
+        "origin__region",
+        "origin__municipality",
+    ]
 
     def get_serializer_class(self) -> Type[ModelSerializer]:
         if self.action in ["retrieve", "list"]:

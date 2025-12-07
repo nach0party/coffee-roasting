@@ -3,12 +3,10 @@ import { useNavigate, useParams } from "react-router";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
@@ -18,6 +16,10 @@ import toast from "react-hot-toast";
 import { CoffeeRoastingMenu } from "../../components/menu";
 import CoffeRoastingModal from "../../components/modal";
 import MenuItem from "@mui/material/MenuItem";
+import { RoastBar } from "../../components/roastBar";
+import { RoastTargetTimePicker } from "../../components/roastTargetTimePicker";
+import Grid from "@mui/material/Grid";
+import Divider from "@mui/material/Divider";
 
 // TODO if this roast is "completed" we should mark everything as read only
 export const ManageRoast = () => {
@@ -30,7 +32,7 @@ export const ManageRoast = () => {
   // TODO maybe rank them in an object or something to make it more clear / maintainable?
   const allEventTypes = {
     BEGIN: "begin",
-    PAUSE: "pause",
+    NOTE: "note",
     DRY_PHASE: "dry_phase",
     FIRST_CRACK: "first_crack",
     SECOND_CRACK: "second_crack",
@@ -38,7 +40,7 @@ export const ManageRoast = () => {
   };
 
   const availableEventTypes = [
-    "pause",
+    "note",
     "dry_phase",
     "first_crack",
     "second_crack",
@@ -54,6 +56,11 @@ export const ManageRoast = () => {
   );
   const [openDeleteRoastModal, setOpenDeleteRoastModal] = useState(false);
 
+  // We use strings to handle the 00 and also it concatenates all
+  // into a string to be passed to the API, easier this way.
+  const [targetMinute, setTargetMinute] = useState("13");
+  const [targetSecond, setTargetSecond] = useState("00");
+
   const getRoast = async () => {
     const response = await api.roasts.get(id);
     setRoast(response.data);
@@ -68,9 +75,12 @@ export const ManageRoast = () => {
     initialize();
   }, []);
 
+  // TOOD make less api calls if needed
   const beginRoast = async () => {
-    // setLoading(true);
     try {
+      await api.roasts.partialUpdate(id, {
+        target_duration: `${targetMinute}:${targetSecond}`,
+      });
       await api.roasts.beginRoast(id);
       await getRoast();
       toast.success("Roast has begun");
@@ -78,23 +88,18 @@ export const ManageRoast = () => {
       // TODO setup a service for using toast...
       toast.error("There was an error");
       console.error(error);
-    } finally {
-      // setLoading(false);
     }
   };
 
   // I hate making 2 api calls, however, for some reason setRoast on the
   // response.data of the start / end endpoints did not refresh the data...
   const endRoast = async () => {
-    // setLoading(true);
     try {
       await api.roasts.endRoast(id);
       await getRoast();
     } catch (error) {
       toast.error("There was an error");
       console.error(error);
-    } finally {
-      // setLoading(false);
     }
   };
 
@@ -137,8 +142,8 @@ export const ManageRoast = () => {
   const friendlyEventType = (name) => {
     if (name === allEventTypes.BEGIN) {
       return "Begin";
-    } else if (name === allEventTypes.PAUSE) {
-      return "Pause";
+    } else if (name === allEventTypes.NOTE) {
+      return "Note";
     } else if (name === allEventTypes.DRY_PHASE) {
       return "Dry Phase";
     } else if (name === allEventTypes.FIRST_CRACK) {
@@ -151,7 +156,13 @@ export const ManageRoast = () => {
   };
 
   const disableStartRoast = () => {
-    if (roast.started_when) {
+    if (
+      roast.started_when ||
+      targetMinute === null ||
+      targetMinute === undefined ||
+      targetSecond === null ||
+      targetSecond === undefined
+    ) {
       return true;
     }
     return false;
@@ -174,17 +185,39 @@ export const ManageRoast = () => {
     return false;
   };
 
-  console.log(roast, "roast");
-  console.log(currentEvent, "currentEvent");
-  console.log(selectedEventType, "selectedEventType");
+  const disableTargets = () => {
+    if (roast.started_when) {
+      return true;
+    }
+    return false;
+  };
 
-  // https://mui.com/x/react-charts/ definitely want to leverage this
+  const hideRoastBar = () => {
+    if (!roast.started_when) {
+      return true;
+    }
+    return false;
+  };
+
+  // TODO need to set a target temperature!
   // TODO need a bean component
-  // TODO need roast events / add / edit events
   return (
     <CoffeeRoastingMenu>
       {!loading && (
         <>
+          {/** TODO consider hiding the targets and changing around the UI once the roast is started as
+           * a less interactive but more display driven roasting app.
+           */}
+          <Typography>
+            This is a Target, once the roast is started the target is locked in.
+          </Typography>
+          <RoastTargetTimePicker
+            disabled={disableTargets()}
+            minute={targetMinute}
+            setMinute={setTargetMinute}
+            second={targetSecond}
+            setSecond={setTargetSecond}
+          />
           <Button
             onClick={async () => {
               await beginRoast();
@@ -225,14 +258,14 @@ export const ManageRoast = () => {
                       </Fragment>
                     }
                   />
-                  <Button
+                  {/* <Button
                     disabled={disableEvents()}
                     onClick={() => {
                       console.log(`clicked ${event.id}`);
                     }}
                   >
                     Edit
-                  </Button>
+                  </Button> */}
                 </ListItem>
               );
             })}
@@ -261,6 +294,30 @@ export const ManageRoast = () => {
           >
             Delete Roast
           </Button>
+          <RoastBar
+            hide={hideRoastBar()}
+            startedWhen={roast.started_when}
+            targetWhen={roast.target_when}
+            endedWhen={roast.ended_when}
+          />
+          {roast.ended_when && (
+            <Grid>
+              <Divider>
+                <Typography>After Roast</Typography>
+              </Divider>
+              <Grid>
+                <TextField />
+              </Grid>
+              <Grid>
+                {/** TODO make text area */}
+                <TextField // disabled={disableForm()}
+                  label="Notes"
+                  defaultValue={""}
+                  helperText={`Do you have any overall notes regarding the roast?`}
+                />
+              </Grid>
+            </Grid>
+          )}
         </>
       )}
       <CoffeRoastingModal

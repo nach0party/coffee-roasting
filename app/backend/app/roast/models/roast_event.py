@@ -22,7 +22,7 @@ class RoastEvent(TimeStampMixin):
         """
 
         BEGIN = "begin"
-        PAUSE = "pause"
+        NOTE = "note"
         DRY_PHASE = "dry_phase"
         FIRST_CRACK = "first_crack"
         SECOND_CRACK = "second_crack"

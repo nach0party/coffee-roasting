@@ -1,4 +1,4 @@
-from typing import Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING, Iterable
 from uuid import uuid4, UUID
 from django.db import models, transaction
 from app.shared.mixins import TimeStampMixin
@@ -23,9 +23,20 @@ class Roast(TimeStampMixin):
         on_delete=models.DO_NOTHING,
         related_name="roasts",
     )
+
     # we separate start / end for sanities sake. We manage the roast but once they actually "start it"
     started_when = models.DateTimeField(null=True, blank=True)
     ended_when = models.DateTimeField(null=True, blank=True)
+    target_duration = models.DurationField(
+        null=True,
+        blank=True,
+        help_text="This is a timestamp to represent the target amount of time from start to end (when they would like to stop the roast)",
+    )
+    target_when = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="In correspondance with target_duration we just want the end time in plain timestamp format without having to do a bunch of math.  Easier to do it server side",
+    )
     notes = models.TextField(
         blank=True,
         null=True,
@@ -35,6 +46,18 @@ class Roast(TimeStampMixin):
     class Meta:
         db_table = "roast"
         ordering = ["-created_when"]
+
+    def save(
+        self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: str = None,
+        update_fields: Iterable[str] = None,
+    ):
+        # set the target time based on the duration selected
+        if self.started_when and self.target_duration:
+            self.target_when = self.started_when + self.target_duration
+        return super().save(force_insert, force_update, using, update_fields)
 
     @transaction.atomic()
     def delete(self, using: Any = None, keep_parents: bool = False) -> tuple[int, dict[str, int]]:

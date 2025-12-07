@@ -22,9 +22,6 @@ class ApiClient {
             const response = await request
             return response
         } catch (error) {
-            // TODO may want to consider transforming this into a more useful 
-            // error message (or multiple error messages) that we can bubble up
-            console.error(error)
             throw error
         }
     }
