@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
  */
 export const RawBeanAvatar = ({ name, onClick, isSelected }) => {
   return (
-    <Grid>
+    <>
       <Avatar
         onClick={async () => {
           await onClick();
@@ -42,6 +42,6 @@ export const RawBeanAvatar = ({ name, onClick, isSelected }) => {
       <Typography sx={{}} variant="overline">
         {name}
       </Typography>
-    </Grid>
+    </>
   );
 };

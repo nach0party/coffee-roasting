@@ -28,7 +28,6 @@ export const BeanSelection = () => {
     if (search) {
       params.search = search;
     }
-    console.log(params, "params");
     const response = await api.beans.list(params);
     setExistingBeans(response.data.results);
   });
