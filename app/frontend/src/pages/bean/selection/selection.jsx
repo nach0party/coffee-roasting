@@ -1,40 +1,33 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
+
 import Grid from "@mui/material/Grid";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import Radio from "@mui/material/Radio";
-import api from "../../../api/coffee-roasting-api";
-import { CoffeeRoastingMenu } from "../../../components/menu";
-import { CoffeeTableContainer } from "../../../components/styled/table-container";
-import "./selection.css";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 
+import { CoffeeRoastingMenu } from "../../../components/menu";
+import { RawBeanAvatar } from "../../../components/rawBeanAvatar/rawBeanAvatar";
+import api from "../../../api/coffee-roasting-api";
+import "./selection.css";
+
+/**
+ * Component for selecting beans out of the bean library.
+ * @returns
+ */
 export const BeanSelection = () => {
   let navigate = useNavigate();
   const [existingBeans, setExistingBeans] = useState([]);
   const [selectedBean, setSelectedBean] = useState();
-  // const [search, setSearch] = useState()
   const [loading, setLoading] = useState(true);
 
-  // TODO just a reminder, set some query params or alter queryset so it only pulls beans per user...
   const getBeans = useCallback(async (search) => {
     const params = {};
     if (search) {
       params.search = search;
     }
-    console.log(params, "params");
     const response = await api.beans.list(params);
     setExistingBeans(response.data.results);
   });
@@ -63,20 +56,30 @@ export const BeanSelection = () => {
   };
 
   // TODO add pagination
-  // TODO add searching
   // TODO add extra bean creation
-  // TODO add unselection?
   // TODO add some bean popup / drawer (would be nice / useful)
 
   return (
-    <CoffeeRoastingMenu title="Raw Coffee Bean Library">
+    <CoffeeRoastingMenu
+      title="Coffee Bean Selection"
+      rightSideMenuBar={
+        <Button
+          disabled={!selectedBean}
+          onClick={async () => {
+            await startRoast();
+          }}
+        >
+          Start Roast
+        </Button>
+      }
+    >
       {!loading && (
         <>
           <TextField
             onChange={async (e) => {
               await getBeans(e.target.value);
             }}
-            sx={{ pl: 1, pb: 3 }}
+            sx={{ pl: 1, pb: 3, cursor: "pointer" }}
             label="Search"
             slotProps={{
               input: {
@@ -88,19 +91,21 @@ export const BeanSelection = () => {
               },
             }}
           />
-          <Grid container spacing={{ xs: 2, md: 3, lg: 4 }}>
-            {existingBeans.map((bean) => (
-              <Grid key={bean.id}>
-                <Box sx={{ textAlign: "center" }}>
-                  <Avatar
-                    className={"coffee-grid"}
-                    sx={{ width: 175, height: 175 }}
-                    src="/coffee-being-roasted.jpg"
+          <Grid container spacing={{ xs: 2, md: 3, lg: 4, xl: 4 }}>
+            {existingBeans.map((bean) => {
+              const isSelected = selectedBean === bean.id;
+              return (
+                <Grid key={bean.id}>
+                  <RawBeanAvatar
+                    name={bean.name}
+                    onClick={() => {
+                      selectBean(bean.id);
+                    }}
+                    isSelected={isSelected}
                   />
-                  <p>{bean.name}</p>
-                </Box>
-              </Grid>
-            ))}
+                </Grid>
+              );
+            })}
           </Grid>
         </>
       )}
