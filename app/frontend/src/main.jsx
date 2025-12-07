@@ -8,7 +8,7 @@ import { coffeeTheme, deepBlueTheme, analyticsDarkTheme } from "./theme.js";
 import CssBaseline from "@mui/material/CssBaseline";
 
 // Internal app routes
-import { ManageBean } from "./pages/bean/manage.jsx";
+// import { ManageBean } from "./pages/bean/manage.jsx";
 import { CoffeeRoastingDashboard } from "./pages/dashboard/dashboard.jsx";
 import { BeanSelection } from "./pages/bean/selection/selection.jsx";
 import { ManageRoast } from "./pages/roast/manage.jsx";
@@ -22,8 +22,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <CoffeeRoastingDashboard />,
   },
-  { path: "/bean/add", element: <ManageBean /> },
-  { path: "/bean/:id", element: <ManageBean /> },
   {
     path: "/bean/select",
     element: <BeanSelection />,

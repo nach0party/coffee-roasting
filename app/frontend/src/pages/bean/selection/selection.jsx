@@ -92,15 +92,13 @@ export const BeanSelection = () => {
               const isSelected = selectedBean === bean.id;
               return (
                 <Grid key={bean.id}>
-                  <Box sx={{ textAlign: "center" }}>
-                    <RawBeanAvatar
-                      name={bean.name}
-                      onClick={() => {
-                        selectBean(bean.id);
-                      }}
-                      isSelected={isSelected}
-                    />
-                  </Box>
+                  <RawBeanAvatar
+                    name={bean.name}
+                    onClick={() => {
+                      selectBean(bean.id);
+                    }}
+                    isSelected={isSelected}
+                  />
                 </Grid>
               );
             })}

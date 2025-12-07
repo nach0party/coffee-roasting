@@ -1,18 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate, useParams } from "react-router";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import { CoffeeRoastingMenu } from "../../components/menu";
 import api from "../../api/coffee-roasting-api";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 
 // TODO make the coffee roasting menu provide wrapper / padding / productionize the styling!
 // TODO remove inline styling obviously...
-export const ManageBean = () => {
-  let navigate = useNavigate();
-  const params = useParams();
-  const id = params.id;
+export const ManageBean = ({ id }) => {
   const availableProcessing = ["washed", "natural", "honey"]; // TCDO consider pulling from API
   const gradeRange = {
     MIN: 0,
@@ -100,7 +97,7 @@ export const ManageBean = () => {
         sca_grade: grade,
         processing: processing,
       });
-      navigate("/bean/select");
+      // navigate("/bean/select");
     } finally {
       setSaving(false);
     }
@@ -111,12 +108,10 @@ export const ManageBean = () => {
   };
 
   return (
-    <CoffeeRoastingMenu title="Bean Management">
-      <Grid sx={{ p: 5 }}>
-        {/**
-         * TODO somewhat of a code smell but I wonder if name isn't really a great implementation right now...
-         */}
-        <Grid>
+    <Grid sx={{ border: 1, borderColor: "darkgray", borderRadius: 1, p: 2 }}>
+      <Typography sx={{ mb: 2, ml: 1 }}>Bean</Typography>
+      <Grid container size={12} spacing={2}>
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
             disabled={disableForm()}
             label="Name"
@@ -130,11 +125,13 @@ export const ManageBean = () => {
               handleNameChange(event.target.value);
             }}
             helperText="Provide the name of the Bean"
+            size="small"
+            sx={{ width: "100%" }}
           >
             {name}
           </TextField>
         </Grid>
-        <Grid>
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
             disabled={disableForm()}
             error={hasErrors("grade")}
@@ -144,17 +141,21 @@ export const ManageBean = () => {
               handleGradeChange(event.target.value);
             }}
             helperText={`Provide the grade of the bean, must be a number between ${gradeRange.MIN} and ${gradeRange.MAX}`}
+            size="small"
+            sx={{ width: "100%" }}
           >
             {grade}
           </TextField>
         </Grid>
-        <Grid>
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
             disabled={disableForm()}
             select
-            label="Origin"
+            label="Processing"
             defaultValue={availableProcessing[0]}
             helperText={`Provide the processing method`}
+            size="small"
+            sx={{ width: "100%" }}
           >
             {availableProcessing.map((process, index) => {
               return (
@@ -171,7 +172,14 @@ export const ManageBean = () => {
             })}
           </TextField>
         </Grid>
-        <Grid>
+        <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+          <Divider />
+          <Typography sx={{ mt: 2 }}>Origin</Typography>
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>test</Grid>
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>test</Grid>
+        <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
           <Button
             disabled={disableForm()}
             onClick={async () => {
@@ -182,6 +190,6 @@ export const ManageBean = () => {
           </Button>
         </Grid>
       </Grid>
-    </CoffeeRoastingMenu>
+    </Grid>
   );
 };
