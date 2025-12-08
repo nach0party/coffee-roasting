@@ -14,4 +14,8 @@ export class Beans extends Resource {
         return await this.client.post(`beans`, data)
     }
 
+    partialUpdate = async (id, data) => {
+        return await this.client.patch(`beans/${id}`, data)
+    }
+
 }
