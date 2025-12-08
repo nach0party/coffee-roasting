@@ -51,7 +51,6 @@ export const BeanSelection = () => {
       navigate(`/roast/${response.data.id}`);
     } catch (error) {
       console.error(error);
-    } finally {
     }
   };
 

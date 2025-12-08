@@ -50,7 +50,7 @@ export const CoffeeRoastingMenu = ({
   const goToRawCoffeeBeanLibrary = () => {
     navigate("/bean/library");
   };
-  const startRoast = () => {
+  const startRoast = async () => {
     if (hasActiveRoasts) {
       setOpenRoastWarningModal(true);
       return;
@@ -120,7 +120,13 @@ export const CoffeeRoastingMenu = ({
             onKeyDown={(e) => toggleDrawer(e)}
           >
             <List>
-              <ListItem onClick={startRoast} key={"roast-menu"} disablePadding>
+              <ListItem
+                onClick={async () => {
+                  await startRoast();
+                }}
+                key={"roast-menu"}
+                disablePadding
+              >
                 <ListItemButton>
                   <ListItemIcon>
                     <LocalFireDepartmentIcon />
@@ -170,6 +176,40 @@ export const CoffeeRoastingMenu = ({
         </Drawer>
       </Fragment>
       <Grid sx={{ padding: "10px", marginTop: "10px" }}>{children}</Grid>
+      <CoffeRoastingModal
+        open={openRoastWarningModal}
+        setOpen={setOpenRoastWarningModal}
+        title="Active Roast: Warning"
+        content={
+          <>
+            <Typography gutterBottom>
+              You have active roasts, are you sure you would like to proceed and
+              start another roast?
+            </Typography>
+          </>
+        }
+        actions={
+          <>
+            <Button
+              autoFocus
+              onClick={() => {
+                setOpenRoastWarningModal(false);
+              }}
+            >
+              Close
+            </Button>
+            <Button
+              autoFocus
+              onClick={() => {
+                setOpenRoastWarningModal(false);
+                navigate("/bean/select");
+              }}
+            >
+              Continue
+            </Button>
+          </>
+        }
+      />
     </Grid>
   );
 };

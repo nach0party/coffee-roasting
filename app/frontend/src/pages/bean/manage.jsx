@@ -7,7 +7,15 @@ import api from "../../api/coffee-roasting-api";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 
-export const ManageBean = ({ id }) => {
+/**
+ * Does all CRUD on behalf of a bean.  If an ID is provided we go into maintenance
+ * mode for the component where we update and / or offer deletion if needed.
+ *
+ * @param {*} param0
+ * @returns
+ */
+export const ManageBean = ({ id, setId }) => {
+  console.log(id, "id");
   const availableProcessing = ["washed", "natural", "honey"]; // TODO consider pulling from API
   const [availableCountries, setAvailableCountries] = useState([]);
   const gradeRange = {
@@ -18,19 +26,30 @@ export const ManageBean = ({ id }) => {
   const [name, setName] = useState();
   const [grade, setGrade] = useState();
   const [errors, setErrors] = useState({});
+
   // Controls the Origin object fields that are savable
+  const [originId, setOriginId] = useState();
+  const [country, setCountry] = useState();
   const [region, setRegion] = useState("");
   const [municipality, setMunicipality] = useState("");
+
   // Flow / state
   const [processing, setProcessing] = useState(availableProcessing[0]);
   const [saving, setSaving] = useState(false);
 
-  const getAndSetBean = async () => {
+  const getAndSetBeanAndOrigin = async () => {
     const response = await api.beans.get(id);
-    setName(response.data.name);
-    setGrade(response.data.sca_grade);
+    setName(response.data.name || "");
+    setGrade(response.data.sca_grade || "");
     setProcessing(response.data.processing);
+    if (response.data.origin) {
+      setOriginId(response.data.origin.id);
+      setRegion(response.data.origin.region);
+      setMunicipality(response.data.origin.municipality);
+    }
   };
+
+  console.log(originId, "originId");
 
   const getCountries = async () => {
     const response = await api.origins.countries();
@@ -39,16 +58,30 @@ export const ManageBean = ({ id }) => {
 
   useEffect(() => {
     const initialize = async () => {
-      if (id) {
-        await getAndSetBean();
-      }
       await getCountries();
     };
     initialize();
   }, []);
 
+  useEffect(() => {
+    const reloadData = async () => {
+      if (id) {
+        await getAndSetBeanAndOrigin();
+      }
+    };
+    reloadData();
+  }, [id]);
+
   const handleNameChange = (newValue) => {
     setName(newValue);
+  };
+
+  const handleRegionChange = (newValue) => {
+    setRegion(newValue);
+  };
+
+  const handleMunicipalityChange = (newValue) => {
+    setMunicipality(newValue);
   };
 
   // TODO make sure grade if left blank is technically null / undefined
@@ -102,12 +135,34 @@ export const ManageBean = ({ id }) => {
   const handleSave = async () => {
     try {
       setSaving(true);
-      const response = await api.beans.create({
+
+      const beanPayload = {
         name: name,
-        sca_grade: grade,
+        sca_grade: grade || null,
         processing: processing,
-      });
-      // navigate("/bean/select");
+      };
+
+      if (id) {
+        // TODO we should track to make sure we're not making extra origins, but, this should work for now
+        // TODO functionalize the origin code
+        // TODO consider encapsulating the origin code...
+        const response = await api.beans.partialUpdate(id, beanPayload);
+        let originId = response.data.origin;
+        if (country || region || municipality) {
+          const originPayload = {
+            country: country,
+            region: region,
+            municipality: municipality,
+          };
+          if (!originId) {
+            await api.origins.create(originPayload);
+          } else {
+            await api.origins.partialUpdatei(originId, originPayload);
+          }
+        }
+      } else {
+        await api.beans.create(beanPayload);
+      }
     } finally {
       setSaving(false);
     }
@@ -133,6 +188,7 @@ export const ManageBean = ({ id }) => {
             disabled={disableForm()}
             label="Name"
             value={name}
+            // FIXME so when the data gets loaded in it automatically moves
             slotProps={{
               inputLabel: {
                 shrink: true,
@@ -153,7 +209,12 @@ export const ManageBean = ({ id }) => {
             disabled={disableForm()}
             error={hasErrors("grade")}
             label="Grade"
-            defaultValue={70}
+            value={grade}
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              },
+            }}
             onChange={(event) => {
               handleGradeChange(event.target.value);
             }}
@@ -222,15 +283,15 @@ export const ManageBean = ({ id }) => {
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
             disabled={disableForm()}
-            label="Name"
-            value={name}
+            label="Region"
+            value={region}
             slotProps={{
               inputLabel: {
                 shrink: true,
               },
             }}
             onChange={(event) => {
-              handleNameChange(event.target.value);
+              handleRegionChange(event.target.value);
             }}
             helperText="Provide The Region Of the Bean"
             size="small"
@@ -242,17 +303,17 @@ export const ManageBean = ({ id }) => {
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
             disabled={disableForm()}
-            label="Name"
-            value={name}
+            label="Municipality"
+            value={municipality}
             slotProps={{
               inputLabel: {
                 shrink: true,
               },
             }}
             onChange={(event) => {
-              handleNameChange(event.target.value);
+              handleMunicipalityChange(event.target.value);
             }}
-            helperText="Provide the name of the Bean"
+            helperText="Provide The Municipality Of The Bean"
             size="small"
             sx={{ width: "100%" }}
           >

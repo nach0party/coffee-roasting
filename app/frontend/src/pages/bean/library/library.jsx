@@ -118,7 +118,7 @@ export const BeanLibrary = () => {
               size={{ xs: 12, sm: 12, lg: 8, xl: 8 }}
               sx={{ borderRadius: 5, borderColor: "white", p: 2 }}
             >
-              <ManageBean />
+              <ManageBean id={selectedBean} setId={setSelectedBean} />
             </Grid>
           </Grid>
           {/* </Stack> */}
