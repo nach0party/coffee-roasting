@@ -129,6 +129,16 @@ export const ManageBean = ({ id, setId }) => {
     return false;
   };
 
+  const setNewBeanState = () => {
+    setId();
+    setName("");
+    setGrade("");
+    setProcessing(availableProcessing[0]);
+    setCountry();
+    setRegion("");
+    setMunicipality("");
+  };
+
   /**
    * If we have the id, create a new one, if not, then we're updating...
    */
@@ -250,6 +260,16 @@ export const ManageBean = ({ id, setId }) => {
             })}
           </TextField>
         </Grid>
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
+          <TextField
+            disabled={true}
+            label="Origin"
+            defaultValue={"Ethiopia"}
+            helperText={`This is the Origin of the bean in question`}
+            size="small"
+            sx={{ width: "100%" }}
+          />
+        </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
           <Divider />
           <Typography sx={{ mt: 2 }}>Origin</Typography>
@@ -322,12 +342,19 @@ export const ManageBean = ({ id, setId }) => {
         </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
           <Button
-            disabled={disableForm()}
-            onClick={async () => {
-              await handleSave();
+            onClick={() => {
+              setNewBeanState();
             }}
           >
-            Save
+            New Bean
+          </Button>
+          <Button
+            disabled={!id}
+            onClick={() => {
+              setNewBeanState();
+            }}
+          >
+            Edit Current Bean
           </Button>
         </Grid>
       </Grid>
