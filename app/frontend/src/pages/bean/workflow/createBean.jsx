@@ -1,6 +1,5 @@
 import { useEffect, useState, useImperativeHandle } from "react";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import api from "../../../api/coffee-roasting-api";
@@ -10,11 +9,9 @@ const gradeRange = {
   MAX: 100,
 };
 
-// TODO consider pulling from API
 const availableProcessing = ["washed", "natural", "honey"];
 
 /**
- * TODO should this just be manageBean...
  * @param {*} param0
  */
 export const CreateBean = ({ beanId, setDisableNextStep, ref }) => {

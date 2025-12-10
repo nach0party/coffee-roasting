@@ -8,7 +8,6 @@ import { coffeeTheme, deepBlueTheme, analyticsDarkTheme } from "./theme.js";
 import CssBaseline from "@mui/material/CssBaseline";
 
 // Internal app routes
-// import { ManageBean } from "./pages/bean/manage.jsx";
 import { CoffeeRoastingDashboard } from "./pages/dashboard/dashboard.jsx";
 import { BeanSelection } from "./pages/bean/selection/selection.jsx";
 import { ManageRoast } from "./pages/roast/manage.jsx";
