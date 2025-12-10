@@ -34,6 +34,8 @@ export const BeanLibrary = () => {
     initialize();
   }, []);
 
+  // TODO skeleton for loading on first attempt
+  // auto select first bean in the menu...
   const selectBean = async (id) => {
     if (id === selectedBean) {
       setSelectedBean();
@@ -101,7 +103,12 @@ export const BeanLibrary = () => {
             })}
           </Stack>
         </Grid>
-        <Grid sx={{ mt: 2, borderRadius: 1 }}>
+        <Grid
+          sx={{ mt: 2, borderRadius: 1 }}
+          // onClick={() => {
+          //   deselectBean();
+          // }}
+        >
           {/* <Stack direction="row"> */}
           <Grid container size={{ lg: 12 }}>
             <Grid size={{ xs: 12, sm: 12, lg: 4, xl: 4 }} sx={{ p: 2 }}>

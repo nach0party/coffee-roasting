@@ -6,6 +6,13 @@ import MenuItem from "@mui/material/MenuItem";
 import api from "../../api/coffee-roasting-api";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+import CoffeRoastingModal from "../../components/modal";
+import { BeanWorkflow } from "./workflow/workflow";
+
+const gradeRange = {
+  MIN: 0,
+  MAX: 100,
+};
 
 /**
  * Does all CRUD on behalf of a bean.  If an ID is provided we go into maintenance
@@ -18,24 +25,20 @@ export const ManageBean = ({ id, setId }) => {
   console.log(id, "id");
   const availableProcessing = ["washed", "natural", "honey"]; // TODO consider pulling from API
   const [availableCountries, setAvailableCountries] = useState([]);
-  const gradeRange = {
-    MIN: 0,
-    MAX: 100,
-  };
   // Controls the Bean object fields that are savable
   const [name, setName] = useState();
   const [grade, setGrade] = useState();
+  const [processing, setProcessing] = useState(availableProcessing[0]);
   const [errors, setErrors] = useState({});
 
-  // Controls the Origin object fields that are savable
-  const [originId, setOriginId] = useState();
   const [country, setCountry] = useState();
   const [region, setRegion] = useState("");
   const [municipality, setMunicipality] = useState("");
 
   // Flow / state
-  const [processing, setProcessing] = useState(availableProcessing[0]);
+
   const [saving, setSaving] = useState(false);
+  const [openBeanModal, setOpenBeanModal] = useState(false);
 
   const getAndSetBeanAndOrigin = async () => {
     const response = await api.beans.get(id);
@@ -43,13 +46,11 @@ export const ManageBean = ({ id, setId }) => {
     setGrade(response.data.sca_grade || "");
     setProcessing(response.data.processing);
     if (response.data.origin) {
-      setOriginId(response.data.origin.id);
+      setCountry(response.data.country);
       setRegion(response.data.origin.region);
       setMunicipality(response.data.origin.municipality);
     }
   };
-
-  console.log(originId, "originId");
 
   const getCountries = async () => {
     const response = await api.origins.countries();
@@ -129,16 +130,6 @@ export const ManageBean = ({ id, setId }) => {
     return false;
   };
 
-  const setNewBeanState = () => {
-    setId();
-    setName("");
-    setGrade("");
-    setProcessing(availableProcessing[0]);
-    setCountry();
-    setRegion("");
-    setMunicipality("");
-  };
-
   /**
    * If we have the id, create a new one, if not, then we're updating...
    */
@@ -181,6 +172,8 @@ export const ManageBean = ({ id, setId }) => {
   const disableForm = () => {
     return !!saving;
   };
+
+  console.log(openBeanModal, "openBeanModal");
 
   return (
     <Grid
@@ -343,7 +336,7 @@ export const ManageBean = ({ id, setId }) => {
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
           <Button
             onClick={() => {
-              setNewBeanState();
+              setOpenBeanModal(true);
             }}
           >
             New Bean
@@ -351,13 +344,14 @@ export const ManageBean = ({ id, setId }) => {
           <Button
             disabled={!id}
             onClick={() => {
-              setNewBeanState();
+              setOpenBeanModal(true);
             }}
           >
             Edit Current Bean
           </Button>
         </Grid>
       </Grid>
+      <BeanWorkflow open={openBeanModal} setOpen={setOpenBeanModal} />
     </Grid>
   );
 };
