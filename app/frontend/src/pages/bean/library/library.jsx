@@ -5,7 +5,7 @@ import api from "../../../api/coffee-roasting-api";
 import Box from "@mui/material/Box";
 import { RawBeanAvatar } from "../../../components/rawBeanAvatar/rawBeanAvatar";
 import Stack from "@mui/material/Stack";
-import { ManageBean } from "../manage";
+import { ViewBean } from "../view";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -34,6 +34,8 @@ export const BeanLibrary = () => {
     initialize();
   }, []);
 
+  // TODO skeleton for loading on first attempt
+  // auto select first bean in the menu...
   const selectBean = async (id) => {
     if (id === selectedBean) {
       setSelectedBean();
@@ -101,7 +103,12 @@ export const BeanLibrary = () => {
             })}
           </Stack>
         </Grid>
-        <Grid sx={{ mt: 2, borderRadius: 1 }}>
+        <Grid
+          sx={{ mt: 2, borderRadius: 1 }}
+          // onClick={() => {
+          //   deselectBean();
+          // }}
+        >
           {/* <Stack direction="row"> */}
           <Grid container size={{ lg: 12 }}>
             <Grid size={{ xs: 12, sm: 12, lg: 4, xl: 4 }} sx={{ p: 2 }}>
@@ -118,7 +125,7 @@ export const BeanLibrary = () => {
               size={{ xs: 12, sm: 12, lg: 8, xl: 8 }}
               sx={{ borderRadius: 5, borderColor: "white", p: 2 }}
             >
-              <ManageBean id={selectedBean} setId={setSelectedBean} />
+              <ViewBean beanId={selectedBean} setId={setSelectedBean} />
             </Grid>
           </Grid>
           {/* </Stack> */}

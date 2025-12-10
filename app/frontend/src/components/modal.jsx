@@ -18,6 +18,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
+// TODO maybe rename the modal?
 export default function CoffeRoastingModal({
   open,
   setOpen,
