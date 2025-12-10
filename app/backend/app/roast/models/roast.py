@@ -44,7 +44,7 @@ class Roast(TimeStampMixin):
     )
 
     class Meta:
-        db_table = "roast"
+        db_table = "roasts"
         ordering = ["-created_when"]
 
     def save(

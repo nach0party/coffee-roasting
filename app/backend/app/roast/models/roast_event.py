@@ -50,5 +50,5 @@ class RoastEvent(TimeStampMixin):
     )
 
     class Meta:
-        db_table = "roast_event"
+        db_table = "roast_events"
         ordering = ["-created_when"]
