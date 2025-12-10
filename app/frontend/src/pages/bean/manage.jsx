@@ -18,6 +18,7 @@ const gradeRange = {
  * Does all CRUD on behalf of a bean.  If an ID is provided we go into maintenance
  * mode for the component where we update and / or offer deletion if needed.
  *
+ * TODO this is really more for display purposes only at this point, maybe displayBean should be the component?
  * @param {*} param0
  * @returns
  */

@@ -14,6 +14,7 @@ import { AssignOrigin } from "./assignOrigin";
 export const BeanWorkflow = ({ beanId, open, setOpen }) => {
   const [step, setStep] = useState("createBean");
   const [beanData, setBeanData] = useState({}); // TODO setup...
+  const [disableNextStep, setDisableNextStep] = useState(false);
   const stepHierarchy = ["createBean", "assignOrigin", "createOrigin"];
 
   // TODO better naming
@@ -21,7 +22,27 @@ export const BeanWorkflow = ({ beanId, open, setOpen }) => {
   const childRef = useRef(null);
   const handleParentExecute = async () => {
     if (childRef.current) {
-      return await childRef.current.executeChildLogic("Parent's MUI Button");
+      return await childRef.current.executeChildLogic();
+    }
+  };
+
+  const rotateTitle = () => {
+    if (step === "createBean") {
+      return "Create a new bean";
+    } else if (step === "assignOrigin") {
+      return "Assign your bean an origin";
+    } else if (step === "createOrigin") {
+      return "Create a new origin";
+    }
+  };
+
+  const rotateNextStepTitle = () => {
+    if (step === "createBean") {
+      return "Assign your bean an origin";
+    } else if (step === "assignOrigin") {
+      return "Create a new origin";
+    } else if (step === "createOrigin") {
+      return "Create a new origin";
     }
   };
 
@@ -29,18 +50,17 @@ export const BeanWorkflow = ({ beanId, open, setOpen }) => {
     <CoffeRoastingModal
       open={open}
       setOpen={setOpen}
-      title={"Create Bean Workflow"}
+      title={rotateTitle()}
       content={
         <>
           {step === "createBean" && (
             <CreateBean
               beanId={beanId}
-              open={open}
-              setOpen={setOpen}
+              setDisableNextStep={setDisableNextStep}
               ref={childRef}
             />
           )}
-          {step === "createOrigin" && <AssignOrigin />}
+          {step === "assignOrigin" && <AssignOrigin />}
         </>
       }
       actions={
@@ -61,21 +81,20 @@ export const BeanWorkflow = ({ beanId, open, setOpen }) => {
             Back
           </Button>
           <Button
+            disabled={disableNextStep}
             onClick={async () => {
               try {
                 const beanData = await handleParentExecute();
-                console.log(beanData, "beanData");
+                // TODO handle when we hit the end of the road here...
+                const currentStepIndex = stepHierarchy.indexOf(step);
+                const nextStep = stepHierarchy[currentStepIndex + 1];
+                setStep(nextStep);
               } catch (error) {
                 console.error(error);
-                return;
               }
-              // TODO handle when we hit the end of the road here...
-              const currentStepIndex = stepHierarchy.indexOf(step);
-              const nextStep = stepHierarchy[currentStepIndex + 1];
-              setStep(nextStep);
             }}
           >
-            Next Step
+            {rotateNextStepTitle()}
           </Button>
         </>
       }

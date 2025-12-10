@@ -17,7 +17,7 @@ const availableProcessing = ["washed", "natural", "honey"];
  * TODO should this just be manageBean...
  * @param {*} param0
  */
-export const CreateBean = ({ beanId, open, setOpen, ref }) => {
+export const CreateBean = ({ beanId, setDisableNextStep, ref }) => {
   const [name, setName] = useState();
   const [grade, setGrade] = useState();
   const [processing, setProcessing] = useState(availableProcessing[0]);
@@ -47,10 +47,13 @@ export const CreateBean = ({ beanId, open, setOpen, ref }) => {
   };
 
   useImperativeHandle(ref, () => ({
-    executeChildLogic: async (triggerSource) => {
-      console.log(triggerSource, "triggerSource");
-      const response = await api.beans.create();
-      return response.data;
+    executeChildLogic: async () => {
+      try {
+        const response = await api.beans.create();
+        return response.data;
+      } catch (error) {
+        return error;
+      }
     },
   }));
 
@@ -62,6 +65,7 @@ export const CreateBean = ({ beanId, open, setOpen, ref }) => {
       setErrors({
         grade: [`Grade must be a number.`],
       });
+      setDisableNextStep(true);
       return;
     }
 
@@ -77,6 +81,7 @@ export const CreateBean = ({ beanId, open, setOpen, ref }) => {
           `Grade is lower than the minimum allowed value of ${gradeRange.MIN}`,
         ],
       });
+      setDisableNextStep(true);
       return;
     }
     if (newValue > gradeRange.MAX) {
@@ -85,8 +90,10 @@ export const CreateBean = ({ beanId, open, setOpen, ref }) => {
           `Grade is higher than the minimum allowed value of ${gradeRange.MAX}`,
         ],
       });
+      setDisableNextStep(true);
       return;
     }
+    setDisableNextStep(false);
     setGrade(newValue);
   };
 
@@ -106,7 +113,6 @@ export const CreateBean = ({ beanId, open, setOpen, ref }) => {
         p: 2,
       })}
     >
-      <Typography sx={{ mb: 2, ml: 1 }}>Bean</Typography>
       <Grid container size={12} spacing={2}>
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
