@@ -20,7 +20,7 @@ class Roast(TimeStampMixin):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     bean = models.ForeignKey(
         "bean.Bean",
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         related_name="roasts",
     )
 

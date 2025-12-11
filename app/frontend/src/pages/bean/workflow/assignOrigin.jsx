@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useImperativeHandle } from "react";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import api from "../../../api/coffee-roasting-api";
 
-export const AssignOrigin = ({}) => {
+export const AssignOrigin = ({ beanId, ref }) => {
   const [availableCountries, setAvailableCountries] = useState([]);
-  const [country, setCountry] = useState();
+  const [country, setCountry] = useState("United States");
   const [region, setRegion] = useState("");
   const [municipality, setMunicipality] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const getCountries = async () => {
     const response = await api.origins.countries();
@@ -17,7 +18,9 @@ export const AssignOrigin = ({}) => {
 
   useEffect(() => {
     const initialize = async () => {
+      setLoading(true);
       await getCountries();
+      setLoading(false);
     };
     initialize();
   }, []);
@@ -30,6 +33,23 @@ export const AssignOrigin = ({}) => {
     setMunicipality(newValue);
   };
 
+  useImperativeHandle(ref, () => ({
+    executeChildLogic: async () => {
+      // TODO when to update vs create ...
+      const response = await api.origins.create({
+        country: country,
+        region: region,
+        municipality: municipality,
+      });
+      await api.beans.partialUpdate(beanId, {
+        origin: response.data.id,
+      });
+      return {
+        originData: {},
+      };
+    },
+  }));
+
   return (
     <Grid
       sx={(theme) => ({
@@ -39,71 +59,73 @@ export const AssignOrigin = ({}) => {
         p: 2,
       })}
     >
-      <Grid container size={12} spacing={2}>
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-          <TextField
-            select
-            label="Country Of Origin"
-            defaultValue={""}
-            helperText={`Provide the country the bean is from`}
-            size="small"
-            sx={{ width: "100%" }}
-          >
-            {availableCountries.map((country, index) => {
-              console;
-              return (
-                <MenuItem
-                  key={country}
-                  value={country}
-                  onClick={(event) => {
-                    console.log(event, "event");
-                  }}
-                >
-                  {country}
-                </MenuItem>
-              );
-            })}
-          </TextField>
+      {!loading && (
+        <Grid container size={12} spacing={2}>
+          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
+            <TextField
+              select
+              label="Country Of Origin"
+              value={country}
+              defaultValue={availableCountries[0]}
+              helperText={`Provide the country the bean is from`}
+              size="small"
+              sx={{ width: "100%" }}
+            >
+              {availableCountries.map((availbleCountry) => {
+                return (
+                  <MenuItem
+                    key={availbleCountry}
+                    value={availbleCountry}
+                    onClick={() => {
+                      setCountry(availbleCountry);
+                    }}
+                  >
+                    {availbleCountry}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
+            <TextField
+              label="Region"
+              value={region}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+              onChange={(event) => {
+                handleRegionChange(event.target.value);
+              }}
+              helperText="Provide The Region Of the Bean"
+              size="small"
+              sx={{ width: "100%" }}
+            >
+              {name}
+            </TextField>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
+            <TextField
+              label="Municipality"
+              value={municipality}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+              onChange={(event) => {
+                handleMunicipalityChange(event.target.value);
+              }}
+              helperText="Provide The Municipality Of The Bean"
+              size="small"
+              sx={{ width: "100%" }}
+            >
+              {name}
+            </TextField>
+          </Grid>
         </Grid>
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-          <TextField
-            label="Region"
-            value={region}
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-            }}
-            onChange={(event) => {
-              handleRegionChange(event.target.value);
-            }}
-            helperText="Provide The Region Of the Bean"
-            size="small"
-            sx={{ width: "100%" }}
-          >
-            {name}
-          </TextField>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-          <TextField
-            label="Municipality"
-            value={municipality}
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-            }}
-            onChange={(event) => {
-              handleMunicipalityChange(event.target.value);
-            }}
-            helperText="Provide The Municipality Of The Bean"
-            size="small"
-            sx={{ width: "100%" }}
-          >
-            {name}
-          </TextField>
-        </Grid>
-      </Grid>
+      )}
     </Grid>
   );
 };

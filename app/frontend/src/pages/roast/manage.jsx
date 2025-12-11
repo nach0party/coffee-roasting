@@ -202,7 +202,7 @@ export const ManageRoast = () => {
   // TODO need to set a target temperature!
   // TODO need a bean component
   return (
-    <CoffeeRoastingMenu>
+    <CoffeeRoastingMenu title={"Manage Roast"}>
       {!loading && (
         <>
           {/** TODO consider hiding the targets and changing around the UI once the roast is started as

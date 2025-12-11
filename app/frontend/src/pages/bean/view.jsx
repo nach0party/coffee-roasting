@@ -7,14 +7,23 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { BeanWorkflow } from "./workflow/workflow";
 
+const generateDefaultBeanState = () => {
+  return {
+    name: "",
+    sca_grade: "",
+    processing: "",
+    origin: { country: "", municipality: "", region: "" },
+  };
+};
+
 /**
  * Provides a view / display of a configurable bean.  Does not handle configuration but
  * just all the properties of what we consider to be a bean.
  * @param {*} param0
  * @returns
  */
-export const ViewBean = ({ beanId }) => {
-  const [beanData, setBeanData] = useState({});
+export const ViewBean = ({ beanId, setBeanId, getBeans }) => {
+  const [beanData, setBeanData] = useState(generateDefaultBeanState());
   const [openBeanModal, setOpenBeanModal] = useState(false);
 
   const getAndSetBeanAndOrigin = async () => {
@@ -29,9 +38,7 @@ export const ViewBean = ({ beanId }) => {
       }
     };
     reloadData();
-  }, [beanId]);
-
-  console.log(beanData, "beanData");
+  }, [beanId, openBeanModal]);
 
   return (
     <Grid
@@ -95,17 +102,6 @@ export const ViewBean = ({ beanId }) => {
             sx={{ width: "100%" }}
           />
         </Grid>
-        {/** TODO display the SCA letter Grade */}
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-          <TextField
-            disabled={true}
-            label="Origin"
-            defaultValue={"Ethiopia"}
-            helperText={`This is the Origin of the bean in question`}
-            size="small"
-            sx={{ width: "100%" }}
-          />
-        </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
           <Divider />
           <Typography sx={{ mt: 2 }}>Origin</Typography>
@@ -144,9 +140,7 @@ export const ViewBean = ({ beanId }) => {
             helperText="Provide The Region Of the Bean"
             size="small"
             sx={{ width: "100%" }}
-          >
-            {beanData.origin?.region}
-          </TextField>
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
@@ -163,13 +157,14 @@ export const ViewBean = ({ beanId }) => {
             helperText="Provide The Municipality Of The Bean"
             size="small"
             sx={{ width: "100%" }}
-          >
-            {beanData.origin?.municipality}
-          </TextField>
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
           <Button
             onClick={() => {
+              console.log("seriously?");
+              setBeanId();
+              setBeanData(generateDefaultBeanState());
               setOpenBeanModal(true);
             }}
           >
@@ -183,9 +178,30 @@ export const ViewBean = ({ beanId }) => {
           >
             Edit Current Bean
           </Button>
+          <Button
+            disabled={!beanId}
+            onClick={async () => {
+              try {
+                await api.beans.delete(beanId);
+                setBeanId();
+                await getBeans();
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            Delete Bean
+          </Button>
         </Grid>
       </Grid>
-      <BeanWorkflow open={openBeanModal} setOpen={setOpenBeanModal} />
+      {/** TODO maybe this should live off of the view...? */}
+      <BeanWorkflow
+        beanId={beanId}
+        setBeanId={setBeanId}
+        open={openBeanModal}
+        setOpen={setOpenBeanModal}
+        getBeans={getBeans}
+      />
     </Grid>
   );
 };

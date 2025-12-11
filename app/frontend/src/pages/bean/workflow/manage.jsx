@@ -12,28 +12,26 @@ const gradeRange = {
 const availableProcessing = ["washed", "natural", "honey"];
 
 /**
+ * TODO This is really the new management component...
  * @param {*} param0
  */
-export const CreateBean = ({ beanId, setDisableNextStep, ref }) => {
+export const ManageBean = ({ beanId, setDisableNextStep, ref }) => {
   const [name, setName] = useState();
   const [grade, setGrade] = useState();
   const [processing, setProcessing] = useState(availableProcessing[0]);
   const [errors, setErrors] = useState({});
 
-  const getAndSetBeanAndOrigin = async () => {
+  const getAndSetBean = async () => {
     const response = await api.beans.get(beanId);
     setName(response.data.name || "");
     setGrade(response.data.sca_grade || "");
     setProcessing(response.data.processing);
-    if (response.data.origin) {
-      console.log("wat");
-    }
   };
 
   useEffect(() => {
     const reloadData = async () => {
       if (beanId) {
-        await getAndSetBeanAndOrigin();
+        await getAndSetBean();
       }
     };
     reloadData();
@@ -46,8 +44,14 @@ export const CreateBean = ({ beanId, setDisableNextStep, ref }) => {
   useImperativeHandle(ref, () => ({
     executeChildLogic: async () => {
       try {
-        const response = await api.beans.create();
-        return response.data;
+        const response = await api.beans.create({
+          name: name,
+          sca_grade: grade,
+          processing: processing,
+        });
+        return {
+          beanData: { ...response.data },
+        };
       } catch (error) {
         return error;
       }
@@ -93,6 +97,8 @@ export const CreateBean = ({ beanId, setDisableNextStep, ref }) => {
     setDisableNextStep(false);
     setGrade(newValue);
   };
+
+  console.log(grade, "grade");
 
   const hasErrors = (fieldName) => {
     if (errors[fieldName] && errors[fieldName].length > 0) {

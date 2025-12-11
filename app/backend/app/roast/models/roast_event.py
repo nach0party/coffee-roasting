@@ -31,7 +31,7 @@ class RoastEvent(TimeStampMixin):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     roast = models.ForeignKey(
         "roast.Roast",
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         related_name="roast_event",
     )
     started_when = models.DateTimeField(

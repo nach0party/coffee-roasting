@@ -11,7 +11,7 @@ export class Origins extends Resource {
     }
     
     create = async (data) => {
-        return await this.client.post(`origins`, data)
+        return await this.client.post(`/origins`, data)
     }
 
     /**
@@ -19,7 +19,7 @@ export class Origins extends Resource {
      * @returns 
      */
     countries = async () => {
-        return await this.client.get(`origins/countries`)
+        return await this.client.get(`/origins/countries`)
     }
 
 }

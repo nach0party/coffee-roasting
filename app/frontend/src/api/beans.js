@@ -14,6 +14,10 @@ export class Beans extends Resource {
         return await this.client.post(`beans`, data)
     }
 
+    delete = async (id) => {
+        return await this.client.delete(`beans/${id}`)
+    }
+
     partialUpdate = async (id, data) => {
         return await this.client.patch(`beans/${id}`, data)
     }
