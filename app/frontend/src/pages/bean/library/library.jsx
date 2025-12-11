@@ -17,14 +17,14 @@ export const BeanLibrary = () => {
   const [existingBeans, setExistingBeans] = useState([]);
   const [selectedBean, setSelectedBean] = useState();
 
-  const getBeans = useCallback(async (search) => {
+  const getBeans = async (search) => {
     const params = {};
     if (search) {
       params.search = search;
     }
     const response = await api.beans.list(params);
     setExistingBeans(response.data.results);
-  });
+  };
 
   useEffect(() => {
     const initialize = async () => {
@@ -103,13 +103,7 @@ export const BeanLibrary = () => {
             })}
           </Stack>
         </Grid>
-        <Grid
-          sx={{ mt: 2, borderRadius: 1 }}
-          // onClick={() => {
-          //   deselectBean();
-          // }}
-        >
-          {/* <Stack direction="row"> */}
+        <Grid sx={{ mt: 2, borderRadius: 1 }}>
           <Grid container size={{ lg: 12 }}>
             <Grid size={{ xs: 12, sm: 12, lg: 4, xl: 4 }} sx={{ p: 2 }}>
               <img
@@ -125,10 +119,13 @@ export const BeanLibrary = () => {
               size={{ xs: 12, sm: 12, lg: 8, xl: 8 }}
               sx={{ borderRadius: 5, borderColor: "white", p: 2 }}
             >
-              <ViewBean beanId={selectedBean} setId={setSelectedBean} />
+              <ViewBean
+                beanId={selectedBean}
+                setBeanId={setSelectedBean}
+                getBeans={getBeans}
+              />
             </Grid>
           </Grid>
-          {/* </Stack> */}
         </Grid>
         <Grid sx={{ mt: 2, borderRadius: 1 }}>
           <Typography variant="button">Discovery</Typography>

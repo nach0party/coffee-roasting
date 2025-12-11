@@ -1,8 +1,7 @@
 import { useState, useRef } from "react";
 import Button from "@mui/material/Button";
-
 import CoffeRoastingModal from "../../../components/modal";
-import { CreateBean } from "./createBean";
+import { ManageBean } from "./manage";
 import { AssignOrigin } from "./assignOrigin";
 
 /**
@@ -11,11 +10,16 @@ import { AssignOrigin } from "./assignOrigin";
  * here is where we're actually going to manage those values.
  */
 // TODO should we pass up beanId or the whole bean object to avoid API calls...
-export const BeanWorkflow = ({ beanId, open, setOpen }) => {
-  const [step, setStep] = useState("createBean");
-  const [beanData, setBeanData] = useState({}); // TODO setup...
+export const BeanWorkflow = ({
+  beanId,
+  setBeanId,
+  open,
+  setOpen,
+  getBeans,
+}) => {
+  const [step, setStep] = useState("manageBean");
   const [disableNextStep, setDisableNextStep] = useState(false);
-  const stepHierarchy = ["createBean", "assignOrigin", "createOrigin"];
+  const stepHierarchy = ["manageBean", "assignOrigin"];
 
   // TODO better naming
   // Handles executing downstream functions defined in the child components
@@ -27,21 +31,21 @@ export const BeanWorkflow = ({ beanId, open, setOpen }) => {
   };
 
   const rotateTitle = () => {
-    if (step === "createBean") {
-      return "Create a new bean";
+    if (step === "manageBean") {
+      if (beanId) {
+        return "Manage your bean";
+      } else {
+        return "Create a new bean";
+      }
     } else if (step === "assignOrigin") {
       return "Assign your bean an origin";
-    } else if (step === "createOrigin") {
-      return "Create a new origin";
     }
   };
 
   const rotateNextStepTitle = () => {
-    if (step === "createBean") {
+    if (step === "manageBean") {
       return "Assign your bean an origin";
     } else if (step === "assignOrigin") {
-      return "Create a new origin";
-    } else if (step === "createOrigin") {
       return "Create a new origin";
     }
   };
@@ -53,24 +57,24 @@ export const BeanWorkflow = ({ beanId, open, setOpen }) => {
       title={rotateTitle()}
       content={
         <>
-          {step === "createBean" && (
-            <CreateBean
+          {step === "manageBean" && (
+            <ManageBean
               beanId={beanId}
               setDisableNextStep={setDisableNextStep}
               ref={childRef}
             />
           )}
-          {step === "assignOrigin" && <AssignOrigin />}
+          {step === "assignOrigin" && (
+            <AssignOrigin beanId={beanId} ref={childRef} />
+          )}
         </>
       }
       actions={
         <>
           <Button
             onClick={() => {
-              // TODO handle out of range index
               const currentStepIndex = stepHierarchy.indexOf(step);
               const backStep = stepHierarchy[currentStepIndex - 1];
-              console.log(backStep, "backStep");
               if (currentStepIndex > 0) {
                 setStep(backStep);
                 return;
@@ -80,14 +84,22 @@ export const BeanWorkflow = ({ beanId, open, setOpen }) => {
           >
             Back
           </Button>
+          <Button>Save And Exit</Button>
           <Button
             disabled={disableNextStep}
             onClick={async () => {
               try {
-                const beanData = await handleParentExecute();
-                // TODO handle when we hit the end of the road here...
+                const results = await handleParentExecute();
+                if (results?.beanData) {
+                  setBeanId(results.beanData.id);
+                  await getBeans();
+                }
                 const currentStepIndex = stepHierarchy.indexOf(step);
                 const nextStep = stepHierarchy[currentStepIndex + 1];
+                if (!nextStep) {
+                  setOpen(false);
+                  return;
+                }
                 setStep(nextStep);
               } catch (error) {
                 console.error(error);

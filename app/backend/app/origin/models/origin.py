@@ -35,7 +35,7 @@ class Origin(TimeStampMixin):
     )
 
     class Meta:
-        db_table = "origin"
+        db_table = "origins"
         ordering = ["-created_when"]
 
     def save(
