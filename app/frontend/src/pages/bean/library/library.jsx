@@ -11,6 +11,8 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
+import Skeleton from "@mui/material/Skeleton";
+import CoffeeCuppingRadar from "../../../charts/cupping";
 
 // this is repeat of BeanSelection logic, should we centralize some generic functions?
 export const BeanLibrary = () => {
@@ -128,7 +130,27 @@ export const BeanLibrary = () => {
           </Grid>
         </Grid>
         <Grid sx={{ mt: 2, borderRadius: 1 }}>
-          <Typography variant="button">Discovery</Typography>
+          <Grid container size={{ lg: 12 }}>
+            <Grid
+              size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}
+              sx={{ p: 2 }}
+            >
+              <Typography variant="button">
+                Cupping Profile & History
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 12, md: 3, lg: 3, xl: 3 }} sx={{ p: 2 }}>
+              {/** This is a great idea */}
+              {/* <CoffeeCuppingRadar /> */}
+              <Skeleton variant="rectangular" width="100%" height={300} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }} sx={{ p: 2 }}>
+              <Skeleton variant="rectangular" width="100%" height={300} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 12, md: 3, lg: 3, xl: 3 }} sx={{ p: 2 }}>
+              <Skeleton variant="rectangular" width="100%" height={300} />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </CoffeeRoastingMenu>
