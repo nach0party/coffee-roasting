@@ -47,17 +47,11 @@ class Roast(TimeStampMixin):
         db_table = "roasts"
         ordering = ["-created_when"]
 
-    def save(
-        self,
-        force_insert: bool = False,
-        force_update: bool = False,
-        using: str = None,
-        update_fields: Iterable[str] = None,
-    ):
+    def save(self, *args, **kwargs):
         # set the target time based on the duration selected
         if self.started_when and self.target_duration:
             self.target_when = self.started_when + self.target_duration
-        return super().save(force_insert, force_update, using, update_fields)
+        return super().save(*args, **kwargs)
 
     @transaction.atomic()
     def delete(self, using: Any = None, keep_parents: bool = False) -> tuple[int, dict[str, int]]:

@@ -1,17 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
-import { CoffeeRoastingMenu } from "../../../components/menu";
-import api from "../../../api/coffee-roasting-api";
+
 import Box from "@mui/material/Box";
-import { RawBeanAvatar } from "../../../components/rawBeanAvatar/rawBeanAvatar";
 import Stack from "@mui/material/Stack";
-import { ViewBean } from "../view";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Skeleton from "@mui/material/Skeleton";
+
+import api from "../../../api/coffee-roasting-api";
+import { RawBeanAvatar } from "../../../components/rawBeanAvatar/rawBeanAvatar";
+import { ViewBean } from "../view";
+import { CoffeeRoastingMenu } from "../../../components/menu";
 import CoffeeCuppingRadar from "../../../charts/cupping";
 
 // this is repeat of BeanSelection logic, should we centralize some generic functions?

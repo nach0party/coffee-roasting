@@ -51,9 +51,10 @@ export const ViewBean = ({ beanId, setBeanId, getBeans }) => {
     >
       <Grid container size={12} spacing={2}>
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+          {/** TODO move "New Bean" to the top where it's a non movable  */}
           <Button
+            variant="outlined"
             onClick={() => {
-              console.log("seriously?");
               setBeanId();
               setBeanData(generateDefaultBeanState());
               setOpenBeanModal(true);
@@ -182,14 +183,17 @@ export const ViewBean = ({ beanId, setBeanId, getBeans }) => {
         </Grid>
         <Grid>
           <Button
+            variant="outlined"
             disabled={!beanId}
             onClick={() => {
               setOpenBeanModal(true);
             }}
+            sx={{ mr: 3 }}
           >
             Edit Current Bean
           </Button>
           <Button
+            variant="outlined"
             disabled={!beanId}
             onClick={async () => {
               try {

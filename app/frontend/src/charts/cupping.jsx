@@ -1,5 +1,9 @@
 import { RadarChart } from "@mui/x-charts/RadarChart";
 
+/**
+ * Don't make this a named import.
+ * @returns
+ */
 export default function CoffeeCuppingRadar() {
   return (
     <RadarChart

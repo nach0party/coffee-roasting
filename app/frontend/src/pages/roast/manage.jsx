@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useCallback, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import List from "@mui/material/List";
@@ -20,6 +20,16 @@ import { RoastBar } from "../../components/roastBar";
 import { RoastTargetTimePicker } from "../../components/roastTargetTimePicker";
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
+
+/**
+ * Quick little reference so we can define some logic and quickly change the UI.
+ */
+const RoastState = {
+  PREP: "prep",
+  PRESTART: "pre-started",
+  STARTED: "started",
+  ENDED: "ended",
+};
 
 // TODO if this roast is "completed" we should mark everything as read only
 export const ManageRoast = () => {
@@ -47,6 +57,7 @@ export const ManageRoast = () => {
   ];
 
   const [roast, setRoast] = useState();
+  const [roastState, setRoastState] = useState();
   const [loading, setLoading] = useState(true);
   const [openNewEventModal, setOpenNewEventModal] = useState(false);
   const [currentEvent, setCurrentEvent] = useState();
@@ -58,6 +69,7 @@ export const ManageRoast = () => {
 
   // We use strings to handle the 00 and also it concatenates all
   // into a string to be passed to the API, easier this way.
+  const [openTargetModal, setOpenTargetModal] = useState(false);
   const [targetMinute, setTargetMinute] = useState("13");
   const [targetSecond, setTargetSecond] = useState("00");
 
@@ -75,16 +87,31 @@ export const ManageRoast = () => {
     initialize();
   }, []);
 
-  // TOOD make less api calls if needed
-  const beginRoast = async () => {
+  useEffect(() => {
+    if (roast) {
+      setRoastState(determineRoastState());
+    }
+  }, [roast]);
+
+  // get roast returns events too... so, likely need to separate that into its own API call and whatnot...
+  const updateTargetTime = async () => {
     try {
       await api.roasts.partialUpdate(id, {
         target_duration: `${targetMinute}:${targetSecond}`,
       });
+      await getRoast();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const beginRoast = async () => {
+    try {
       await api.roasts.beginRoast(id);
       await getRoast();
       toast.success("Roast has begun");
     } catch (error) {
+      // TODO not sure if I care for toast or would prefer just the MUI component...
       // TODO setup a service for using toast...
       toast.error("There was an error");
       console.error(error);
@@ -125,19 +152,6 @@ export const ManageRoast = () => {
       console.error(error);
     }
   };
-
-  /**
-   * Returns a nicely named event type.
-   */
-
-  // const allEventTypes = {
-  //   BEGIN: "begin",
-  //   PAUSE: "pause",
-  //   DRY_PHASE : "dry_phase",
-  //   FIRST_CRACK : "first_crack",
-  //   SECOND_CRACK : "second_crack",
-  //   DROP : "drop",
-  // };
 
   const friendlyEventType = (name) => {
     if (name === allEventTypes.BEGIN) {
@@ -199,33 +213,63 @@ export const ManageRoast = () => {
     return false;
   };
 
-  // TODO need to set a target temperature!
-  // TODO need a bean component
+  const determineRoastState = () => {
+    if (!roast.target_duration && !roast.started_when) {
+      return RoastState.PREP;
+    } else if (roast.target_duration && !roast.started_when) {
+      return RoastState.PRESTART;
+    } else if (
+      roast.target_duration &&
+      roast.started_when &&
+      !roast.ended_when
+    ) {
+      return RoastState.STARTED;
+    }
+    return RoastState.ENDED;
+  };
+
+  const handleTopRightButtonDisplayState = () => {
+    if (roastState === RoastState.PREP) {
+      return "Set Target Time";
+    } else if (roastState === RoastState.PRESTART) {
+      return "Start Roast";
+    } else if (roastState === RoastState.STARTED) {
+      return "End Roast";
+    } else if (roastState === RoastState.ENDED) {
+      return "Delete Roast";
+    }
+  };
+
+  const handleTopRightButtonFunctionalityState = async () => {
+    if (roastState === RoastState.PREP) {
+      setOpenTargetModal(true);
+    } else if (roastState === RoastState.PRESTART) {
+      await beginRoast();
+    } else if (roastState === RoastState.STARTED) {
+      await endRoast();
+    } else if (roastState === RoastState.ENDED) {
+      setOpenDeleteRoastModal(true);
+    }
+  };
+
+  console.log(roast, "roast");
+  console.log(roastState, "roastState");
+
   return (
-    <CoffeeRoastingMenu title={"Manage Roast"}>
+    <CoffeeRoastingMenu
+      title={"Manage Roast"}
+      rightSideMenuBar={
+        <Button
+          onClick={async () => {
+            await handleTopRightButtonFunctionalityState();
+          }}
+        >
+          {handleTopRightButtonDisplayState()}
+        </Button>
+      }
+    >
       {!loading && (
         <>
-          {/** TODO consider hiding the targets and changing around the UI once the roast is started as
-           * a less interactive but more display driven roasting app.
-           */}
-          <Typography>
-            This is a Target, once the roast is started the target is locked in.
-          </Typography>
-          <RoastTargetTimePicker
-            disabled={disableTargets()}
-            minute={targetMinute}
-            setMinute={setTargetMinute}
-            second={targetSecond}
-            setSecond={setTargetSecond}
-          />
-          <Button
-            onClick={async () => {
-              await beginRoast();
-            }}
-            disabled={disableStartRoast()}
-          >
-            Begin Roast
-          </Button>
           <Typography>Started when</Typography>
           <Typography>
             {roast.started_when ? roast.started_when : "--"}
@@ -278,22 +322,22 @@ export const ManageRoast = () => {
           >
             Add Event
           </Button>
-          <Button
+          {/* <Button
             disabled={disableEndRoast()}
             onClick={async () => {
               await endRoast();
             }}
           >
             End Roast
-          </Button>
-          <Button
+          </Button> */}
+          {/* <Button
             onClick={async () => {
               setOpenDeleteRoastModal(true);
               // await deleteRoast();
             }}
           >
             Delete Roast
-          </Button>
+          </Button> */}
           <RoastBar
             hide={hideRoastBar()}
             startedWhen={roast.started_when}
@@ -318,84 +362,113 @@ export const ManageRoast = () => {
               </Grid>
             </Grid>
           )}
+          <CoffeRoastingModal
+            open={openTargetModal}
+            setOpen={setOpenTargetModal}
+            title="Set Your Target Time"
+            content={
+              <RoastTargetTimePicker
+                disabled={disableTargets()}
+                minute={targetMinute}
+                setMinute={setTargetMinute}
+                second={targetSecond}
+                setSecond={setTargetSecond}
+              />
+            }
+            actions={
+              <Grid>
+                <Button
+                  onClick={async () => {
+                    try {
+                      await updateTargetTime();
+                      setOpenTargetModal(false);
+                    } catch (error) {
+                      console.error(error);
+                    }
+                  }}
+                >
+                  Set Target
+                </Button>
+              </Grid>
+            }
+          />
+          <CoffeRoastingModal
+            open={openNewEventModal}
+            setOpen={setOpenNewEventModal}
+            title={<Typography>New Event</Typography>}
+            content={
+              <>
+                <TextField
+                  select
+                  label="Origin"
+                  defaultValue={availableEventTypes[0]}
+                  helperText={`What part of the roast is starting?`}
+                >
+                  {availableEventTypes.map((eventType, index) => {
+                    return (
+                      <MenuItem
+                        onClick={() => {
+                          setSelectedEventType(eventType);
+                        }}
+                        key={index}
+                        value={eventType}
+                      >
+                        {friendlyEventType(eventType)}
+                      </MenuItem>
+                    );
+                  })}
+                </TextField>
+              </>
+            }
+            actions={
+              <>
+                <Button
+                  onClick={() => {
+                    setOpenNewEventModal(false);
+                  }}
+                >
+                  Back
+                </Button>
+                <Button
+                  onClick={async () => {
+                    await addRoastEvent(selectedEventType);
+                  }}
+                >
+                  Start Event
+                </Button>
+              </>
+            }
+          />
+          <CoffeRoastingModal
+            open={openDeleteRoastModal}
+            setOpen={setOpenDeleteRoastModal}
+            title={<Typography>Delete Roast?</Typography>}
+            content={
+              <Typography>
+                Are you absolutely certain you want to delete the roast?
+              </Typography>
+            }
+            actions={
+              <>
+                <Button
+                  onClick={() => {
+                    setOpenDeleteRoastModal(false);
+                  }}
+                >
+                  Nope
+                </Button>
+                <Button
+                  onClick={async () => {
+                    await deleteRoast(selectedEventType);
+                  }}
+                >
+                  I've made my peace
+                </Button>
+              </>
+            }
+          />
         </>
       )}
-      <CoffeRoastingModal
-        open={openNewEventModal}
-        setOpen={setOpenNewEventModal}
-        title={<Typography>New Event</Typography>}
-        content={
-          <>
-            <TextField
-              // disabled={disableForm()}
-              select
-              label="Origin"
-              defaultValue={availableEventTypes[0]}
-              helperText={`What part of the roast is starting?`}
-            >
-              {availableEventTypes.map((eventType, index) => {
-                return (
-                  <MenuItem
-                    onClick={() => {
-                      setSelectedEventType(eventType);
-                    }}
-                    key={index}
-                    value={eventType}
-                  >
-                    {friendlyEventType(eventType)}
-                  </MenuItem>
-                );
-              })}
-            </TextField>
-          </>
-        }
-        actions={
-          <>
-            <Button
-              onClick={() => {
-                setOpenNewEventModal(false);
-              }}
-            >
-              Back
-            </Button>
-            <Button
-              onClick={async () => {
-                await addRoastEvent(selectedEventType);
-              }}
-            >
-              Start Event
-            </Button>
-          </>
-        }
-      />
-      <CoffeRoastingModal
-        open={openDeleteRoastModal}
-        setOpen={setOpenDeleteRoastModal}
-        title={<Typography>Delete Roast?</Typography>}
-        content={
-          <Typography>
-            Are you absolutely certain you want to delete the roast?
-          </Typography>
-        }
-        actions={
-          <>
-            <Button
-              onClick={() => {
-                setOpenDeleteRoastModal(false);
-              }}
-            >
-              Nope
-            </Button>
-            <Button
-              onClick={async () => {
-                await deleteRoast(selectedEventType);
-              }}
-            >
-              I've made my peace
-            </Button>
-          </>
-        }
-      />
     </CoffeeRoastingMenu>
   );
 };

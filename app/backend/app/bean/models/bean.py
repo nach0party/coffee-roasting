@@ -79,13 +79,7 @@ class Bean(TimeStampMixin):
         db_table = "beans"
         ordering = ["-created_when"]
 
-    def save(
-        self,
-        force_insert: bool = False,
-        force_update: bool = False,
-        using: str = None,
-        update_fields: Iterable[str] = None,
-    ) -> None:
+    def save(self, *args, **kwargs) -> None:
         """
         Just provide a little extra context, the user shouldn't have to worry
         too much about knowing both the number grade and the G grade.
@@ -100,4 +94,4 @@ class Bean(TimeStampMixin):
                 self.sca_letter_grade = self.SCALetterGrade.PREMIUM_GRADE.value
             else:
                 self.sca_letter_grade = self.SCALetterGrade.COMMERCIAL_GRADE
-        return super().save(force_insert, force_update, using, update_fields)
+        return super().save(*args, **kwargs)
