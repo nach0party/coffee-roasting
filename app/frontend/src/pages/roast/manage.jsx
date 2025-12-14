@@ -9,6 +9,7 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import api from "../../api/coffee-roasting-api";
 import toast from "react-hot-toast";
@@ -20,6 +21,7 @@ import { RoastBar } from "../../components/roastBar";
 import { RoastTargetTimePicker } from "../../components/roastTargetTimePicker";
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
+import Box from "@mui/material/Box";
 
 /**
  * Quick little reference so we can define some logic and quickly change the UI.
@@ -270,39 +272,52 @@ export const ManageRoast = () => {
     >
       {!loading && (
         <>
-          <Typography>Started when</Typography>
-          <Typography>
-            {roast.started_when ? roast.started_when : "--"}
-          </Typography>
-          <Typography>Ended when</Typography>
-          <Typography>{roast.ended_when ? roast.ended_when : "--"}</Typography>
-          <List
-            sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
-          >
-            {roast.roast_event.map((event) => {
-              return (
-                <ListItem key={event.id} alignItems="flex-start">
-                  <ListItemAvatar>
-                    <Avatar src="/coffee-being-roasted.jpg" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={`${event.type} ${event.started_when} ${
-                      event.ended_when ? event.ended_when : "--"
-                    }`}
-                    secondary={
-                      <Fragment>
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          sx={{ color: "text.primary", display: "inline" }}
-                        >
-                          Notes:
-                        </Typography>
-                        {event.notes}
-                      </Fragment>
-                    }
-                  />
-                  {/* <Button
+          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+            {/** TODO better align */}
+            <Typography>
+              <Box alignContent="center" alignItems="center">
+                <AccessTimeIcon />
+                Roast Progress
+              </Box>
+            </Typography>
+            <RoastBar
+              hide={hideRoastBar()}
+              startedWhen={roast.started_when}
+              targetWhen={roast.target_when}
+              endedWhen={roast.ended_when}
+            />
+          </Grid>
+          <Grid sx={{ p: 3 }} size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+            <Typography>Timeline</Typography>
+            <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+              {roast.roast_event.map((event) => {
+                return (
+                  <ListItem
+                    sx={{ height: 80 }}
+                    key={event.id}
+                    alignItems="flex-start"
+                  >
+                    <ListItemAvatar>
+                      <Avatar src="/coffee-being-roasted.jpg" />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={`${event.type} ${event.started_when} ${
+                        event.ended_when ? event.ended_when : "--"
+                      }`}
+                      // secondary={
+                      //   <Fragment>
+                      //     <Typography
+                      //       component="span"
+                      //       variant="body2"
+                      //       sx={{ color: "text.primary", display: "inline" }}
+                      //     >
+                      //       Notes:
+                      //     </Typography>
+                      //     {event.notes}
+                      //   </Fragment>
+                      // }
+                    />
+                    {/* <Button
                     disabled={disableEvents()}
                     onClick={() => {
                       console.log(`clicked ${event.id}`);
@@ -310,10 +325,11 @@ export const ManageRoast = () => {
                   >
                     Edit
                   </Button> */}
-                </ListItem>
-              );
-            })}
-          </List>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Grid>
           <Button
             disabled={disableEvents()}
             onClick={async () => {
@@ -338,12 +354,6 @@ export const ManageRoast = () => {
           >
             Delete Roast
           </Button> */}
-          <RoastBar
-            hide={hideRoastBar()}
-            startedWhen={roast.started_when}
-            targetWhen={roast.target_when}
-            endedWhen={roast.ended_when}
-          />
           {roast.ended_when && (
             <Grid>
               <Divider>
