@@ -37,11 +37,11 @@ export const RoastBar = ({ startedWhen, targetWhen, endedWhen, hide }) => {
         <Box sx={{ width: "100%", mr: 1 }}>
           <LinearProgress variant="determinate" value={progress} />
         </Box>
-        <Box sx={{ minWidth: 35 }}>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {`${Math.round(progress)}%`}
-          </Typography>
-        </Box>
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          {`${Math.round(progress)}%`}
+        </Typography>
       </Box>
     </Box>
   );

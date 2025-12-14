@@ -38,13 +38,7 @@ class Origin(TimeStampMixin):
         db_table = "origins"
         ordering = ["-created_when"]
 
-    def save(
-        self,
-        force_insert: bool = False,
-        force_update: bool = False,
-        using: str = None,
-        update_fields: Iterable[str] = None,
-    ) -> None:
+    def save(self, *args, **kwargs) -> None:
         if (
             Origin.objects.filter(
                 country=self.country, region=self.region, municipality=self.municipality
@@ -53,4 +47,4 @@ class Origin(TimeStampMixin):
             .exists()
         ):
             raise ValidationError({"non_field_errors": ["This Origin already exists"]})
-        return super().save(force_insert, force_update, using, update_fields)
+        return super().save(*args, **kwargs)

@@ -1,9 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
@@ -23,14 +22,14 @@ export const BeanSelection = () => {
   const [selectedBean, setSelectedBean] = useState();
   const [loading, setLoading] = useState(true);
 
-  const getBeans = useCallback(async (search) => {
+  const getBeans = async (search) => {
     const params = {};
     if (search) {
       params.search = search;
     }
     const response = await api.beans.list(params);
     setExistingBeans(response.data.results);
-  });
+  };
 
   useEffect(() => {
     const initialize = async () => {

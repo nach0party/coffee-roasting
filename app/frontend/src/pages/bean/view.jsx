@@ -49,120 +49,12 @@ export const ViewBean = ({ beanId, setBeanId, getBeans }) => {
         p: 2,
       })}
     >
-      <Typography sx={{ mb: 2, ml: 1 }}>Bean</Typography>
       <Grid container size={12} spacing={2}>
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-          <TextField
-            label="Name"
-            value={beanData.name}
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-              input: {
-                readOnly: true,
-              },
-            }}
-            helperText="The name used to identify the bean"
-            size="small"
-            sx={{ width: "100%" }}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-          <TextField
-            label="Grade"
-            value={beanData.sca_grade}
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-              input: {
-                readOnly: true,
-              },
-            }}
-            helperText={`The SCA grade of the bean.`}
-            size="small"
-            sx={{ width: "100%" }}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-          <TextField
-            value={beanData.processing}
-            label="Processing"
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-              input: {
-                readOnly: true,
-              },
-            }}
-            helperText={`The processing method`}
-            size="small"
-            sx={{ width: "100%" }}
-          />
-        </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-          <Divider />
-          <Typography sx={{ mt: 2 }}>Origin</Typography>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-          <TextField
-            value={beanData.origin?.country}
-            label="Country Of Origin"
-            helperText={`Provide the country the bean is from`}
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-              input: {
-                readOnly: true,
-              },
-            }}
-            size="small"
-            sx={{ width: "100%" }}
-          >
-            {beanData.origin?.country}
-          </TextField>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-          <TextField
-            label="Region"
-            value={beanData.origin?.region}
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-              input: {
-                readOnly: true,
-              },
-            }}
-            helperText="Provide The Region Of the Bean"
-            size="small"
-            sx={{ width: "100%" }}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-          <TextField
-            label="Municipality"
-            value={beanData.origin?.municipality}
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-              input: {
-                readOnly: true,
-              },
-            }}
-            helperText="Provide The Municipality Of The Bean"
-            size="small"
-            sx={{ width: "100%" }}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+          {/** TODO move "New Bean" to the top where it's a non movable  */}
           <Button
+            variant="outlined"
             onClick={() => {
-              console.log("seriously?");
               setBeanId();
               setBeanData(generateDefaultBeanState());
               setOpenBeanModal(true);
@@ -170,15 +62,138 @@ export const ViewBean = ({ beanId, setBeanId, getBeans }) => {
           >
             New Bean
           </Button>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
+          <Grid>
+            <Typography sx={{ mb: 2, ml: 1 }}>Bean</Typography>
+          </Grid>
+          <Grid>
+            <TextField
+              label="Name"
+              value={beanData.name}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+                input: {
+                  readOnly: true,
+                },
+              }}
+              helperText="The name used to identify the bean"
+              size="small"
+              sx={{ width: "100%", mt: 2, mb: 2 }}
+            />
+          </Grid>
+          <Grid>
+            <TextField
+              label="Grade"
+              value={beanData.sca_grade}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+                input: {
+                  readOnly: true,
+                },
+              }}
+              helperText={`The SCA grade of the bean.`}
+              size="small"
+              sx={{ width: "100%", mt: 2, mb: 2 }}
+            />
+          </Grid>
+          <Grid>
+            <TextField
+              value={beanData.processing}
+              label="Processing"
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+                input: {
+                  readOnly: true,
+                },
+              }}
+              helperText={`The processing method`}
+              size="small"
+              sx={{ width: "100%", mt: 2, mb: 2 }}
+            />
+          </Grid>
+        </Grid>
+        {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+          <Divider />
+          <Typography sx={{ mt: 2 }}>Origin</Typography>
+        </Grid> */}
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
+          <Grid>
+            <Typography sx={{ mb: 2, ml: 1 }}>Origin</Typography>
+          </Grid>
+          <Grid>
+            <TextField
+              value={beanData.origin?.country}
+              label="Country Of Origin"
+              helperText={`Provide the country the bean is from`}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+                input: {
+                  readOnly: true,
+                },
+              }}
+              size="small"
+              sx={{ width: "100%", mt: 2, mb: 2 }}
+            >
+              {beanData.origin?.country}
+            </TextField>
+          </Grid>
+          <Grid>
+            <TextField
+              label="Region"
+              value={beanData.origin?.region}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+                input: {
+                  readOnly: true,
+                },
+              }}
+              helperText="Provide The Region Of the Bean"
+              size="small"
+              sx={{ width: "100%", mt: 2, mb: 2 }}
+            />
+          </Grid>
+          <Grid>
+            <TextField
+              label="Municipality"
+              value={beanData.origin?.municipality}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+                input: {
+                  readOnly: true,
+                },
+              }}
+              helperText="Provide The Municipality Of The Bean"
+              size="small"
+              sx={{ width: "100%", mt: 2, mb: 2 }}
+            />
+          </Grid>
+        </Grid>
+        <Grid>
           <Button
+            variant="outlined"
             disabled={!beanId}
             onClick={() => {
               setOpenBeanModal(true);
             }}
+            sx={{ mr: 3 }}
           >
             Edit Current Bean
           </Button>
           <Button
+            variant="outlined"
             disabled={!beanId}
             onClick={async () => {
               try {
