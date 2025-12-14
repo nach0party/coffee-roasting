@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import TimelineIcon from "@mui/icons-material/Timeline";
 
 import api from "../../api/coffee-roasting-api";
 import toast from "react-hot-toast";
@@ -288,7 +289,9 @@ export const ManageRoast = () => {
             />
           </Grid>
           <Grid sx={{ p: 3 }} size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-            <Typography>Timeline</Typography>
+            <Typography>
+              <TimelineIcon /> Roast Event Timeline
+            </Typography>
             <List sx={{ width: "100%", bgcolor: "background.paper" }}>
               {roast.roast_event.map((event) => {
                 return (
@@ -330,14 +333,16 @@ export const ManageRoast = () => {
               })}
             </List>
           </Grid>
-          <Button
-            disabled={disableEvents()}
-            onClick={async () => {
-              setOpenNewEventModal(true);
-            }}
-          >
-            Add Event
-          </Button>
+          {!roast.ended_when && (
+            <Button
+              disabled={disableEvents()}
+              onClick={async () => {
+                setOpenNewEventModal(true);
+              }}
+            >
+              Add Event
+            </Button>
+          )}
           {/* <Button
             disabled={disableEndRoast()}
             onClick={async () => {
@@ -357,7 +362,7 @@ export const ManageRoast = () => {
           {roast.ended_when && (
             <Grid>
               <Divider>
-                <Typography>After Roast</Typography>
+                <Typography>Roast review (flavor profile)</Typography>
               </Divider>
               <Grid>
                 <TextField />
