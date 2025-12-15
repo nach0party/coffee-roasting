@@ -120,8 +120,8 @@ export const BeanLibrary = () => {
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 12, lg: 4, xl: 4 }} sx={{ p: 2 }}>
-            <Skeleton variant="rectangular" width="100%" height={350} />
-            {/* <CoffeeCuppingRadar /> */}
+            {/* <Skeleton variant="rectangular" width="100%" height={350} /> */}
+            <CoffeeCuppingRadar />
           </Grid>
         </Grid>
       </Grid>

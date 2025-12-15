@@ -6,8 +6,8 @@ The coffee bean roasting application is a dockerize project, which purpose is to
 
    - Tracks the origin of the bean, which is very commonly used in identifying quality beans in home / commercial roasting:
      1. Country
-     1. Municipality
-     1. Region
+     2. Municipality
+     3. Region
 
 2. Manage roasting the raw coffee beans
 

@@ -1,3 +1,5 @@
+import { parseISO, format } from "date-fns";
+
 
 /**
  * Calculates the progress percentage (0 to 100) between a start and target time.
@@ -29,4 +31,13 @@ export const calculateRoastProgress = (startedWhen, targetWhen, endedWhen) => {
   const progressRatio = elapsedTimeMs / totalDuration;
   const percentage = Math.round(progressRatio * 100);
   return Math.max(0, Math.min(100, percentage));
+};
+
+/**
+ * Takes an ISO 8601 timestamp and parses it into a nice looking time.
+ * @param {*} timestamp
+ */
+export const formatDate = (timestamp) => {
+  const date = parseISO(timestamp);
+  return format(date, "EEEE, MMMM do, yyyy h:mm a");
 };

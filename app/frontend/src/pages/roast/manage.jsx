@@ -1,28 +1,23 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import toast from "react-hot-toast";
 
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import TimelineIcon from "@mui/icons-material/Timeline";
-
-import api from "../../api/coffee-roasting-api";
-import toast from "react-hot-toast";
-
-import { CoffeeRoastingMenu } from "../../components/menu";
-import CoffeRoastingModal from "../../components/modal";
-import MenuItem from "@mui/material/MenuItem";
-import { RoastBar } from "../../components/roastBar";
-import { RoastTargetTimePicker } from "../../components/roastTargetTimePicker";
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
-import Box from "@mui/material/Box";
+import MenuItem from "@mui/material/MenuItem";
+
+import api from "../../api/coffee-roasting-api";
+import { CoffeeRoastingMenu } from "../../components/menu";
+import { RoastBar } from "../../components/roastBar";
+import { RoastTargetTimePicker } from "../../components/roastTargetTimePicker";
+import { CoffeRoastingModal } from "../../components/modal";
+import { RoastEventItem } from "../../components/events/roastEventItem";
 
 /**
  * Quick little reference so we can define some logic and quickly change the UI.
@@ -35,6 +30,7 @@ const RoastState = {
 };
 
 // TODO if this roast is "completed" we should mark everything as read only
+// TODO separate the roasts from the events, it's just easier to handle them separately at this point
 export const ManageRoast = () => {
   let navigate = useNavigate();
   const params = useParams();
@@ -43,6 +39,7 @@ export const ManageRoast = () => {
   // could grab event types via api if it's easier to maintain
   // This is ordered by liklihood, and we will compare last event to this one
   // TODO maybe rank them in an object or something to make it more clear / maintainable?
+  // TODO move to util
   const allEventTypes = {
     BEGIN: "begin",
     NOTE: "note",
@@ -69,7 +66,6 @@ export const ManageRoast = () => {
     availableEventTypes[0]
   );
   const [openDeleteRoastModal, setOpenDeleteRoastModal] = useState(false);
-
   // We use strings to handle the 00 and also it concatenates all
   // into a string to be passed to the API, easier this way.
   const [openTargetModal, setOpenTargetModal] = useState(false);
@@ -137,7 +133,13 @@ export const ManageRoast = () => {
   // TODO lets make this a modal / UI modal
   const addRoastEvent = async (eventType) => {
     try {
-      await api.roastEvents.create({ roast: roast.id, type: eventType });
+      const now = new Date();
+      await api.roastEvents.partialUpdate(currentEvent.id, { ended_when: now });
+      await api.roastEvents.create({
+        roast: roast.id,
+        type: eventType,
+        started_when: now,
+      });
       await getRoast();
     } catch (error) {
       console.error(error);
@@ -149,7 +151,7 @@ export const ManageRoast = () => {
 
   const deleteRoast = async () => {
     try {
-      const response = await api.roasts.delete(id);
+      await api.roasts.delete(id);
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -172,19 +174,6 @@ export const ManageRoast = () => {
     }
   };
 
-  const disableStartRoast = () => {
-    if (
-      roast.started_when ||
-      targetMinute === null ||
-      targetMinute === undefined ||
-      targetSecond === null ||
-      targetSecond === undefined
-    ) {
-      return true;
-    }
-    return false;
-  };
-
   /***
    * Only allow events if we've started a raost but have not dropped / completed it.
    */
@@ -193,13 +182,6 @@ export const ManageRoast = () => {
       return false;
     }
     return true;
-  };
-
-  const disableEndRoast = () => {
-    if (!roast.started_when || roast.ended_when) {
-      return true;
-    }
-    return false;
   };
 
   const disableTargets = () => {
@@ -255,8 +237,7 @@ export const ManageRoast = () => {
     }
   };
 
-  console.log(roast, "roast");
-  console.log(roastState, "roastState");
+  console.log(currentEvent, "currentEvent");
 
   return (
     <CoffeeRoastingMenu
@@ -274,13 +255,7 @@ export const ManageRoast = () => {
       {!loading && (
         <>
           <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-            {/** TODO better align */}
-            <Typography>
-              <Box alignContent="center" alignItems="center">
-                <AccessTimeIcon />
-                Roast Progress
-              </Box>
-            </Typography>
+            <AccessTimeIcon /> Roast Progress
             <RoastBar
               hide={hideRoastBar()}
               startedWhen={roast.started_when}
@@ -289,46 +264,11 @@ export const ManageRoast = () => {
             />
           </Grid>
           <Grid sx={{ p: 3 }} size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-            <Typography>
-              <TimelineIcon /> Roast Event Timeline
-            </Typography>
+            <TimelineIcon /> Roast Event Timeline
             <List sx={{ width: "100%", bgcolor: "background.paper" }}>
               {roast.roast_event.map((event) => {
                 return (
-                  <ListItem
-                    sx={{ height: 80 }}
-                    key={event.id}
-                    alignItems="flex-start"
-                  >
-                    <ListItemAvatar>
-                      <Avatar src="/coffee-being-roasted.jpg" />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={`${event.type} ${event.started_when} ${
-                        event.ended_when ? event.ended_when : "--"
-                      }`}
-                      // secondary={
-                      //   <Fragment>
-                      //     <Typography
-                      //       component="span"
-                      //       variant="body2"
-                      //       sx={{ color: "text.primary", display: "inline" }}
-                      //     >
-                      //       Notes:
-                      //     </Typography>
-                      //     {event.notes}
-                      //   </Fragment>
-                      // }
-                    />
-                    {/* <Button
-                    disabled={disableEvents()}
-                    onClick={() => {
-                      console.log(`clicked ${event.id}`);
-                    }}
-                  >
-                    Edit
-                  </Button> */}
-                  </ListItem>
+                  <RoastEventItem key={event.id} roast={roast} event={event} />
                 );
               })}
             </List>
@@ -343,38 +283,40 @@ export const ManageRoast = () => {
               Add Event
             </Button>
           )}
-          {/* <Button
-            disabled={disableEndRoast()}
-            onClick={async () => {
-              await endRoast();
-            }}
-          >
-            End Roast
-          </Button> */}
-          {/* <Button
-            onClick={async () => {
-              setOpenDeleteRoastModal(true);
-              // await deleteRoast();
-            }}
-          >
-            Delete Roast
-          </Button> */}
           {roast.ended_when && (
-            <Grid>
-              <Divider>
-                <Typography>Roast review (flavor profile)</Typography>
+            <Grid
+              size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}
+              sx={{ p: 3 }}
+            >
+              <Divider sx={{ pb: 3 }}>
+                <Typography>General Notes</Typography>
               </Divider>
-              <Grid>
-                <TextField />
+              <Grid
+                size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}
+                sx={{ pb: 3 }}
+              >
+                <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+                  <TextField
+                    label="Notes"
+                    defaultValue={""}
+                    helperText={`Feel free to leave any general notes`}
+                    fullWidth
+                    multiline
+                    variant="filled"
+                    rows="4"
+                    slotProps={{
+                      input: {
+                        sx: {
+                          resize: "vertical",
+                          minHeight: 100,
+                          maxHeight: 400,
+                        },
+                      },
+                    }}
+                  />
+                </Grid>
               </Grid>
-              <Grid>
-                {/** TODO make text area */}
-                <TextField // disabled={disableForm()}
-                  label="Notes"
-                  defaultValue={""}
-                  helperText={`Do you have any overall notes regarding the roast?`}
-                />
-              </Grid>
+              <Button>Save Notes</Button>
             </Grid>
           )}
           <CoffeRoastingModal
