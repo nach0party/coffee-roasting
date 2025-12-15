@@ -1,8 +1,9 @@
 import { Fragment, useState } from "react";
 import { useNavigate } from "react-router";
+
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box"; // Used for the Header Strip
+import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
@@ -14,12 +15,11 @@ import WhatshotOutlinedIcon from "@mui/icons-material/WhatshotOutlined";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import CoffeRoastingModal from "./modal";
 import Typography from "@mui/material/Typography";
 import SettingsIcon from "@mui/icons-material/Settings";
-import Snackbar from "@mui/material/Snackbar";
-import WidgetsOutlinedIcon from "@mui/icons-material/WidgetsOutlined"; // Using this for the logo
-import Stack from "@mui/material/Stack";
+import WidgetsOutlinedIcon from "@mui/icons-material/WidgetsOutlined";
+
+import { CoffeRoastingModal } from "./modal";
 
 /**
  * Main wrapper component for the app, including the header strip and menu.

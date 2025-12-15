@@ -17,13 +17,13 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function CoffeRoastingModal({
+export const CoffeRoastingModal = ({
   open,
   setOpen,
   title,
   content,
   actions,
-}) {
+}) => {
   const handleClose = () => {
     setOpen(false);
   };
@@ -55,4 +55,4 @@ export default function CoffeRoastingModal({
       </BootstrapDialog>
     </Fragment>
   );
-}
+};

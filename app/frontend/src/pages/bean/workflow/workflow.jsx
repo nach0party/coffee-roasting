@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import Button from "@mui/material/Button";
-import CoffeRoastingModal from "../../../components/modal";
 import { ManageBean } from "./manage";
 import { AssignOrigin } from "./assignOrigin";
+import { CoffeRoastingModal } from "../../../components/modal";
 
 /**
  * A Modal with a workflow that helps you establish an understanding of
