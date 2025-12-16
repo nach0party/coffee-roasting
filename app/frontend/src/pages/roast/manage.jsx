@@ -61,11 +61,13 @@ export const ManageRoast = () => {
   const [loading, setLoading] = useState(true);
   const [openNewEventModal, setOpenNewEventModal] = useState(false);
   const [currentEvent, setCurrentEvent] = useState();
+  const [generalNotes, setGeneralNotes] = useState();
   // TODO maybe define the default in just 1 place
   const [selectedEventType, setSelectedEventType] = useState(
     availableEventTypes[0]
   );
   const [openDeleteRoastModal, setOpenDeleteRoastModal] = useState(false);
+
   // We use strings to handle the 00 and also it concatenates all
   // into a string to be passed to the API, easier this way.
   const [openTargetModal, setOpenTargetModal] = useState(false);
@@ -75,6 +77,7 @@ export const ManageRoast = () => {
   const getRoast = async () => {
     const response = await api.roasts.get(id);
     setRoast(response.data);
+    setGeneralNotes(response.data.notes);
     setCurrentEvent(response.data.roast_event[0]);
   };
 
@@ -99,6 +102,14 @@ export const ManageRoast = () => {
         target_duration: `${targetMinute}:${targetSecond}`,
       });
       await getRoast();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const updateGeneralNotes = async () => {
+    try {
+      await api.roasts.partialUpdate(roast.id, { notes: generalNotes });
     } catch (error) {
       console.error(error);
     }
@@ -297,8 +308,14 @@ export const ManageRoast = () => {
               >
                 <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
                   <TextField
+                    onBlur={async () => {
+                      await updateGeneralNotes();
+                    }}
+                    onChange={(e) => {
+                      setGeneralNotes(e.target.value);
+                    }}
                     label="Notes"
-                    defaultValue={""}
+                    value={generalNotes}
                     helperText={`Feel free to leave any general notes`}
                     fullWidth
                     multiline
@@ -316,7 +333,6 @@ export const ManageRoast = () => {
                   />
                 </Grid>
               </Grid>
-              <Button>Save Notes</Button>
             </Grid>
           )}
           <CoffeRoastingModal

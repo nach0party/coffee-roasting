@@ -1,45 +1,50 @@
+import { useState } from "react";
+
 import Avatar from "@mui/material/Avatar";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
-import { formatDate } from "../utils";
 import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import api from "../../api/coffee-roasting-api";
 
 export const NoteRoastEvent = ({ roast, event }) => {
+  const [notes, setNotes] = useState(event.notes);
+
+  const saveNotes = async () => {
+    try {
+      await api.roastEvents.partialUpdate(event.id, { notes: notes });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <ListItem sx={{ height: 80 }} key={event.id} alignItems="flex-start">
+    <ListItem sx={{ minHeight: 100 }} key={event.id} alignItems="center">
       <ListItemAvatar>
         <Avatar src="/coffee-being-roasted.jpg" />
       </ListItemAvatar>
-      <ListItemText
-        sx={{ width: 450 }}
-        primary={<Typography>Note</Typography>}
-        secondary={
-          <Typography>
-            {event.started_when ? formatDate(event.started_when) : "-- "}
-            {event.ended_when ? formatDate(event.ended_when) : "-- "}
-          </Typography>
-        }
-      />
-      <TextField
-        label="Notes"
-        defaultValue={""}
-        // helperText={`Feel free to leave any general notes`}
-        fullWidth
-        multiline
-        variant="outlined"
-        // rows="4"
-        slotProps={{
-          input: {
-            sx: {
-              resize: "vertical",
-              // minHeight: 100,
-              // maxHeight: 400,
-            },
-          },
-        }}
-      />
+      <Stack alignItems={"flex-end"} sx={{ width: "100%" }}>
+        <ListItemText
+          sx={{ width: "100%" }}
+          secondary={
+            <Typography sx={{ color: "primary.light" }}>Note:</Typography>
+          }
+        />
+        <TextField
+          defaultValue={notes}
+          sx={{ width: "100%" }}
+          onChange={(e) => {
+            setNotes(e.target.value);
+          }}
+          onBlur={async () => {
+            await saveNotes();
+          }}
+          variant="standard"
+          fullWidth
+        />
+      </Stack>
     </ListItem>
   );
 };
