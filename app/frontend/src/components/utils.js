@@ -39,5 +39,29 @@ export const calculateRoastProgress = (startedWhen, targetWhen, endedWhen) => {
  */
 export const formatDate = (timestamp) => {
   const date = parseISO(timestamp);
-  return format(date, "EEEE, MMMM do, yyyy h:mm a");
+  return format(date, "h:mm:ss a");
 };
+
+export const formatStartDate = (startedWhen) => {
+  if (!startedWhen){
+    return '--'
+  }
+  return `${formatDate(startedWhen)}`
+}
+
+export const formatEndDate = (endedWhen) => {
+  if (!endedWhen){
+    return '--'
+  }
+  return `${formatDate(endedWhen)}`
+}
+
+export const formatStartEndDate  = (startedWhen, endedWhen) => {
+  if (!startedWhen && !endedWhen){
+    return '--'
+  } else if (startedWhen && !endedWhen){
+    return `${formatDate(startedWhen)}`
+  } else if (startedWhen && endedWhen){
+    return `${formatDate(startedWhen)} - ${formatDate(endedWhen)}`
+  }
+}

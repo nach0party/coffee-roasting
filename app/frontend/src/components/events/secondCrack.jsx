@@ -3,16 +3,21 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
+import { formatStartDate } from "../utils";
 
 export const SecondCrackRoastEvent = ({ event }) => {
   return (
-    <ListItem sx={{ height: 80 }} key={event.id} alignItems="flex-start">
+    <ListItem sx={{ height: 80 }} key={event.id} alignItems="center">
       <ListItemAvatar>
         <Avatar src="/coffee-being-roasted.jpg" />
       </ListItemAvatar>
       <ListItemText
-        primary={<Typography>test</Typography>}
-        secondary={<Typography>test</Typography>}
+        primary={
+          <Typography sx={{ color: "primary.light" }}>Second Crack:</Typography>
+        }
+        secondary={
+          <Typography>{formatStartDate(event.started_when)}</Typography>
+        }
       />
     </ListItem>
   );

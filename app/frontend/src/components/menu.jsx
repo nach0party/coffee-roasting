@@ -114,64 +114,74 @@ export const CoffeeRoastingMenu = ({
           onClose={(e) => toggleDrawer(e)}
         >
           <Box
-            sx={{ width: 300 }}
+            sx={{
+              width: 300,
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+            }}
             role="presentation"
             onClick={(e) => toggleDrawer(e)}
             onKeyDown={(e) => toggleDrawer(e)}
           >
-            <List>
-              <ListItem
-                onClick={async () => {
-                  await startRoast();
-                }}
-                key={"roast-menu"}
-                disablePadding
-              >
-                <ListItemButton>
-                  <ListItemIcon>
-                    <LocalFireDepartmentIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Start Roast"} />
-                </ListItemButton>
-              </ListItem>
-              <ListItem
-                onClick={goToRawCoffeeBeanLibrary}
-                key={"Raw Coffee Bean Library"}
-                disablePadding
-              >
-                <ListItemButton>
-                  <ListItemIcon>
-                    <WhatshotOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Raw Coffee Bean Library"} />
-                </ListItemButton>
-              </ListItem>
-            </List>
-            <Divider />
-            <List>
-              <ListItem
-                onClick={goToDashboard}
-                key={"dashboard"}
-                disablePadding
-              >
-                <ListItemButton>
-                  <ListItemIcon>
-                    <LocalFireDepartmentIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Dashboard"} />
-                </ListItemButton>
-              </ListItem>
-            </List>
-            <List>
-              <ListItem key={"settings"} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <SettingsIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Settings"} />
-                </ListItemButton>
-              </ListItem>
-            </List>
+            {/** Top content of the drawer */}
+            <Box sx={{ flexGrow: 1 }}>
+              <List>
+                <ListItem
+                  onClick={goToDashboard}
+                  key={"dashboard"}
+                  disablePadding
+                >
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <LocalFireDepartmentIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Dashboard"} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem
+                  onClick={async () => {
+                    await startRoast();
+                  }}
+                  key={"roast-menu"}
+                  disablePadding
+                >
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <LocalFireDepartmentIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Start Roast"} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem
+                  onClick={goToRawCoffeeBeanLibrary}
+                  key={"Coffee Bean Library"}
+                  disablePadding
+                >
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <WhatshotOutlinedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Coffee Bean Library"} />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </Box>
+
+            {/** Bottom content of the drawer */}
+            <Box>
+              <Divider />
+              <List>
+                <ListItem key={"settings"} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <SettingsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Settings"} />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </Box>
           </Box>
         </Drawer>
       </Fragment>
