@@ -6,11 +6,11 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import api from "../../api/coffee-roasting-api";
 import { CoffeeRoastingMenu } from "../../components/menu";
@@ -18,6 +18,8 @@ import { RoastBar } from "../../components/roastBar";
 import { RoastTargetTimePicker } from "../../components/roastTargetTimePicker";
 import { CoffeRoastingModal } from "../../components/modal";
 import { RoastEventItem } from "../../components/events/roastEventItem";
+import { Stopwatch } from "../../components/stopwatch";
+import { Box } from "@mui/material";
 
 /**
  * Quick little reference so we can define some logic and quickly change the UI.
@@ -73,6 +75,7 @@ export const ManageRoast = () => {
   const [openTargetModal, setOpenTargetModal] = useState(false);
   const [targetMinute, setTargetMinute] = useState("13");
   const [targetSecond, setTargetSecond] = useState("00");
+  const [timerRunning, setTimerRunning] = useState(false);
 
   const getRoast = async () => {
     const response = await api.roasts.get(id);
@@ -92,6 +95,13 @@ export const ManageRoast = () => {
   useEffect(() => {
     if (roast) {
       setRoastState(determineRoastState());
+
+      // control timer
+      if (roast.started_when && !roast.ended_when) {
+        setTimerRunning(true);
+      } else if (roast.started_when && !roast.ended_when) {
+        setTimerRunning(false);
+      }
     }
   }, [roast]);
 
@@ -202,6 +212,7 @@ export const ManageRoast = () => {
     return false;
   };
 
+  // TODO consolidate some of this hiding logic...
   const hideRoastBar = () => {
     if (!roast.started_when) {
       return true;
@@ -249,6 +260,7 @@ export const ManageRoast = () => {
   };
 
   console.log(currentEvent, "currentEvent");
+  console.log(timerRunning, "timerRunning");
 
   return (
     <CoffeeRoastingMenu
@@ -266,7 +278,20 @@ export const ManageRoast = () => {
       {!loading && (
         <>
           <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-            <AccessTimeIcon /> Roast Progress
+            {roast.started_when && (
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+              >
+                <AccessTimeIcon />
+                <Stopwatch
+                  startTime={roast.started_when}
+                  endTime={roast.ended_when}
+                  run={timerRunning}
+                  setRun={setTimerRunning}
+                  variant="h5"
+                />
+              </Box>
+            )}
             <RoastBar
               hide={hideRoastBar()}
               startedWhen={roast.started_when}
