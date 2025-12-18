@@ -20,6 +20,7 @@ import CoffeeCuppingRadar from "../../../charts/cupping";
 export const BeanLibrary = () => {
   const [existingBeans, setExistingBeans] = useState([]);
   const [selectedBean, setSelectedBean] = useState();
+  const [openBeanModal, setOpenBeanModal] = useState(false);
 
   const getBeans = async (search) => {
     const params = {};
@@ -77,8 +78,8 @@ export const BeanLibrary = () => {
           spacing={2}
           sx={{
             // Enforces the area to remain if there's no data
-            minHeight: 225,
-            maxHeight: 225,
+            minHeight: 200,
+            maxHeight: 200,
             overflowX: "auto",
             width: "100%",
             paddingY: 2,
@@ -87,9 +88,15 @@ export const BeanLibrary = () => {
             marginBottom: 0,
           }}
         >
-          {existingBeans.length === 0 && (
-            <Typography variant="h5">No Beans Match This Search</Typography>
-          )}
+          <RawBeanAvatar
+            sx={{ width: 125, height: 125 }}
+            name="New Bean"
+            onClick={() => {
+              setSelectedBean();
+              setOpenBeanModal(true);
+            }}
+            src={"/new-bean3.avif"}
+          />
           {existingBeans.map((bean) => {
             const isSelected = selectedBean === bean.id;
             return (
@@ -101,22 +108,36 @@ export const BeanLibrary = () => {
                   selectBean(bean.id);
                 }}
                 isSelected={isSelected}
+                src={"/coffee-being-roasted.jpg"}
               />
             );
           })}
         </Stack>
       </Grid>
-      <Grid sx={{ mt: 2, borderRadius: 1 }}>
+      <Grid sx={{ borderRadius: 1, p: 1 }}>
         <Grid container size={{ lg: 12 }}>
+          {/* <Grid size={{ xs: 12, sm: 12, lg: 8, xl: 8 }} sx={{ p: 1 }}> */}
+          {/* <Button
+              variant="outlined"
+              onClick={() => {
+                setSelectedBean();
+                setOpenBeanModal(true);
+              }}
+            >
+              New Bean
+            </Button> */}
+          {/* </Grid> */}
           {/** TODO replace at some point */}
           <Grid
             size={{ xs: 12, sm: 12, lg: 8, xl: 8 }}
-            sx={{ borderRadius: 5, borderColor: "white", p: 2 }}
+            sx={{ borderRadius: 5, borderColor: "white", p: 1 }}
           >
             <ViewBean
               beanId={selectedBean}
               setBeanId={setSelectedBean}
               getBeans={getBeans}
+              openBeanModal={openBeanModal}
+              setOpenBeanModal={setOpenBeanModal}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 12, lg: 4, xl: 4 }} sx={{ p: 2 }}>

@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
  * @param {*} param0
  * @returns
  */
-export const RawBeanAvatar = ({ name, onClick, isSelected, sx }) => {
+export const RawBeanAvatar = ({ name, onClick, isSelected, sx, src }) => {
   return (
     <>
       <Box sx={{ textAlign: "center", p: 0, m: 0 }}>
@@ -38,7 +38,7 @@ export const RawBeanAvatar = ({ name, onClick, isSelected, sx }) => {
               : "none",
             ...sx,
           })}
-          src="/coffee-being-roasted.jpg"
+          src={src}
         />
         <Divider sx={{ mt: 2 }} />
         <Typography
@@ -47,7 +47,7 @@ export const RawBeanAvatar = ({ name, onClick, isSelected, sx }) => {
             p: 0,
             lineHeight: 1.0,
             mt: 1,
-            display: "block", // Ensure it respects margin settings
+            display: "block",
           }}
           variant="overline"
         >

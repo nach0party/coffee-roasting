@@ -22,9 +22,14 @@ const generateDefaultBeanState = () => {
  * @param {*} param0
  * @returns
  */
-export const ViewBean = ({ beanId, setBeanId, getBeans }) => {
+export const ViewBean = ({
+  beanId,
+  setBeanId,
+  getBeans,
+  openBeanModal,
+  setOpenBeanModal,
+}) => {
   const [beanData, setBeanData] = useState(generateDefaultBeanState());
-  const [openBeanModal, setOpenBeanModal] = useState(false);
 
   const getAndSetBeanAndOrigin = async () => {
     const response = await api.beans.get(beanId);
@@ -35,6 +40,8 @@ export const ViewBean = ({ beanId, setBeanId, getBeans }) => {
     const reloadData = async () => {
       if (beanId) {
         await getAndSetBeanAndOrigin();
+      } else {
+        setBeanData(generateDefaultBeanState());
       }
     };
     reloadData();
@@ -52,16 +59,6 @@ export const ViewBean = ({ beanId, setBeanId, getBeans }) => {
       <Grid container size={12} spacing={2}>
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
           {/** TODO move "New Bean" to the top where it's a non movable  */}
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setBeanId();
-              setBeanData(generateDefaultBeanState());
-              setOpenBeanModal(true);
-            }}
-          >
-            New Bean
-          </Button>
         </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <Grid>

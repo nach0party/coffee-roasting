@@ -15,8 +15,6 @@ export const Stopwatch = ({
     return null;
   }
 
-  console.log(startTime, "startTime");
-  console.log(endTime, "endTime");
   const start = new Date(startTime);
   let now = new Date();
   // Make sure you pin the end time
