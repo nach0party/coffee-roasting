@@ -54,6 +54,7 @@ export const BeanWorkflow = ({
     }
   };
 
+  // TODO maybe just flatten each step into its own modal...
   return (
     <CoffeRoastingModal
       open={open}

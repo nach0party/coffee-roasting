@@ -88,6 +88,7 @@ export const BeanLibrary = () => {
             marginBottom: 0,
           }}
         >
+          {/** TODO fix this, it's being wonky... */}
           <RawBeanAvatar
             sx={{ width: 125, height: 125 }}
             name="New Bean"

@@ -4,8 +4,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import api from "../../api/coffee-roasting-api";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
 import { BeanWorkflow } from "./workflow/workflow";
+import { CoffeRoastingModal } from "../../components/modal";
 
 const generateDefaultBeanState = () => {
   return {
@@ -30,6 +30,7 @@ export const ViewBean = ({
   setOpenBeanModal,
 }) => {
   const [beanData, setBeanData] = useState(generateDefaultBeanState());
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const getAndSetBeanAndOrigin = async () => {
     const response = await api.beans.get(beanId);
@@ -126,7 +127,7 @@ export const ViewBean = ({
           </Grid>
           <Grid>
             <TextField
-              value={beanData.origin?.country}
+              value={beanData.origin?.country || ""}
               label="Country Of Origin"
               helperText={`Provide the country the bean is from`}
               slotProps={{
@@ -139,14 +140,12 @@ export const ViewBean = ({
               }}
               size="small"
               sx={{ width: "100%", mt: 2, mb: 2 }}
-            >
-              {beanData.origin?.country}
-            </TextField>
+            />
           </Grid>
           <Grid>
             <TextField
               label="Region"
-              value={beanData.origin?.region}
+              value={beanData.origin?.region || ""}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -163,7 +162,7 @@ export const ViewBean = ({
           <Grid>
             <TextField
               label="Municipality"
-              value={beanData.origin?.municipality}
+              value={beanData.origin?.municipality || ""}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -193,13 +192,7 @@ export const ViewBean = ({
             variant="outlined"
             disabled={!beanId}
             onClick={async () => {
-              try {
-                await api.beans.delete(beanId);
-                setBeanId();
-                await getBeans();
-              } catch (error) {
-                console.error(error);
-              }
+              setOpenDeleteModal(true);
             }}
           >
             Delete Bean
@@ -213,6 +206,29 @@ export const ViewBean = ({
         open={openBeanModal}
         setOpen={setOpenBeanModal}
         getBeans={getBeans}
+      />
+      <CoffeRoastingModal
+        open={openDeleteModal}
+        setOpen={setOpenDeleteModal}
+        title={<Grid>Are you absolutely sure?</Grid>}
+        content={<Grid>testing</Grid>}
+        actions={
+          <Grid>
+            <Button
+              onClick={async () => {
+                try {
+                  await api.beans.delete(beanId);
+                  setBeanId();
+                  await getBeans();
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+            >
+              Delete
+            </Button>
+          </Grid>
+        }
       />
     </Grid>
   );
