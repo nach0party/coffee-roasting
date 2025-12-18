@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Button from "@mui/material/Button";
 import { ManageBean } from "./manage";
 import { AssignOrigin } from "./assignOrigin";
@@ -9,7 +9,6 @@ import { CoffeRoastingModal } from "../../../components/modal";
  * what exactly it is to manage a bean.  We display it another place, but,
  * here is where we're actually going to manage those values.
  */
-// TODO should we pass up beanId or the whole bean object to avoid API calls...
 export const BeanWorkflow = ({
   beanId,
   setBeanId,
@@ -21,14 +20,19 @@ export const BeanWorkflow = ({
   const [disableNextStep, setDisableNextStep] = useState(false);
   const stepHierarchy = ["manageBean", "assignOrigin"];
 
-  // TODO better naming
-  // Handles executing downstream functions defined in the child components
   const childRef = useRef(null);
   const handleParentExecute = async () => {
     if (childRef.current) {
       return await childRef.current.executeChildLogic();
     }
   };
+
+  // enforces a total workflow reset when new bean selected
+  useEffect(() => {
+    rotateTitle();
+    rotateNextStepTitle();
+    setStep(stepHierarchy[0]);
+  }, [beanId]);
 
   const rotateTitle = () => {
     if (step === "manageBean") {
@@ -44,12 +48,13 @@ export const BeanWorkflow = ({
 
   const rotateNextStepTitle = () => {
     if (step === "manageBean") {
-      return "Assign your bean an origin";
+      return "Next";
     } else if (step === "assignOrigin") {
-      return "Create a new origin";
+      return "Finish";
     }
   };
 
+  // TODO maybe just flatten each step into its own modal...
   return (
     <CoffeRoastingModal
       open={open}
@@ -84,7 +89,6 @@ export const BeanWorkflow = ({
           >
             Back
           </Button>
-          <Button>Save And Exit</Button>
           <Button
             disabled={disableNextStep}
             onClick={async () => {

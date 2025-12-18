@@ -41,19 +41,23 @@ export const ManageBean = ({ beanId, setDisableNextStep, ref }) => {
     setName(newValue);
   };
 
+  // TODO anyway aroudn this nonsense I've built?
+  // TODO I think I absolutely hate this structure...
   useImperativeHandle(ref, () => ({
     executeChildLogic: async () => {
-      try {
-        const response = await api.beans.create({
-          name: name,
-          sca_grade: grade,
-          processing: processing,
-        });
-        return {
-          beanData: { ...response.data },
-        };
-      } catch (error) {
-        return error;
+      if (!beanId) {
+        try {
+          const response = await api.beans.create({
+            name: name,
+            sca_grade: grade,
+            processing: processing,
+          });
+          return {
+            beanData: { ...response.data },
+          };
+        } catch (error) {
+          return error;
+        }
       }
     },
   }));
@@ -98,6 +102,27 @@ export const ManageBean = ({ beanId, setDisableNextStep, ref }) => {
     setGrade(newValue);
   };
 
+  /**
+   * Only auto / smooth update if you received the beanId
+   * @returns
+   */
+  const updateAndSetBean = async () => {
+    if (beanId) {
+      try {
+        const response = await api.beans.partialUpdate(beanId, {
+          name: name,
+          sca_grade: grade,
+          processing: processing,
+        });
+        setName(response.data.name || "");
+        setGrade(response.data.sca_grade || "");
+        setProcessing(response.data.processing);
+      } catch (error) {
+        return error;
+      }
+    }
+  };
+
   console.log(grade, "grade");
 
   const hasErrors = (fieldName) => {
@@ -126,6 +151,9 @@ export const ManageBean = ({ beanId, setDisableNextStep, ref }) => {
               inputLabel: {
                 shrink: true,
               },
+            }}
+            onBlur={async () => {
+              await updateAndSetBean();
             }}
             onChange={(event) => {
               handleNameChange(event.target.value);
