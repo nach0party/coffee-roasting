@@ -10,7 +10,13 @@ import Typography from "@mui/material/Typography";
  * @param {*} param0
  * @returns
  */
-export const RawBeanAvatar = ({ name, onClick, isSelected, sx, src }) => {
+export const RawBeanAvatar = ({
+  name,
+  onClick,
+  isSelected,
+  sx,
+  src = "/coffee-being-roasted.jpg",
+}) => {
   return (
     <>
       <Box sx={{ textAlign: "center", p: 0, m: 0 }}>

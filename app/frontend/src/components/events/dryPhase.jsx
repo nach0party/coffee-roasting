@@ -16,7 +16,7 @@ export const DryPhaseRoastEvent = ({ event }) => {
           <Typography sx={{ color: "primary.light" }}>Dry Phase:</Typography>
         }
         secondary={
-          <Typography>{formatStartDate(event.started_when)}</Typography>
+          <Typography>{formatStartDate(event.created_when)}</Typography>
         }
       />
     </ListItem>

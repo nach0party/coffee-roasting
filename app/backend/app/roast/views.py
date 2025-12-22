@@ -23,7 +23,7 @@ class RoastViewSet(CoffeeRoastingModelViewSet):
     the concept of roasting beans.
     """
 
-    queryset = Roast.objects.prefetch_related("roast_event").all()
+    queryset = Roast.objects.prefetch_related("roast_event").filter(deleted_when=None)
     filterset_class = RoastFilter
 
     def get_serializer_class(self):
@@ -105,7 +105,7 @@ class RoastEventViewSet(CoffeeRoastingModelViewSet):
     the course of a certain time period.
     """
 
-    queryset = RoastEvent.objects.all()
+    queryset = RoastEvent.objects.filter(deleted_when=None)
     serializer_class = RoastEventSerializer
     filterset_fields = (
         "roast",

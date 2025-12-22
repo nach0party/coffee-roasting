@@ -155,11 +155,9 @@ export const ManageRoast = () => {
   const addRoastEvent = async (eventType) => {
     try {
       const now = new Date();
-      await api.roastEvents.partialUpdate(currentEvent.id, { ended_when: now });
       await api.roastEvents.create({
         roast: roast.id,
         type: eventType,
-        started_when: now,
       });
       await getRoast();
     } catch (error) {

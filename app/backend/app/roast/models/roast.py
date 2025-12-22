@@ -1,5 +1,6 @@
-from typing import Any, TYPE_CHECKING, Iterable
+from typing import Any, TYPE_CHECKING
 from uuid import uuid4, UUID
+from django.utils import timezone
 from django.db import models, transaction
 from app.shared.mixins import TimeStampMixin
 
@@ -13,9 +14,11 @@ class Roast(TimeStampMixin):
 
     if TYPE_CHECKING:
         from .roast_event import RoastEvent
+        from .roast_profile import RoastProfile
 
         bean_id: UUID
         roast_event: models.QuerySet[RoastEvent]
+        roast_profile: models.QuerySet[RoastProfile]
 
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     bean = models.ForeignKey(
@@ -55,8 +58,7 @@ class Roast(TimeStampMixin):
 
     @transaction.atomic()
     def delete(self, using: Any = None, keep_parents: bool = False) -> tuple[int, dict[str, int]]:
-        """
-        TODO consider doing some soft deleting instead of hard deleting.
-        """
         self.roast_event.all().delete()
-        return super().delete(using, keep_parents)
+        self.roast_profile.all().delete()
+        count = Roast.objects.filter(id=self.id).update(deleted_when=timezone.now())
+        return (count, {self._meta.label: count})

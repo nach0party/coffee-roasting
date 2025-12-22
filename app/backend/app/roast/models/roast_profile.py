@@ -1,7 +1,9 @@
-from uuid import uuid4
+from typing import TYPE_CHECKING, Any
+from uuid import uuid4, UUID
 from enum import Enum
 from app.shared.mixins import TimeStampMixin
 from django.db import models
+from django.utils import timezone
 
 
 class RoastProfile(TimeStampMixin):
@@ -14,6 +16,9 @@ class RoastProfile(TimeStampMixin):
     TODO I'm basing this off of coffee bean corrals flavor profile,
          but, I could consider using different sources, or, make it fully customizable
     """
+
+    if TYPE_CHECKING:
+        roast_id: UUID
 
     # TODO us this for json validation on save
     class Flavors(Enum):
@@ -37,9 +42,13 @@ class RoastProfile(TimeStampMixin):
 
     # TODO make profiles customizable?
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    roast = models.ForeignKey("roast.Roast", on_delete=models.CASCADE, related_name="profile")
+    roast = models.ForeignKey("roast.Roast", on_delete=models.CASCADE, related_name="roast_profile")
     flavors = models.JSONField(null=True, blank=True)
     attributes = models.JSONField(null=True, blank=True)
 
     class Meta:
         db_table = "roast_profiles"
+
+    def delete(self, using: Any = None, keep_parents: bool = False) -> tuple[int, dict[str, int]]:
+        count = RoastProfile.objects.filter(id=self.id).update(deleted_when=timezone.now())
+        return (count, {self._meta.label: count})

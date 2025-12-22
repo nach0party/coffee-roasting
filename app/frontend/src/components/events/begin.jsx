@@ -16,7 +16,7 @@ export const BeginRoastEvent = ({ roast, event }) => {
           <Typography sx={{ color: "primary.light" }}>Roast Begins:</Typography>
         }
         secondary={
-          <Typography>{formatStartDate(event.started_when)}</Typography>
+          <Typography>{formatStartDate(event.created_when)}</Typography>
         }
       />
     </ListItem>

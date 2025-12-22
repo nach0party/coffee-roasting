@@ -11,7 +11,7 @@ class BeansViewSet(CoffeeRoastingModelViewSet):
     of beans that can be roasted.
     """
 
-    queryset = Bean.objects.select_related("origin").all()
+    queryset = Bean.objects.select_related("origin").filter(deleted_when=None)
     search_fields = [
         "name",
         "processing",
