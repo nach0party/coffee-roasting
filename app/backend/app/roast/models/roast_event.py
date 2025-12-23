@@ -1,6 +1,8 @@
-from uuid import uuid4
+from typing import Any, TYPE_CHECKING
+from uuid import uuid4, UUID
 from enum import Enum
 from django.db import models
+from django.utils import timezone
 from app.shared.mixins import TimeStampMixin
 
 
@@ -14,6 +16,9 @@ class RoastEvent(TimeStampMixin):
          event
     """
 
+    if TYPE_CHECKING:
+        roast_id: UUID
+
     class Type(Enum):
         """
         Each event type, more or less when an event has a started_when -> ended when timespan,
@@ -23,22 +28,20 @@ class RoastEvent(TimeStampMixin):
 
         BEGIN = "begin"
         NOTE = "note"
-        DRY_PHASE = "dry_phase"
+        DRY_PHASE_START = "dry_phase_start"
+        DRY_PHASE_END = "dry_phase_end"
         FIRST_CRACK = "first_crack"
         SECOND_CRACK = "second_crack"
+        EMERGENCY_STOP = "emergency_stop"
         DROP = "drop"
+        COOLING_START = "cooling_start"
+        COOLING_STOP = "cooling_stop"
 
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     roast = models.ForeignKey(
         "roast.Roast",
         on_delete=models.CASCADE,
         related_name="roast_event",
-    )
-    started_when = models.DateTimeField(
-        null=True, blank=True, help_text="When the event tecnically started"
-    )
-    ended_when = models.DateTimeField(
-        null=True, blank=True, help_text="When the even technically ended"
     )
     type = models.CharField(
         max_length=255, choices=[(type_choice.value, type_choice.name) for type_choice in Type]
@@ -52,3 +55,7 @@ class RoastEvent(TimeStampMixin):
     class Meta:
         db_table = "roast_events"
         ordering = ["-created_when"]
+
+    def delete(self, using: Any = None, keep_parents: bool = False) -> tuple[int, dict[str, int]]:
+        count = RoastEvent.objects.filter(id=self.id).update(deleted_when=timezone.now())
+        return (count, {self._meta.label: count})

@@ -11,7 +11,7 @@ from app.origin.serializers import OriginSerializer
 
 class OriginViewSet(CoffeeRoastingModelViewSet):
 
-    queryset = Origin.objects.all()
+    queryset = Origin.objects.filter(deleted_when=None)
     serializer_class = OriginSerializer
 
     # TODO are we certain we want to do this?  Might make a HUGE selectfield...

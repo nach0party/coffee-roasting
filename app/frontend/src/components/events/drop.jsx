@@ -14,7 +14,7 @@ export const DropRoastEvent = ({ event }) => {
       <ListItemText
         primary={<Typography sx={{ color: "primary.light" }}>Drop</Typography>}
         secondary={
-          <Typography>{formatStartDate(event.started_when)}</Typography>
+          <Typography>{formatStartDate(event.created_when)}</Typography>
         }
       />
     </ListItem>

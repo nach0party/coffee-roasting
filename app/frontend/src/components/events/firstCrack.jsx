@@ -16,7 +16,7 @@ export const FirstCrackRoastEvent = ({ event }) => {
           <Typography sx={{ color: "primary.light" }}>First Crack:</Typography>
         }
         secondary={
-          <Typography>{formatStartDate(event.started_when)}</Typography>
+          <Typography>{formatStartDate(event.created_when)}</Typography>
         }
       />
     </ListItem>
