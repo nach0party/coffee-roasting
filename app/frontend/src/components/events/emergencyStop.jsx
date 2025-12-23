@@ -4,16 +4,8 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import { formatStartDate } from "../utils";
-import { allEventTypes } from "./utils";
 
-export const DryPhaseRoastEvent = ({ event }) => {
-  let title = "";
-  if (event.type === allEventTypes.DRY_PHASE_START) {
-    title = "Dry Phase Starts";
-  } else if (event.type === allEventTypes.DRY_PHASE_END) {
-    title = "Dry Phase Ends";
-  }
-
+export const EmergencyStopEvent = ({ event }) => {
   return (
     <ListItem sx={{ height: 80 }} key={event.id} alignItems="center">
       <ListItemAvatar>
@@ -21,7 +13,9 @@ export const DryPhaseRoastEvent = ({ event }) => {
       </ListItemAvatar>
       <ListItemText
         primary={
-          <Typography sx={{ color: "primary.light" }}>{title}</Typography>
+          <Typography sx={{ color: "primary.light" }}>
+            Emergency Stop
+          </Typography>
         }
         secondary={
           <Typography>{formatStartDate(event.created_when)}</Typography>

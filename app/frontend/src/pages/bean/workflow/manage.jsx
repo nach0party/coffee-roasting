@@ -123,8 +123,6 @@ export const ManageBean = ({ beanId, setDisableNextStep, ref }) => {
     }
   };
 
-  console.log(grade, "grade");
-
   const hasErrors = (fieldName) => {
     if (errors[fieldName] && errors[fieldName].length > 0) {
       return true;

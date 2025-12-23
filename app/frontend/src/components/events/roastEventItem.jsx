@@ -7,6 +7,8 @@ import { FirstCrackRoastEvent } from "./firstCrack";
 import { SecondCrackRoastEvent } from "./secondCrack";
 import { DropRoastEvent } from "./drop";
 import { allEventTypes } from "./utils";
+import { EmergencyStopEvent } from "./emergencyStop";
+import { CoolingEvent } from "./coolingEvent";
 
 /**
  * Just handles / centralizes some routing and granular control of
@@ -24,6 +26,12 @@ export const RoastEventItem = ({ roast, event }) => {
       {event.type === allEventTypes.DRY_PHASE_START && (
         <DryPhaseRoastEvent roast={roast} event={event} />
       )}
+      {event.type === allEventTypes.DRY_PHASE_END && (
+        <DryPhaseRoastEvent roast={roast} event={event} />
+      )}
+      {event.type === allEventTypes.EMERGENCY_STOP && (
+        <EmergencyStopEvent roast={roast} event={event} />
+      )}
       {event.type === allEventTypes.FIRST_CRACK && (
         <FirstCrackRoastEvent roast={roast} event={event} />
       )}
@@ -32,6 +40,12 @@ export const RoastEventItem = ({ roast, event }) => {
       )}
       {event.type === allEventTypes.DROP && (
         <DropRoastEvent roast={roast} event={event} />
+      )}
+      {event.type === allEventTypes.COOLING_START && (
+        <CoolingEvent roast={roast} event={event} />
+      )}
+      {event.type === allEventTypes.COOLING_STOP && (
+        <CoolingEvent roast={roast} event={event} />
       )}
     </Stack>
   );

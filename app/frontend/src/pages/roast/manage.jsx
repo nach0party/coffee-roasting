@@ -270,9 +270,6 @@ export const ManageRoast = () => {
     }
   };
 
-  console.log(currentEvent, "currentEvent");
-  console.log(timerRunning, "timerRunning");
-
   return (
     <CoffeeRoastingMenu
       title={"Manage Roast"}

@@ -6,12 +6,12 @@ import Typography from "@mui/material/Typography";
 import { formatStartDate } from "../utils";
 import { allEventTypes } from "./utils";
 
-export const DryPhaseRoastEvent = ({ event }) => {
+export const CoolingEvent = ({ event }) => {
   let title = "";
-  if (event.type === allEventTypes.DRY_PHASE_START) {
-    title = "Dry Phase Starts";
-  } else if (event.type === allEventTypes.DRY_PHASE_END) {
-    title = "Dry Phase Ends";
+  if (event.type === allEventTypes.COOLING_START) {
+    title = "Cooling Starts";
+  } else if (event.type === allEventTypes.COOLING_STOP) {
+    title = "Cooling Ends";
   }
 
   return (
