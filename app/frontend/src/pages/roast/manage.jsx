@@ -20,6 +20,7 @@ import { CoffeRoastingModal } from "../../components/modal";
 import { RoastEventItem } from "../../components/events/roastEventItem";
 import { Stopwatch } from "../../components/stopwatch";
 import { Box } from "@mui/material";
+import { allEventTypes } from "../../components/events/utils";
 
 /**
  * Quick little reference so we can define some logic and quickly change the UI.
@@ -42,20 +43,24 @@ export const ManageRoast = () => {
   // This is ordered by liklihood, and we will compare last event to this one
   // TODO maybe rank them in an object or something to make it more clear / maintainable?
   // TODO move to util
-  const allEventTypes = {
-    BEGIN: "begin",
-    NOTE: "note",
-    DRY_PHASE: "dry_phase",
-    FIRST_CRACK: "first_crack",
-    SECOND_CRACK: "second_crack",
-    DROP: "drop",
-  };
+  // const allEventTypes = {
+  //   BEGIN: "begin",
+  //   NOTE: "note",
+  //   DRY_PHASE: "dry_phase",
+  //   FIRST_CRACK: "first_crack",
+  //   SECOND_CRACK: "second_crack",
+  //   DROP: "drop",
+  // };
 
   const availableEventTypes = [
     "note",
-    "dry_phase",
+    "dry_phase_start",
+    "dry_phase_end",
     "first_crack",
     "second_crack",
+    "emergency_stop",
+    "cooling_start",
+    "cooling_stop",
   ];
 
   const [roast, setRoast] = useState();
@@ -182,14 +187,22 @@ export const ManageRoast = () => {
       return "Begin";
     } else if (name === allEventTypes.NOTE) {
       return "Note";
-    } else if (name === allEventTypes.DRY_PHASE) {
-      return "Dry Phase";
+    } else if (name === allEventTypes.DRY_PHASE_START) {
+      return "Dry Phase Starts";
+    } else if (name === allEventTypes.DRY_PHASE_END) {
+      return "Dry Phase Ends";
     } else if (name === allEventTypes.FIRST_CRACK) {
       return "First Crack";
     } else if (name === allEventTypes.SECOND_CRACK) {
       return "Second Crack";
+    } else if (name === allEventTypes.EMERGENCY_STOP) {
+      return "Emergency Stop";
     } else if (name === allEventTypes.DROP) {
       return "Drop";
+    } else if (name === allEventTypes.COOLING_START) {
+      return "Cooling Starts";
+    } else if (name === allEventTypes.COOLING_STOP) {
+      return "Cooling Ends";
     }
   };
 

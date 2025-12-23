@@ -58,7 +58,15 @@ class Roast(TimeStampMixin):
 
     @transaction.atomic()
     def delete(self, using: Any = None, keep_parents: bool = False) -> tuple[int, dict[str, int]]:
-        self.roast_event.all().delete()
-        self.roast_profile.all().delete()
+        """
+        There is a bit of hierarchal data to be cleaned up, if we decide to delete this data.
+        """
+
+        for event in self.roast_event.all():
+            event.delete()
+
+        for profile in self.roast_profile.all():
+            profile.delete()
+
         count = Roast.objects.filter(id=self.id).update(deleted_when=timezone.now())
         return (count, {self._meta.label: count})

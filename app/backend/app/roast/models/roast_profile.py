@@ -20,6 +20,7 @@ class RoastProfile(TimeStampMixin):
     if TYPE_CHECKING:
         roast_id: UUID
 
+    # TODO should this be customizable? I think so... there's a lot of ways to perceive roast tastes
     # TODO us this for json validation on save
     class Flavors(Enum):
         SPICY = "spicy"
