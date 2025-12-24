@@ -5,8 +5,9 @@ import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import { formatStartDate } from "../utils";
 import { allEventTypes } from "./utils";
+import { TimeFromStart } from "../timeFromStart";
 
-export const CoolingEvent = ({ event }) => {
+export const CoolingEvent = ({ roast, event }) => {
   let title = "";
   if (event.type === allEventTypes.COOLING_START) {
     title = "Cooling Starts";
@@ -26,6 +27,10 @@ export const CoolingEvent = ({ event }) => {
         secondary={
           <Typography>{formatStartDate(event.created_when)}</Typography>
         }
+      />
+      <TimeFromStart
+        roastStart={roast.started_when}
+        eventCreated={event.created_when}
       />
     </ListItem>
   );

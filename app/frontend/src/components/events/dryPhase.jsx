@@ -5,8 +5,9 @@ import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import { formatStartDate } from "../utils";
 import { allEventTypes } from "./utils";
+import { TimeFromStart } from "../timeFromStart";
 
-export const DryPhaseRoastEvent = ({ event }) => {
+export const DryPhaseRoastEvent = ({ roast, event }) => {
   let title = "";
   if (event.type === allEventTypes.DRY_PHASE_START) {
     title = "Dry Phase Starts";
@@ -26,6 +27,10 @@ export const DryPhaseRoastEvent = ({ event }) => {
         secondary={
           <Typography>{formatStartDate(event.created_when)}</Typography>
         }
+      />
+      <TimeFromStart
+        roastStart={roast.started_when}
+        eventCreated={event.created_when}
       />
     </ListItem>
   );

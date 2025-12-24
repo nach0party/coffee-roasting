@@ -4,6 +4,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import { formatStartDate } from "../utils";
+import { TimeFromStart } from "../timeFromStart";
 
 export const BeginRoastEvent = ({ roast, event }) => {
   return (
@@ -18,6 +19,10 @@ export const BeginRoastEvent = ({ roast, event }) => {
         secondary={
           <Typography>{formatStartDate(event.created_when)}</Typography>
         }
+      />
+      <TimeFromStart
+        roastStart={roast.started_when}
+        eventCreated={event.created_when}
       />
     </ListItem>
   );
