@@ -37,6 +37,11 @@ This a dockerized project that contains the following:
 
 Everything being dockerized simplified and streamlined development. This is a personal project, should only be installed on small at home networks.
 
+# State of the project:
+
+I'm using Trello to track tasks.
+[View the Trello Board](https://trello.com/b/iGIpsjJx/coffee-roasting-app)
+
 # Installation instructions:
 
 1. Make sure you have docker installed on your system, wherever you want to run the program from.

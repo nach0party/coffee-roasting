@@ -46,23 +46,27 @@ class RoastViewSet(CoffeeRoastingModelViewSet):
             1. Start the counter (when did it start)
             2. Create the first event indicating things have begun
                 - We also make sure that event is the start type
+            3. Create the second event, which is that the dry phase has begun
         """
         roast = cast(Roast, self.get_object())
         if roast.started_when:
             raise ValidationError({"started_when": ["Roast has already started"]})
 
+        roast.started_when = timezone.now()
+
         event = RoastEvent()
         event.roast = roast
-
-        start_time = timezone.now()
-
-        # trigger the first event
-        roast.started_when = start_time
-        event.started_when = start_time
         event.type = RoastEvent.Type.BEGIN.value
 
         roast.save()
         event.save()
+
+        # make this a setting, and optional
+        dry_phase = RoastEvent()
+        dry_phase.roast = roast
+        dry_phase.started_when = timezone.now()
+        dry_phase.type = RoastEvent.Type.DRY_PHASE_START.value
+        dry_phase.save()
 
         return Response(RetrieveListRoastSerializer(roast).data, status=status.HTTP_202_ACCEPTED)
 
@@ -82,17 +86,11 @@ class RoastViewSet(CoffeeRoastingModelViewSet):
         if roast.ended_when:
             raise ValidationError({"ended_when": ["Roast has already been"]})
 
+        roast.ended_when = timezone.now()
+
         event = RoastEvent()
         event.roast = roast
-
-        end_time = timezone.now()
-
-        # trigger the last event, which is essentially the completion of the roast.
-        roast.ended_when = end_time
-        event.started_when = end_time
-        event.ended_when = end_time
         event.type = RoastEvent.Type.DROP.value
-
         roast.save()
         event.save()
 
