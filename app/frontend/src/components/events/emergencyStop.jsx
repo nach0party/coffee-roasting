@@ -4,8 +4,9 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import { formatStartDate } from "../utils";
+import { TimeFromStart } from "../timeFromStart";
 
-export const EmergencyStopEvent = ({ event }) => {
+export const EmergencyStopEvent = ({ roast, event }) => {
   return (
     <ListItem sx={{ height: 80 }} key={event.id} alignItems="center">
       <ListItemAvatar>
@@ -20,6 +21,10 @@ export const EmergencyStopEvent = ({ event }) => {
         secondary={
           <Typography>{formatStartDate(event.created_when)}</Typography>
         }
+      />
+      <TimeFromStart
+        roastStart={roast.started_when}
+        eventCreated={event.created_when}
       />
     </ListItem>
   );

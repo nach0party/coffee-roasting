@@ -13,11 +13,11 @@ The coffee bean roasting application is a dockerize project, which purpose is to
 
    - Tracks how long you plan on roasting the bean
    - Tracks how close you are to hitting your target roast time
-   - Tracks what temperature you plan on roasting the beans at
    - Tracks notes at intervals during the roasting process
-   - Leave notes / tasting profiles of roasted beans
 
-3. Analytics
+### Upcoming:
+
+1. Analytics
    - Figure out what coffee beans match certain flavor profiles based off of previous roasts
    - Figure out best time to roast, roast levels, and flavor profile based off of previous experiences
 
