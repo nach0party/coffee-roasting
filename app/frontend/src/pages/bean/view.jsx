@@ -4,7 +4,6 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import api from "../../api/coffee-roasting-api";
 import Typography from "@mui/material/Typography";
-import { BeanWorkflow } from "./workflow/workflow";
 import { CoffeRoastingModal } from "../../components/modal";
 
 const generateDefaultBeanState = () => {
@@ -17,8 +16,9 @@ const generateDefaultBeanState = () => {
 };
 
 /**
- * Provides a view / display of a configurable bean.  Does not handle configuration but
- * just all the properties of what we consider to be a bean.
+ * Provides a view / display of a configurable bean.  Does not handle
+ * configuration but just all the properties of what we consider to be a bean to
+ * be displayed in an ordinary fashion.
  * @param {*} param0
  * @returns
  */
@@ -26,8 +26,8 @@ export const ViewBean = ({
   beanId,
   setBeanId,
   getBeans,
-  openBeanModal,
-  setOpenBeanModal,
+  // openBeanModal,
+  // setOpenBeanModal,
 }) => {
   const [beanData, setBeanData] = useState(generateDefaultBeanState());
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -46,7 +46,7 @@ export const ViewBean = ({
       }
     };
     reloadData();
-  }, [beanId, openBeanModal]);
+  }, [beanId]);
 
   return (
     <Grid
@@ -177,36 +177,7 @@ export const ViewBean = ({
             />
           </Grid>
         </Grid>
-        <Grid>
-          <Button
-            variant="outlined"
-            disabled={!beanId}
-            onClick={() => {
-              setOpenBeanModal(true);
-            }}
-            sx={{ mr: 3 }}
-          >
-            Edit Current Bean
-          </Button>
-          <Button
-            variant="outlined"
-            disabled={!beanId}
-            onClick={async () => {
-              setOpenDeleteModal(true);
-            }}
-          >
-            Delete Bean
-          </Button>
-        </Grid>
       </Grid>
-      {/** TODO maybe this should live off of the view...? */}
-      <BeanWorkflow
-        beanId={beanId}
-        setBeanId={setBeanId}
-        open={openBeanModal}
-        setOpen={setOpenBeanModal}
-        getBeans={getBeans}
-      />
       <CoffeRoastingModal
         open={openDeleteModal}
         setOpen={setOpenDeleteModal}

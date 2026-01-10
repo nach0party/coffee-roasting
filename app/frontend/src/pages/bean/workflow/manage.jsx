@@ -1,8 +1,7 @@
-import { useEffect, useState, useImperativeHandle } from "react";
+import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
-import api from "../../../api/coffee-roasting-api";
 
 const gradeRange = {
   MIN: 0,
@@ -11,56 +10,16 @@ const gradeRange = {
 
 const availableProcessing = ["washed", "natural", "honey"];
 
-/**
- * TODO This is really the new management component...
- * @param {*} param0
- */
-export const ManageBean = ({ beanId }) => {
-  const [name, setName] = useState();
-  const [grade, setGrade] = useState();
-  const [processing, setProcessing] = useState(availableProcessing[0]);
+export const ManageBean = ({ bean }) => {
+  const [name, setName] = useState(bean?.name || "");
+  const [grade, setGrade] = useState(bean?.sca_grade || "");
+  const [processing, setProcessing] = useState(
+    bean?.processing || availableProcessing[0]
+  );
   const [errors, setErrors] = useState({});
-
-  const getAndSetBean = async () => {
-    const response = await api.beans.get(beanId);
-    setName(response.data.name || "");
-    setGrade(response.data.sca_grade || "");
-    setProcessing(response.data.processing);
-  };
-
-  useEffect(() => {
-    const reloadData = async () => {
-      if (beanId) {
-        await getAndSetBean();
-      }
-    };
-    reloadData();
-  }, [beanId]);
-
   const handleNameChange = (newValue) => {
     setName(newValue);
   };
-
-  // TODO anyway aroudn this nonsense I've built?
-  // TODO I think I absolutely hate this structure...
-  // useImperativeHandle(ref, () => ({
-  //   executeChildLogic: async () => {
-  //     if (!beanId) {
-  //       try {
-  //         const response = await api.beans.create({
-  //           name: name,
-  //           sca_grade: grade,
-  //           processing: processing,
-  //         });
-  //         return {
-  //           beanData: { ...response.data },
-  //         };
-  //       } catch (error) {
-  //         return error;
-  //       }
-  //     }
-  //   },
-  // }));
 
   const handleGradeChange = (newValue) => {
     setGrade();
@@ -100,27 +59,6 @@ export const ManageBean = ({ beanId }) => {
     }
     // setDisableNextStep(false);
     setGrade(newValue);
-  };
-
-  /**
-   * Only auto / smooth update if you received the beanId
-   * @returns
-   */
-  const updateAndSetBean = async () => {
-    if (beanId) {
-      try {
-        const response = await api.beans.partialUpdate(beanId, {
-          name: name,
-          sca_grade: grade,
-          processing: processing,
-        });
-        setName(response.data.name || "");
-        setGrade(response.data.sca_grade || "");
-        setProcessing(response.data.processing);
-      } catch (error) {
-        return error;
-      }
-    }
   };
 
   const hasErrors = (fieldName) => {
