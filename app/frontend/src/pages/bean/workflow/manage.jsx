@@ -15,7 +15,7 @@ const availableProcessing = ["washed", "natural", "honey"];
  * TODO This is really the new management component...
  * @param {*} param0
  */
-export const ManageBean = ({ beanId, setDisableNextStep, ref }) => {
+export const ManageBean = ({ beanId }) => {
   const [name, setName] = useState();
   const [grade, setGrade] = useState();
   const [processing, setProcessing] = useState(availableProcessing[0]);
@@ -43,24 +43,24 @@ export const ManageBean = ({ beanId, setDisableNextStep, ref }) => {
 
   // TODO anyway aroudn this nonsense I've built?
   // TODO I think I absolutely hate this structure...
-  useImperativeHandle(ref, () => ({
-    executeChildLogic: async () => {
-      if (!beanId) {
-        try {
-          const response = await api.beans.create({
-            name: name,
-            sca_grade: grade,
-            processing: processing,
-          });
-          return {
-            beanData: { ...response.data },
-          };
-        } catch (error) {
-          return error;
-        }
-      }
-    },
-  }));
+  // useImperativeHandle(ref, () => ({
+  //   executeChildLogic: async () => {
+  //     if (!beanId) {
+  //       try {
+  //         const response = await api.beans.create({
+  //           name: name,
+  //           sca_grade: grade,
+  //           processing: processing,
+  //         });
+  //         return {
+  //           beanData: { ...response.data },
+  //         };
+  //       } catch (error) {
+  //         return error;
+  //       }
+  //     }
+  //   },
+  // }));
 
   const handleGradeChange = (newValue) => {
     setGrade();
@@ -70,7 +70,7 @@ export const ManageBean = ({ beanId, setDisableNextStep, ref }) => {
       setErrors({
         grade: [`Grade must be a number.`],
       });
-      setDisableNextStep(true);
+      // setDisableNextStep(true);
       return;
     }
 
@@ -86,7 +86,7 @@ export const ManageBean = ({ beanId, setDisableNextStep, ref }) => {
           `Grade is lower than the minimum allowed value of ${gradeRange.MIN}`,
         ],
       });
-      setDisableNextStep(true);
+      // setDisableNextStep(true);
       return;
     }
     if (newValue > gradeRange.MAX) {
@@ -95,10 +95,10 @@ export const ManageBean = ({ beanId, setDisableNextStep, ref }) => {
           `Grade is higher than the minimum allowed value of ${gradeRange.MAX}`,
         ],
       });
-      setDisableNextStep(true);
+      // setDisableNextStep(true);
       return;
     }
-    setDisableNextStep(false);
+    // setDisableNextStep(false);
     setGrade(newValue);
   };
 

@@ -1,10 +1,10 @@
-import { useState, useEffect, useImperativeHandle } from "react";
+import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import api from "../../../api/coffee-roasting-api";
 
-export const AssignOrigin = ({ beanId, ref }) => {
+export const AssignOrigin = ({ beanId }) => {
   const [availableCountries, setAvailableCountries] = useState([]);
   const [country, setCountry] = useState("United States");
   const [region, setRegion] = useState("");
@@ -32,23 +32,6 @@ export const AssignOrigin = ({ beanId, ref }) => {
   const handleMunicipalityChange = (newValue) => {
     setMunicipality(newValue);
   };
-
-  useImperativeHandle(ref, () => ({
-    executeChildLogic: async () => {
-      // TODO when to update vs create ...
-      const response = await api.origins.create({
-        country: country,
-        region: region,
-        municipality: municipality,
-      });
-      await api.beans.partialUpdate(beanId, {
-        origin: response.data.id,
-      });
-      return {
-        originData: {},
-      };
-    },
-  }));
 
   return (
     <Grid

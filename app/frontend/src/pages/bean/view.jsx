@@ -220,6 +220,7 @@ export const ViewBean = ({
                   await api.beans.delete(beanId);
                   setBeanId();
                   await getBeans();
+                  setOpenDeleteModal(false);
                 } catch (error) {
                   console.error(error);
                 }
