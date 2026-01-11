@@ -16,11 +16,13 @@ import { ViewBean } from "../view";
 import { CoffeeRoastingMenu } from "../../../components/menu";
 import CoffeeCuppingRadar from "../../../charts/cupping";
 import { BeanWorkflow } from "../workflow/workflow";
+import { CoffeRoastingModal } from "../../../components/modal";
 
 export const BeanLibrary = () => {
   const [existingBeans, setExistingBeans] = useState([]);
-  const [selectedBean, setSelectedBean] = useState({});
+  const [selectedBean, setSelectedBean] = useState(); // TODO empty object, or, undefined
   const [openBeanWorkflow, setOpenBeanWorkflow] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const getBeans = async (search) => {
     const params = {};
@@ -174,14 +176,37 @@ export const BeanLibrary = () => {
           </Grid>
         </Grid>
       </Grid>
-      {openBeanWorkflow && (
-        <BeanWorkflow
-          selectedBean={selectedBean}
-          setSelectedBean={setSelectedBean}
-          getBeans={getBeans}
-          setOpenBeanWorkflow={setOpenBeanWorkflow}
-        />
-      )}
+      <BeanWorkflow
+        bean={selectedBean}
+        setBean={setSelectedBean}
+        getBeans={getBeans}
+        openBeanWorkflow={openBeanWorkflow}
+        setOpenBeanWorkflow={setOpenBeanWorkflow}
+      />
+      <CoffeRoastingModal
+        open={openDeleteModal}
+        setOpen={setOpenDeleteModal}
+        title={<Grid>Are you absolutely sure?</Grid>}
+        content={<Grid>testing</Grid>}
+        actions={
+          <Grid>
+            <Button
+              onClick={async () => {
+                try {
+                  await api.beans.delete(selectedBean.id);
+                  setSelectedBean();
+                  await getBeans();
+                  setOpenDeleteModal(false);
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+            >
+              Delete
+            </Button>
+          </Grid>
+        }
+      />
     </CoffeeRoastingMenu>
   );
 };

@@ -3,8 +3,12 @@ import Button from "@mui/material/Button";
 import { ManageBean } from "./manage";
 import { AssignOrigin } from "./assignOrigin";
 import { CoffeRoastingModal } from "../../../components/modal";
+import api from "../../../api/coffee-roasting-api";
 
-const stepHierarchy = ["manageBean", "assignOrigin"];
+const stepHierarchy = {
+  ManageBean: "manageBean",
+  AssignOrigin: "assignOrigin",
+};
 
 /**
  * A series of modals with a workflow that helps you establish an
@@ -14,54 +18,82 @@ export const BeanWorkflow = ({
   bean,
   setBean,
   getBeans,
+  openBeanWorkflow,
   setOpenBeanWorkflow,
 }) => {
-  const [step, setStep] = useState(stepHierarchy[0]);
-  const [openManageBean, setOpenManageBean] = useState(true);
-  const [openAssignOrigin, setOpenAssignOrigin] = useState(false);
+  const [step, setStep] = useState(stepHierarchy.ManageBean);
 
   useEffect(() => {
-    setOpenManageBean(true);
+    setStep(stepHierarchy.ManageBean);
+    if (!bean) {
+      setBean({});
+    }
   }, []);
 
   return (
     <>
-      {step === "manageBean" && (
-        <CoffeRoastingModal
-          open={step === "manageBean"}
-          setOpen={() => {
-            setOpenBeanWorkflow(false);
-            setOpenManageBean(false);
-          }}
-          title={"Manage your bean"}
-          content={<ManageBean bean={bean} />}
-          actions={
-            <>
-              <Button onClick={() => {}}>Back</Button>
-              <Button onClick={async () => {}}>Next</Button>
-            </>
-          }
-        />
-      )}
-      {step === "assignOrigin" && (
-        <CoffeRoastingModal
-          open={openAssignOrigin}
-          setOpen={() => {
-            setOpenAssignOrigin(false);
-            setOpenManageBean(false);
-          }}
-          title={"Assign your bean an origin"}
-          content={<AssignOrigin bean={bean} />}
-          actions={
-            <>
-              <Button onClick={() => {}}>Back</Button>
-              <Button disabled={disableNextStep} onClick={async () => {}}>
-                Finish
-              </Button>
-            </>
-          }
-        />
-      )}
+      <CoffeRoastingModal
+        open={openBeanWorkflow && step === stepHierarchy.ManageBean}
+        setOpen={() => {
+          setOpenBeanWorkflow(false);
+        }}
+        title={"Manage your bean"}
+        content={<ManageBean bean={bean} />}
+        actions={
+          <>
+            <Button
+              onClick={() => {
+                setOpenBeanWorkflow(false);
+                setOpenManageBean(false);
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              onClick={async () => {
+                try {
+                  if (bean?.id) {
+                    const response = await api.beans.partialUpdate(
+                      bean.id,
+                      bean
+                    );
+                    console.log(response, "response");
+                  } else {
+                    const response = await api.beans.create(bean);
+                    setBean(response.data);
+                  }
+                  await getBeans();
+                  setStep("assignOrigin");
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+            >
+              Next
+            </Button>
+          </>
+        }
+      />
+      <CoffeRoastingModal
+        open={openBeanWorkflow && step === stepHierarchy.AssignOrigin}
+        setOpen={() => {
+          // setOpenAssignOrigin(false);
+        }}
+        title={"Assign your bean an origin"}
+        content={<AssignOrigin bean={bean} />}
+        actions={
+          <>
+            <Button
+              onClick={() => {
+                setStep(stepHierarchy.ManageBean);
+              }}
+            >
+              Back
+            </Button>
+            <Button onClick={async () => {}}>Finish</Button>
+          </>
+        }
+      />
     </>
   );
 };

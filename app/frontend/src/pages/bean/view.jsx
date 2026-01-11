@@ -30,7 +30,6 @@ export const ViewBean = ({
   // setOpenBeanModal,
 }) => {
   const [beanData, setBeanData] = useState(generateDefaultBeanState());
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const getAndSetBeanAndOrigin = async () => {
     const response = await api.beans.get(beanId);
@@ -178,30 +177,6 @@ export const ViewBean = ({
           </Grid>
         </Grid>
       </Grid>
-      <CoffeRoastingModal
-        open={openDeleteModal}
-        setOpen={setOpenDeleteModal}
-        title={<Grid>Are you absolutely sure?</Grid>}
-        content={<Grid>testing</Grid>}
-        actions={
-          <Grid>
-            <Button
-              onClick={async () => {
-                try {
-                  await api.beans.delete(beanId);
-                  setBeanId();
-                  await getBeans();
-                  setOpenDeleteModal(false);
-                } catch (error) {
-                  console.error(error);
-                }
-              }}
-            >
-              Delete
-            </Button>
-          </Grid>
-        }
-      />
     </Grid>
   );
 };

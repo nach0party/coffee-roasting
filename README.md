@@ -1,10 +1,12 @@
-# The Coffee Bean Roasting Application
+# The At Home Coffee Bean Roasting Application
 
-The coffee bean roasting application is a dockerize project, which purpose is to assist home roasters (mainly myself but others are more than welcome to try it) with having their own free home roasting software. The program allows you to:
+### NOTE: A lot of this is constantly changing / in flux, development is not complete and is a continuous work in progress
+
+The coffee bean roasting application is a dockerize project, which purpose is to assist home roasters (mainly myself but others are more than welcome to try it) with having their own free home roasting software. This is a constant work in progress, I am currently using it and iterating on it as time goes along at my leisure. The program allows you to:
 
 1. Manage raw coffee beans that you want to roast
 
-   - Tracks the origin of the bean, which is very commonly used in identifying quality beans in home / commercial roasting:
+   - Tracks the origin of the bean, which is very commonly used in identifying quality beans in home roasting:
      1. Country
      2. Municipality
      3. Region
@@ -22,8 +24,6 @@ The coffee bean roasting application is a dockerize project, which purpose is to
    - Figure out best time to roast, roast levels, and flavor profile based off of previous experiences
 
 More or less, the more you use this software, the more powerful it becomes. You can use it to aggregate roasts to find what you're in the mood for, what coffee beeans you love but would be useful to make sure you have a variety of flavor profiles (on hand).
-
-### NOTE: A lot of this is constantly changing / in flux, development is not complete and is a continuous work in progress
 
 # Implementation:
 

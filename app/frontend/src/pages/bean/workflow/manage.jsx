@@ -10,19 +10,12 @@ const gradeRange = {
 
 const availableProcessing = ["washed", "natural", "honey"];
 
+// TODO check for the id, if not an ID go ahead and build out a start version of the object...
 export const ManageBean = ({ bean }) => {
-  const [name, setName] = useState(bean?.name || "");
-  const [grade, setGrade] = useState(bean?.sca_grade || "");
-  const [processing, setProcessing] = useState(
-    bean?.processing || availableProcessing[0]
-  );
   const [errors, setErrors] = useState({});
-  const handleNameChange = (newValue) => {
-    setName(newValue);
-  };
 
   const handleGradeChange = (newValue) => {
-    setGrade();
+    bean.sca_grade = null;
     setErrors({ grade: [] });
 
     if (isNaN(newValue)) {
@@ -58,7 +51,7 @@ export const ManageBean = ({ bean }) => {
       return;
     }
     // setDisableNextStep(false);
-    setGrade(newValue);
+    bean.sca_grade = newValue;
   };
 
   const hasErrors = (fieldName) => {
@@ -81,7 +74,7 @@ export const ManageBean = ({ bean }) => {
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
             label="Name"
-            value={name}
+            value={bean?.name}
             // FIXME so when the data gets loaded in it automatically moves
             slotProps={{
               inputLabel: {
@@ -92,20 +85,20 @@ export const ManageBean = ({ bean }) => {
               await updateAndSetBean();
             }}
             onChange={(event) => {
-              handleNameChange(event.target.value);
+              bean.name = event.target.value;
             }}
             helperText="Provide the name of the Bean"
             size="small"
             sx={{ width: "100%" }}
           >
-            {name}
+            {bean?.name}
           </TextField>
         </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
-            error={hasErrors("grade")}
+            // error={hasErrors("grade")}
             label="Grade"
-            value={grade}
+            value={bean?.sca_grade}
             slotProps={{
               inputLabel: {
                 shrink: true,
@@ -118,7 +111,7 @@ export const ManageBean = ({ bean }) => {
             size="small"
             sx={{ width: "100%" }}
           >
-            {grade}
+            {bean?.sca_grade}
           </TextField>
         </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
@@ -136,7 +129,7 @@ export const ManageBean = ({ bean }) => {
                   key={index}
                   value={process}
                   onClick={(event) => {
-                    setProcessing(process);
+                    bean.process(process);
                   }}
                 >
                   {process}
