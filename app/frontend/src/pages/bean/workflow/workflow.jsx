@@ -1,119 +1,139 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import { ManageBean } from "./manage";
 import { AssignOrigin } from "./assignOrigin";
 import { CoffeRoastingModal } from "../../../components/modal";
+import api from "../../../api/coffee-roasting-api";
+
+const stepHierarchy = {
+  ManageBean: "manageBean",
+  AssignOrigin: "assignOrigin",
+};
 
 /**
- * A Modal with a workflow that helps you establish an understanding of
- * what exactly it is to manage a bean.  We display it another place, but,
- * here is where we're actually going to manage those values.
+ * A series of modals with a workflow that helps you establish an
+ * understanding of what exactly it is to manage a bean.
+ *
+ * TODO setting the bean may need to happen outside of the component only, that may make more sense...
  */
 export const BeanWorkflow = ({
-  beanId,
-  setBeanId,
-  open,
-  setOpen,
+  bean,
+  setBean,
   getBeans,
+  openBeanWorkflow,
+  setOpenBeanWorkflow,
 }) => {
-  const [step, setStep] = useState("manageBean");
-  const [disableNextStep, setDisableNextStep] = useState(false);
-  const stepHierarchy = ["manageBean", "assignOrigin"];
+  const [step, setStep] = useState(stepHierarchy.ManageBean);
+  const [disableManageBeanNextStep, setDisableManageBeanNextStep] =
+    useState(false);
 
-  const childRef = useRef(null);
-  const handleParentExecute = async () => {
-    if (childRef.current) {
-      return await childRef.current.executeChildLogic();
-    }
-  };
-
-  // enforces a total workflow reset when new bean selected
   useEffect(() => {
-    rotateTitle();
-    rotateNextStepTitle();
-    setStep(stepHierarchy[0]);
-  }, [beanId]);
-
-  const rotateTitle = () => {
-    if (step === "manageBean") {
-      if (beanId) {
-        return "Manage your bean";
-      } else {
-        return "Create a new bean";
-      }
-    } else if (step === "assignOrigin") {
-      return "Assign your bean an origin";
+    if (!bean) {
+      setBean({});
     }
-  };
+    setStep(stepHierarchy.ManageBean);
+  }, [bean]);
 
-  const rotateNextStepTitle = () => {
-    if (step === "manageBean") {
-      return "Next";
-    } else if (step === "assignOrigin") {
-      return "Finish";
-    }
-  };
+  console.log(bean, "beanworkflow (bean)");
 
-  // TODO maybe just flatten each step into its own modal...
+  // TODO manage the bean state depending on the things we want updated per component??
   return (
-    <CoffeRoastingModal
-      open={open}
-      setOpen={setOpen}
-      title={rotateTitle()}
-      content={
-        <>
-          {step === "manageBean" && (
-            <ManageBean
-              beanId={beanId}
-              setDisableNextStep={setDisableNextStep}
-              ref={childRef}
-            />
-          )}
-          {step === "assignOrigin" && (
-            <AssignOrigin beanId={beanId} ref={childRef} />
-          )}
-        </>
-      }
-      actions={
-        <>
-          <Button
-            onClick={() => {
-              const currentStepIndex = stepHierarchy.indexOf(step);
-              const backStep = stepHierarchy[currentStepIndex - 1];
-              if (currentStepIndex > 0) {
-                setStep(backStep);
-                return;
-              }
-              setOpen(false);
-            }}
-          >
-            Back
-          </Button>
-          <Button
-            disabled={disableNextStep}
-            onClick={async () => {
-              try {
-                const results = await handleParentExecute();
-                if (results?.beanData) {
-                  setBeanId(results.beanData.id);
+    <>
+      <CoffeRoastingModal
+        open={openBeanWorkflow && step === stepHierarchy.ManageBean}
+        setOpen={() => {
+          setOpenBeanWorkflow(false);
+        }}
+        title={"Manage your bean"}
+        content={
+          <ManageBean
+            bean={bean}
+            setBean={setBean}
+            setDisableManageBeanNextStep={setDisableManageBeanNextStep}
+          />
+        }
+        actions={
+          <>
+            <Button
+              onClick={() => {
+                setOpenBeanWorkflow(false);
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              disabled={disableManageBeanNextStep}
+              onClick={async () => {
+                // TOOD track changes, save only if needed
+                try {
+                  if (bean?.id) {
+                    await api.beans.partialUpdate(bean.id, {
+                      name: bean.name,
+                      sca_grade: bean.sca_grade,
+                      processing: bean.processing,
+                    });
+                    const beanResponse = await api.beans.get(bean.id);
+                    setBean(beanResponse.data);
+                  } else {
+                    const createResponse = await api.beans.create(bean);
+                    const beanResponse = await api.beans.get(
+                      createResponse.data.id
+                    );
+                    setBean(beanResponse.data);
+                  }
                   await getBeans();
+                  setStep("assignOrigin");
+                } catch (error) {
+                  console.error(error);
                 }
-                const currentStepIndex = stepHierarchy.indexOf(step);
-                const nextStep = stepHierarchy[currentStepIndex + 1];
-                if (!nextStep) {
-                  setOpen(false);
-                  return;
+              }}
+            >
+              Next
+            </Button>
+          </>
+        }
+      />
+      {/** TODO really would prefer to separate some of this a bit more */}
+      <CoffeRoastingModal
+        open={openBeanWorkflow && step === stepHierarchy.AssignOrigin}
+        setOpen={() => {
+          setOpenBeanWorkflow(false);
+        }}
+        title={"Assign your bean an origin"}
+        content={<AssignOrigin bean={bean} setBean={setBean} />}
+        actions={
+          <>
+            <Button
+              onClick={() => {
+                setStep(stepHierarchy.ManageBean);
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              onClick={async () => {
+                // there's probably a more proper way to break all this down but
+                // this is fine and / or works for now.
+                // TODO if this origin already exists we should let them use that id of the already existing one
+                try {
+                  // we ALWAYS create a new origin if they change the data
+                  const originResponse = await api.origins.create(bean.origin);
+                  await api.beans.partialUpdate(bean.id, {
+                    origin: originResponse.data.id,
+                  });
+                  const beanResponse = await api.beans.get(bean.id);
+                  setBean(beanResponse.data);
+                  setOpenBeanWorkflow(false);
+                } catch (error) {
+                  console.error(error);
                 }
-                setStep(nextStep);
-              } catch (error) {
-                console.error(error);
-              }
-            }}
-          >
-            {rotateNextStepTitle()}
-          </Button>
-        </>
-      }
-    />
+              }}
+            >
+              Finish
+            </Button>
+          </>
+        }
+      />
+    </>
   );
 };

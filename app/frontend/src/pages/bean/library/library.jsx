@@ -15,12 +15,14 @@ import { RawBeanAvatar } from "../../../components/rawBeanAvatar/rawBeanAvatar";
 import { ViewBean } from "../view";
 import { CoffeeRoastingMenu } from "../../../components/menu";
 import CoffeeCuppingRadar from "../../../charts/cupping";
+import { BeanWorkflow } from "../workflow/workflow";
+import { CoffeRoastingModal } from "../../../components/modal";
 
-// this is repeat of BeanSelection logic, should we centralize some generic functions?
 export const BeanLibrary = () => {
   const [existingBeans, setExistingBeans] = useState([]);
-  const [selectedBean, setSelectedBean] = useState();
-  const [openBeanModal, setOpenBeanModal] = useState(false);
+  const [bean, setBean] = useState({});
+  const [openBeanWorkflow, setOpenBeanWorkflow] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const getBeans = async (search) => {
     const params = {};
@@ -39,15 +41,15 @@ export const BeanLibrary = () => {
     initialize();
   }, []);
 
-  // TODO skeleton for loading on first attempt
-  // auto select first bean in the menu...
-  const selectBean = async (id) => {
-    if (id === selectedBean) {
-      setSelectedBean();
-      return;
-    }
-    setSelectedBean(id);
-  };
+  // const selectBean = async (bean) => {
+  //   if (bean?.id === bean?.id) {
+  //     setBean({});
+  //     return;
+  //   }
+  //   setBean(bean);
+  // };
+
+  // console.log(bean, "(selected) bean");
 
   return (
     <CoffeeRoastingMenu
@@ -78,8 +80,8 @@ export const BeanLibrary = () => {
           spacing={2}
           sx={{
             // Enforces the area to remain if there's no data
-            minHeight: 200,
-            maxHeight: 200,
+            minHeight: 215,
+            maxHeight: 215,
             overflowX: "auto",
             width: "100%",
             paddingY: 2,
@@ -88,25 +90,25 @@ export const BeanLibrary = () => {
             marginBottom: 0,
           }}
         >
-          {/** TODO fix this, it's being wonky... */}
           <RawBeanAvatar
             sx={{ width: 125, height: 125 }}
             name="New Bean"
             onClick={() => {
-              setSelectedBean();
-              setOpenBeanModal(true);
+              // console.log("clicked?");
+              setBean({});
+              setOpenBeanWorkflow(true);
             }}
             src={"/new-bean3.avif"}
           />
-          {existingBeans.map((bean) => {
-            const isSelected = selectedBean === bean.id;
+          {existingBeans.map((mappedBean) => {
+            const isSelected = bean?.id === mappedBean.id;
             return (
               <RawBeanAvatar
-                key={bean.id}
+                key={mappedBean.id}
                 sx={{ width: 125, height: 125 }}
-                name={bean.name}
+                name={mappedBean.name}
                 onClick={() => {
-                  selectBean(bean.id);
+                  setBean(mappedBean);
                 }}
                 isSelected={isSelected}
                 src={"/coffee-being-roasted.jpg"}
@@ -117,32 +119,34 @@ export const BeanLibrary = () => {
       </Grid>
       <Grid sx={{ borderRadius: 1, p: 1 }}>
         <Grid container size={{ lg: 12 }}>
-          {/* <Grid size={{ xs: 12, sm: 12, lg: 8, xl: 8 }} sx={{ p: 1 }}> */}
-          {/* <Button
-              variant="outlined"
-              onClick={() => {
-                setSelectedBean();
-                setOpenBeanModal(true);
-              }}
-            >
-              New Bean
-            </Button> */}
-          {/* </Grid> */}
-          {/** TODO replace at some point */}
           <Grid
             size={{ xs: 12, sm: 12, lg: 8, xl: 8 }}
             sx={{ borderRadius: 5, borderColor: "white", p: 1 }}
           >
-            <ViewBean
-              beanId={selectedBean}
-              setBeanId={setSelectedBean}
-              getBeans={getBeans}
-              openBeanModal={openBeanModal}
-              setOpenBeanModal={setOpenBeanModal}
-            />
+            <ViewBean bean={bean} />
+            <Grid sx={{ mt: 2 }}>
+              <Button
+                variant="outlined"
+                disabled={!bean?.id}
+                onClick={() => {
+                  setOpenBeanWorkflow(true);
+                }}
+                sx={{ mr: 3 }}
+              >
+                Edit Current Bean
+              </Button>
+              <Button
+                variant="outlined"
+                disabled={!bean?.id}
+                onClick={async () => {
+                  setOpenDeleteModal(true);
+                }}
+              >
+                Delete Bean
+              </Button>
+            </Grid>
           </Grid>
           <Grid size={{ xs: 12, sm: 12, lg: 4, xl: 4 }} sx={{ p: 2 }}>
-            {/* <Skeleton variant="rectangular" width="100%" height={350} /> */}
             <CoffeeCuppingRadar />
           </Grid>
         </Grid>
@@ -155,8 +159,6 @@ export const BeanLibrary = () => {
             </Typography>
           </Grid>
           <Grid size={{ xs: 12, sm: 12, md: 3, lg: 3, xl: 3 }} sx={{ p: 2 }}>
-            {/** This is a great idea */}
-            {/* <CoffeeCuppingRadar /> */}
             <Skeleton variant="rectangular" width="100%" height={300} />
           </Grid>
           <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }} sx={{ p: 2 }}>
@@ -167,6 +169,37 @@ export const BeanLibrary = () => {
           </Grid>
         </Grid>
       </Grid>
+      <BeanWorkflow
+        bean={bean}
+        setBean={setBean}
+        getBeans={getBeans}
+        openBeanWorkflow={openBeanWorkflow}
+        setOpenBeanWorkflow={setOpenBeanWorkflow}
+      />
+      <CoffeRoastingModal
+        open={openDeleteModal}
+        setOpen={setOpenDeleteModal}
+        title={<Grid>Are you absolutely sure?</Grid>}
+        content={<Grid>testing</Grid>}
+        actions={
+          <Grid>
+            <Button
+              onClick={async () => {
+                try {
+                  await api.beans.delete(bean.id);
+                  setBean({});
+                  await getBeans();
+                  setOpenDeleteModal(false);
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+            >
+              Delete
+            </Button>
+          </Grid>
+        }
+      />
     </CoffeeRoastingMenu>
   );
 };

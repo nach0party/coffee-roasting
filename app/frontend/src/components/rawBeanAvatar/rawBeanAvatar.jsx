@@ -1,7 +1,6 @@
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
 /**
@@ -18,48 +17,56 @@ export const RawBeanAvatar = ({
   src = "/coffee-being-roasted.jpg",
 }) => {
   return (
-    <>
-      <Box sx={{ textAlign: "center", p: 0, m: 0 }}>
-        <Avatar
-          onClick={async () => {
-            await onClick();
-          }}
-          className={"coffee-grid"}
-          sx={(theme) => ({
-            width: 175,
-            height: 175,
-            cursor: "pointer",
-            WebkitTapHighlightColor: "transparent",
-            "&:focus-visible": {
-              outline: "none",
-            },
-            transition: "transform 0.3s, box-shadow 0.3s",
-            "&:hover": {
-              transform: "scale(1.01)",
-              boxShadow: (theme) => `0 0 0 2px ${theme.palette.primary.main}`,
-              backgroundColor: (theme) => theme.palette.action.hover,
-            },
-            border: isSelected
-              ? `2px solid ${theme.palette.primary.main}`
-              : "none",
-            ...sx,
-          })}
-          src={src}
-        />
-        <Divider sx={{ mt: 2 }} />
-        <Typography
-          sx={{
-            m: 0,
-            p: 0,
-            lineHeight: 1.0,
-            mt: 1,
-            display: "block",
-          }}
-          variant="overline"
-        >
-          {name}
-        </Typography>
-      </Box>
-    </>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center", // This keeps the Avatar and Text centered on the vertical axis
+        width: 175, // Match the Avatar width or set to 100%
+        margin: "0 auto", // Centers the container itself if it's in a larger Grid
+      }}
+    >
+      <Avatar
+        onClick={onClick}
+        sx={(theme) => ({
+          width: 175,
+          height: 175,
+          cursor: "pointer",
+          width: 175,
+          height: 175,
+          cursor: "pointer",
+          WebkitTapHighlightColor: "transparent",
+          "&:focus-visible": {
+            outline: "none",
+          },
+          transition: "transform 0.3s, box-shadow 0.3s",
+          "&:hover": {
+            transform: "scale(1.01)",
+            boxShadow: (theme) => `0 0 0 2px ${theme.palette.primary.main}`,
+            backgroundColor: (theme) => theme.palette.action.hover,
+          },
+          border: isSelected
+            ? `2px solid ${theme.palette.primary.main}`
+            : "none",
+          ...sx,
+        })}
+        src={src}
+      />
+      <Divider sx={{ mt: 2, width: "100%" }} />
+      <Typography
+        variant="overline"
+        align="center"
+        sx={{
+          mt: 1,
+          width: "100%",
+          lineHeight: 1.2,
+          display: "block",
+          wordBreak: "break-word",
+          whiteSpace: "normal",
+        }}
+      >
+        {name}
+      </Typography>
+    </Box>
   );
 };

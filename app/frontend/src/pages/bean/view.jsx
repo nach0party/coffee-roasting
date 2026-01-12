@@ -1,53 +1,15 @@
-import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import api from "../../api/coffee-roasting-api";
 import Typography from "@mui/material/Typography";
-import { BeanWorkflow } from "./workflow/workflow";
-import { CoffeRoastingModal } from "../../components/modal";
-
-const generateDefaultBeanState = () => {
-  return {
-    name: "",
-    sca_grade: "",
-    processing: "",
-    origin: { country: "", municipality: "", region: "" },
-  };
-};
 
 /**
- * Provides a view / display of a configurable bean.  Does not handle configuration but
- * just all the properties of what we consider to be a bean.
+ * Provides a view / display of a configurable bean?.  Does not handle
+ * configuration but just all the properties of what we consider to be a bean? to
+ * be displayed in an ordinary fashion.
  * @param {*} param0
  * @returns
  */
-export const ViewBean = ({
-  beanId,
-  setBeanId,
-  getBeans,
-  openBeanModal,
-  setOpenBeanModal,
-}) => {
-  const [beanData, setBeanData] = useState(generateDefaultBeanState());
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
-
-  const getAndSetBeanAndOrigin = async () => {
-    const response = await api.beans.get(beanId);
-    setBeanData(response.data);
-  };
-
-  useEffect(() => {
-    const reloadData = async () => {
-      if (beanId) {
-        await getAndSetBeanAndOrigin();
-      } else {
-        setBeanData(generateDefaultBeanState());
-      }
-    };
-    reloadData();
-  }, [beanId, openBeanModal]);
-
+export const ViewBean = ({ bean }) => {
   return (
     <Grid
       sx={(theme) => ({
@@ -68,7 +30,7 @@ export const ViewBean = ({
           <Grid>
             <TextField
               label="Name"
-              value={beanData.name}
+              value={bean?.name}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -77,7 +39,7 @@ export const ViewBean = ({
                   readOnly: true,
                 },
               }}
-              helperText="The name used to identify the bean"
+              helperText="The name used to identify the bean?"
               size="small"
               sx={{ width: "100%", mt: 2, mb: 2 }}
             />
@@ -85,7 +47,7 @@ export const ViewBean = ({
           <Grid>
             <TextField
               label="Grade"
-              value={beanData.sca_grade}
+              value={bean?.sca_grade}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -94,14 +56,14 @@ export const ViewBean = ({
                   readOnly: true,
                 },
               }}
-              helperText={`The SCA grade of the bean.`}
+              helperText={`The SCA grade of the bean?.`}
               size="small"
               sx={{ width: "100%", mt: 2, mb: 2 }}
             />
           </Grid>
           <Grid>
             <TextField
-              value={beanData.processing}
+              value={bean?.processing}
               label="Processing"
               slotProps={{
                 inputLabel: {
@@ -127,9 +89,9 @@ export const ViewBean = ({
           </Grid>
           <Grid>
             <TextField
-              value={beanData.origin?.country || ""}
+              value={bean?.origin?.country || ""}
               label="Country Of Origin"
-              helperText={`Provide the country the bean is from`}
+              helperText={`Provide the country the bean? is from`}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -145,7 +107,7 @@ export const ViewBean = ({
           <Grid>
             <TextField
               label="Region"
-              value={beanData.origin?.region || ""}
+              value={bean?.origin?.region || ""}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -162,7 +124,7 @@ export const ViewBean = ({
           <Grid>
             <TextField
               label="Municipality"
-              value={beanData.origin?.municipality || ""}
+              value={bean?.origin?.municipality || ""}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -177,59 +139,7 @@ export const ViewBean = ({
             />
           </Grid>
         </Grid>
-        <Grid>
-          <Button
-            variant="outlined"
-            disabled={!beanId}
-            onClick={() => {
-              setOpenBeanModal(true);
-            }}
-            sx={{ mr: 3 }}
-          >
-            Edit Current Bean
-          </Button>
-          <Button
-            variant="outlined"
-            disabled={!beanId}
-            onClick={async () => {
-              setOpenDeleteModal(true);
-            }}
-          >
-            Delete Bean
-          </Button>
-        </Grid>
       </Grid>
-      {/** TODO maybe this should live off of the view...? */}
-      <BeanWorkflow
-        beanId={beanId}
-        setBeanId={setBeanId}
-        open={openBeanModal}
-        setOpen={setOpenBeanModal}
-        getBeans={getBeans}
-      />
-      <CoffeRoastingModal
-        open={openDeleteModal}
-        setOpen={setOpenDeleteModal}
-        title={<Grid>Are you absolutely sure?</Grid>}
-        content={<Grid>testing</Grid>}
-        actions={
-          <Grid>
-            <Button
-              onClick={async () => {
-                try {
-                  await api.beans.delete(beanId);
-                  setBeanId();
-                  await getBeans();
-                } catch (error) {
-                  console.error(error);
-                }
-              }}
-            >
-              Delete
-            </Button>
-          </Grid>
-        }
-      />
     </Grid>
   );
 };

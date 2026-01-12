@@ -1,14 +1,16 @@
-import { useState, useEffect, useImperativeHandle } from "react";
+import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import api from "../../../api/coffee-roasting-api";
 
-export const AssignOrigin = ({ beanId, ref }) => {
+export const AssignOrigin = ({ bean, setBean }) => {
   const [availableCountries, setAvailableCountries] = useState([]);
-  const [country, setCountry] = useState("United States");
-  const [region, setRegion] = useState("");
-  const [municipality, setMunicipality] = useState("");
+  const [country, setCountry] = useState(bean?.origin?.country || "");
+  const [region, setRegion] = useState(bean?.origin?.region || "");
+  const [municipality, setMunicipality] = useState(
+    bean?.origin?.municipality || ""
+  );
   const [loading, setLoading] = useState(true);
 
   const getCountries = async () => {
@@ -25,30 +27,13 @@ export const AssignOrigin = ({ beanId, ref }) => {
     initialize();
   }, []);
 
-  const handleRegionChange = (newValue) => {
-    setRegion(newValue);
-  };
+  useEffect(() => {
+    if (!bean.origin) {
+      bean.origin = {};
+    }
+  }, [bean]);
 
-  const handleMunicipalityChange = (newValue) => {
-    setMunicipality(newValue);
-  };
-
-  useImperativeHandle(ref, () => ({
-    executeChildLogic: async () => {
-      // TODO when to update vs create ...
-      const response = await api.origins.create({
-        country: country,
-        region: region,
-        municipality: municipality,
-      });
-      await api.beans.partialUpdate(beanId, {
-        origin: response.data.id,
-      });
-      return {
-        originData: {},
-      };
-    },
-  }));
+  console.log(bean, "bean");
 
   return (
     <Grid
@@ -78,6 +63,8 @@ export const AssignOrigin = ({ beanId, ref }) => {
                     value={availbleCountry}
                     onClick={() => {
                       setCountry(availbleCountry);
+                      bean.origin.country = availbleCountry;
+                      setBean(bean);
                     }}
                   >
                     {availbleCountry}
@@ -96,7 +83,13 @@ export const AssignOrigin = ({ beanId, ref }) => {
                 },
               }}
               onChange={(event) => {
-                handleRegionChange(event.target.value);
+                const newValue = event.target.value;
+                // if (!bean.origin) {
+                //   bean.origin = {};
+                // }
+                setRegion(newValue);
+                bean.origin.region = newValue;
+                setBean(bean);
               }}
               helperText="Provide The Region Of the Bean"
               size="small"
@@ -115,13 +108,19 @@ export const AssignOrigin = ({ beanId, ref }) => {
                 },
               }}
               onChange={(event) => {
-                handleMunicipalityChange(event.target.value);
+                const newValue = event.target.value;
+                // if (!bean.origin) {
+                //   bean.origin = {};
+                // }
+                setMunicipality(newValue);
+                bean.origin.municipality = newValue;
+                setBean(bean);
               }}
               helperText="Provide The Municipality Of The Bean"
               size="small"
               sx={{ width: "100%" }}
             >
-              {name}
+              {municipality}
             </TextField>
           </Grid>
         </Grid>
