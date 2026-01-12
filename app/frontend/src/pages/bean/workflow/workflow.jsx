@@ -13,6 +13,8 @@ const stepHierarchy = {
 /**
  * A series of modals with a workflow that helps you establish an
  * understanding of what exactly it is to manage a bean.
+ *
+ * TODO setting the bean may need to happen outside of the component only, that may make more sense...
  */
 export const BeanWorkflow = ({
   bean,
@@ -22,6 +24,8 @@ export const BeanWorkflow = ({
   setOpenBeanWorkflow,
 }) => {
   const [step, setStep] = useState(stepHierarchy.ManageBean);
+  const [disableManageBeanNextStep, setDisableManageBeanNextStep] =
+    useState(false);
 
   useEffect(() => {
     setStep(stepHierarchy.ManageBean);
@@ -30,6 +34,7 @@ export const BeanWorkflow = ({
     }
   }, []);
 
+  // TODO manage the bean state depending on the things we want updated per component??
   return (
     <>
       <CoffeRoastingModal
@@ -38,26 +43,35 @@ export const BeanWorkflow = ({
           setOpenBeanWorkflow(false);
         }}
         title={"Manage your bean"}
-        content={<ManageBean bean={bean} />}
+        content={
+          <ManageBean
+            bean={bean}
+            setBean={setBean}
+            setDisableManageBeanNextStep={setDisableManageBeanNextStep}
+          />
+        }
         actions={
           <>
             <Button
               onClick={() => {
                 setOpenBeanWorkflow(false);
-                setOpenManageBean(false);
               }}
             >
               Back
             </Button>
             <Button
+              disabled={disableManageBeanNextStep}
               onClick={async () => {
+                // TOOD track changes, save only if needed
                 try {
                   if (bean?.id) {
-                    const response = await api.beans.partialUpdate(
-                      bean.id,
-                      bean
-                    );
+                    const response = await api.beans.partialUpdate(bean.id, {
+                      name: bean.name,
+                      sca_grade: bean.sca_grade,
+                      processing: bean.processing,
+                    });
                     console.log(response, "response");
+                    setBean(response.data);
                   } else {
                     const response = await api.beans.create(bean);
                     setBean(response.data);
@@ -77,7 +91,7 @@ export const BeanWorkflow = ({
       <CoffeRoastingModal
         open={openBeanWorkflow && step === stepHierarchy.AssignOrigin}
         setOpen={() => {
-          // setOpenAssignOrigin(false);
+          setOpenBeanWorkflow(false);
         }}
         title={"Assign your bean an origin"}
         content={<AssignOrigin bean={bean} />}

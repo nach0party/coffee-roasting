@@ -1,52 +1,24 @@
-import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import api from "../../api/coffee-roasting-api";
 import Typography from "@mui/material/Typography";
-import { CoffeRoastingModal } from "../../components/modal";
 
-const generateDefaultBeanState = () => {
-  return {
-    name: "",
-    sca_grade: "",
-    processing: "",
-    origin: { country: "", municipality: "", region: "" },
-  };
-};
+// const generateDefaultBeanState = () => {
+//   return {
+//     name: "",
+//     sca_grade: "",
+//     processing: "",
+//     origin: { country: "", municipality: "", region: "" },
+//   };
+// };
 
 /**
- * Provides a view / display of a configurable bean.  Does not handle
- * configuration but just all the properties of what we consider to be a bean to
+ * Provides a view / display of a configurable bean?.  Does not handle
+ * configuration but just all the properties of what we consider to be a bean? to
  * be displayed in an ordinary fashion.
  * @param {*} param0
  * @returns
  */
-export const ViewBean = ({
-  beanId,
-  setBeanId,
-  getBeans,
-  // openBeanModal,
-  // setOpenBeanModal,
-}) => {
-  const [beanData, setBeanData] = useState(generateDefaultBeanState());
-
-  const getAndSetBeanAndOrigin = async () => {
-    const response = await api.beans.get(beanId);
-    setBeanData(response.data);
-  };
-
-  useEffect(() => {
-    const reloadData = async () => {
-      if (beanId) {
-        await getAndSetBeanAndOrigin();
-      } else {
-        setBeanData(generateDefaultBeanState());
-      }
-    };
-    reloadData();
-  }, [beanId]);
-
+export const ViewBean = ({ bean }) => {
   return (
     <Grid
       sx={(theme) => ({
@@ -67,7 +39,7 @@ export const ViewBean = ({
           <Grid>
             <TextField
               label="Name"
-              value={beanData.name}
+              value={bean?.name}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -76,7 +48,7 @@ export const ViewBean = ({
                   readOnly: true,
                 },
               }}
-              helperText="The name used to identify the bean"
+              helperText="The name used to identify the bean?"
               size="small"
               sx={{ width: "100%", mt: 2, mb: 2 }}
             />
@@ -84,7 +56,7 @@ export const ViewBean = ({
           <Grid>
             <TextField
               label="Grade"
-              value={beanData.sca_grade}
+              value={bean?.sca_grade}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -93,14 +65,14 @@ export const ViewBean = ({
                   readOnly: true,
                 },
               }}
-              helperText={`The SCA grade of the bean.`}
+              helperText={`The SCA grade of the bean?.`}
               size="small"
               sx={{ width: "100%", mt: 2, mb: 2 }}
             />
           </Grid>
           <Grid>
             <TextField
-              value={beanData.processing}
+              value={bean?.processing}
               label="Processing"
               slotProps={{
                 inputLabel: {
@@ -126,9 +98,9 @@ export const ViewBean = ({
           </Grid>
           <Grid>
             <TextField
-              value={beanData.origin?.country || ""}
+              value={bean?.origin?.country || ""}
               label="Country Of Origin"
-              helperText={`Provide the country the bean is from`}
+              helperText={`Provide the country the bean? is from`}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -144,7 +116,7 @@ export const ViewBean = ({
           <Grid>
             <TextField
               label="Region"
-              value={beanData.origin?.region || ""}
+              value={bean?.origin?.region || ""}
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -161,7 +133,7 @@ export const ViewBean = ({
           <Grid>
             <TextField
               label="Municipality"
-              value={beanData.origin?.municipality || ""}
+              value={bean?.origin?.municipality || ""}
               slotProps={{
                 inputLabel: {
                   shrink: true,

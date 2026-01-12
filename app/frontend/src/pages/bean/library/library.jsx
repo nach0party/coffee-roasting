@@ -20,7 +20,7 @@ import { CoffeRoastingModal } from "../../../components/modal";
 
 export const BeanLibrary = () => {
   const [existingBeans, setExistingBeans] = useState([]);
-  const [selectedBean, setSelectedBean] = useState(); // TODO empty object, or, undefined
+  const [bean, setBean] = useState({});
   const [openBeanWorkflow, setOpenBeanWorkflow] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
@@ -41,15 +41,15 @@ export const BeanLibrary = () => {
     initialize();
   }, []);
 
-  const selectBean = async (bean) => {
-    if (bean?.id === selectedBean?.id) {
-      setSelectedBean();
-      return;
-    }
-    setSelectedBean(bean);
-  };
+  // const selectBean = async (bean) => {
+  //   if (bean?.id === bean?.id) {
+  //     setBean({});
+  //     return;
+  //   }
+  //   setBean(bean);
+  // };
 
-  console.log(selectedBean, "selectedBean");
+  console.log(bean, "bean");
 
   return (
     <CoffeeRoastingMenu
@@ -95,21 +95,20 @@ export const BeanLibrary = () => {
             name="New Bean"
             onClick={() => {
               console.log("clicked?");
-              setSelectedBean();
+              setBean({});
               setOpenBeanWorkflow(true);
             }}
             src={"/new-bean3.avif"}
           />
-          {existingBeans.map((bean) => {
-            // FIXME, simplify
-            const isSelected = selectedBean?.id === bean?.id;
+          {existingBeans.map((mappedBean) => {
+            const isSelected = bean?.id === mappedBean.id;
             return (
               <RawBeanAvatar
-                key={bean?.id}
+                key={mappedBean.id}
                 sx={{ width: 125, height: 125 }}
-                name={bean.name}
+                name={mappedBean.name}
                 onClick={() => {
-                  selectBean(bean);
+                  setBean(mappedBean);
                 }}
                 isSelected={isSelected}
                 src={"/coffee-being-roasted.jpg"}
@@ -124,19 +123,13 @@ export const BeanLibrary = () => {
             size={{ xs: 12, sm: 12, lg: 8, xl: 8 }}
             sx={{ borderRadius: 5, borderColor: "white", p: 1 }}
           >
-            <ViewBean
-              beanId={selectedBean?.id}
-              setSelectedBean={setSelectedBean}
-              getBeans={getBeans}
-              openBeanWorkflow={openBeanWorkflow}
-              setOpenBeanWorkflow={setOpenBeanWorkflow}
-            />
+            <ViewBean bean={bean} />
             <Grid>
               <Button
                 variant="outlined"
-                disabled={!selectedBean?.id}
+                disabled={!bean?.id}
                 onClick={() => {
-                  setOpenBeanModal(true);
+                  setOpenBeanWorkflow(true);
                 }}
                 sx={{ mr: 3 }}
               >
@@ -144,7 +137,7 @@ export const BeanLibrary = () => {
               </Button>
               <Button
                 variant="outlined"
-                disabled={!selectedBean?.id}
+                disabled={!bean?.id}
                 onClick={async () => {
                   setOpenDeleteModal(true);
                 }}
@@ -177,8 +170,8 @@ export const BeanLibrary = () => {
         </Grid>
       </Grid>
       <BeanWorkflow
-        bean={selectedBean}
-        setBean={setSelectedBean}
+        bean={bean}
+        setBean={setBean}
         getBeans={getBeans}
         openBeanWorkflow={openBeanWorkflow}
         setOpenBeanWorkflow={setOpenBeanWorkflow}
@@ -193,8 +186,8 @@ export const BeanLibrary = () => {
             <Button
               onClick={async () => {
                 try {
-                  await api.beans.delete(selectedBean.id);
-                  setSelectedBean();
+                  await api.beans.delete(bean.id);
+                  setBean({});
                   await getBeans();
                   setOpenDeleteModal(false);
                 } catch (error) {

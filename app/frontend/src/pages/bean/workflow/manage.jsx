@@ -10,19 +10,23 @@ const gradeRange = {
 
 const availableProcessing = ["washed", "natural", "honey"];
 
-// TODO check for the id, if not an ID go ahead and build out a start version of the object...
-export const ManageBean = ({ bean }) => {
+export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
   const [errors, setErrors] = useState({});
+  const [name, setName] = useState(bean?.name || "");
+  const [scaGrade, setScaGrade] = useState(bean?.sca_grade || null);
+  const [processing, setProcessing] = useState(
+    bean?.processing || availableProcessing[0]
+  );
 
   const handleGradeChange = (newValue) => {
-    bean.sca_grade = null;
+    setScaGrade(null);
     setErrors({ grade: [] });
 
     if (isNaN(newValue)) {
       setErrors({
         grade: [`Grade must be a number.`],
       });
-      // setDisableNextStep(true);
+      setDisableManageBeanNextStep(true);
       return;
     }
 
@@ -38,7 +42,7 @@ export const ManageBean = ({ bean }) => {
           `Grade is lower than the minimum allowed value of ${gradeRange.MIN}`,
         ],
       });
-      // setDisableNextStep(true);
+      setDisableManageBeanNextStep(true);
       return;
     }
     if (newValue > gradeRange.MAX) {
@@ -47,11 +51,14 @@ export const ManageBean = ({ bean }) => {
           `Grade is higher than the minimum allowed value of ${gradeRange.MAX}`,
         ],
       });
-      // setDisableNextStep(true);
+      setDisableManageBeanNextStep(true);
       return;
     }
-    // setDisableNextStep(false);
+    setDisableManageBeanNextStep(false);
+
     bean.sca_grade = newValue;
+    scaGrade(newValue);
+    setBean(bean);
   };
 
   const hasErrors = (fieldName) => {
@@ -74,7 +81,7 @@ export const ManageBean = ({ bean }) => {
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
             label="Name"
-            value={bean?.name}
+            value={name}
             // FIXME so when the data gets loaded in it automatically moves
             slotProps={{
               inputLabel: {
@@ -85,20 +92,22 @@ export const ManageBean = ({ bean }) => {
               await updateAndSetBean();
             }}
             onChange={(event) => {
+              setName(event.target.value);
               bean.name = event.target.value;
+              setBean(bean);
             }}
             helperText="Provide the name of the Bean"
             size="small"
             sx={{ width: "100%" }}
           >
-            {bean?.name}
+            {name}
           </TextField>
         </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
-            // error={hasErrors("grade")}
+            error={hasErrors("grade")}
             label="Grade"
-            value={bean?.sca_grade}
+            value={scaGrade}
             slotProps={{
               inputLabel: {
                 shrink: true,
@@ -111,14 +120,14 @@ export const ManageBean = ({ bean }) => {
             size="small"
             sx={{ width: "100%" }}
           >
-            {bean?.sca_grade}
+            {scaGrade}
           </TextField>
         </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
             select
             label="Processing"
-            defaultValue={availableProcessing[0]}
+            value={processing}
             helperText={`Provide the processing method`}
             size="small"
             sx={{ width: "100%" }}
@@ -129,7 +138,9 @@ export const ManageBean = ({ bean }) => {
                   key={index}
                   value={process}
                   onClick={(event) => {
-                    bean.process(process);
+                    bean.processing = process;
+                    setBean(bean);
+                    setProcessing(process);
                   }}
                 >
                   {process}
