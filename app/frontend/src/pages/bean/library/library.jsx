@@ -49,7 +49,7 @@ export const BeanLibrary = () => {
   //   setBean(bean);
   // };
 
-  // console.log(bean, "bean");
+  // console.log(bean, "(selected) bean");
 
   return (
     <CoffeeRoastingMenu

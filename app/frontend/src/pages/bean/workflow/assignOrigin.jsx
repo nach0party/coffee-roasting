@@ -27,17 +27,12 @@ export const AssignOrigin = ({ bean, setBean }) => {
     initialize();
   }, []);
 
-  const handleRegionChange = (newValue) => {
-    setRegion(newValue);
-  };
+  useEffect(() => {
+    if (!bean.origin) {
+      bean.origin = {};
+    }
+  }, [bean]);
 
-  const handleMunicipalityChange = (newValue) => {
-    setMunicipality(newValue);
-  };
-
-  // console.log(country, "country");
-  // console.log(region, "region");
-  // console.log(municipality, "municipality");
   console.log(bean, "bean");
 
   return (
@@ -68,9 +63,6 @@ export const AssignOrigin = ({ bean, setBean }) => {
                     value={availbleCountry}
                     onClick={() => {
                       setCountry(availbleCountry);
-                      if (!bean.origin) {
-                        bean.origin = {};
-                      }
                       bean.origin.country = availbleCountry;
                       setBean(bean);
                     }}
@@ -91,7 +83,13 @@ export const AssignOrigin = ({ bean, setBean }) => {
                 },
               }}
               onChange={(event) => {
-                handleRegionChange(event.target.value);
+                const newValue = event.target.value;
+                // if (!bean.origin) {
+                //   bean.origin = {};
+                // }
+                setRegion(newValue);
+                bean.origin.region = newValue;
+                setBean(bean);
               }}
               helperText="Provide The Region Of the Bean"
               size="small"
@@ -110,13 +108,19 @@ export const AssignOrigin = ({ bean, setBean }) => {
                 },
               }}
               onChange={(event) => {
-                handleMunicipalityChange(event.target.value);
+                const newValue = event.target.value;
+                // if (!bean.origin) {
+                //   bean.origin = {};
+                // }
+                setMunicipality(newValue);
+                bean.origin.municipality = newValue;
+                setBean(bean);
               }}
               helperText="Provide The Municipality Of The Bean"
               size="small"
               sx={{ width: "100%" }}
             >
-              {name}
+              {municipality}
             </TextField>
           </Grid>
         </Grid>

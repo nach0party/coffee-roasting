@@ -28,11 +28,13 @@ export const BeanWorkflow = ({
     useState(false);
 
   useEffect(() => {
-    setStep(stepHierarchy.ManageBean);
     if (!bean) {
       setBean({});
+      setStep(stepHierarchy.ManageBean);
     }
-  }, []);
+  }, [bean]);
+
+  console.log(bean, "beanworkflow (bean)");
 
   // TODO manage the bean state depending on the things we want updated per component??
   return (
@@ -65,16 +67,19 @@ export const BeanWorkflow = ({
                 // TOOD track changes, save only if needed
                 try {
                   if (bean?.id) {
-                    const response = await api.beans.partialUpdate(bean.id, {
+                    await api.beans.partialUpdate(bean.id, {
                       name: bean.name,
                       sca_grade: bean.sca_grade,
                       processing: bean.processing,
                     });
-                    // console.log(response, "response");
-                    setBean(response.data);
+                    const beanResponse = await api.beans.get(bean.id);
+                    setBean(beanResponse.data);
                   } else {
-                    const response = await api.beans.create(bean);
-                    setBean(response.data);
+                    const createResponse = await api.beans.create(bean);
+                    const beanResponse = await api.beans.get(
+                      createResponse.data.id
+                    );
+                    setBean(beanResponse.data);
                   }
                   await getBeans();
                   setStep("assignOrigin");
@@ -110,23 +115,13 @@ export const BeanWorkflow = ({
                 // there's probably a more proper way to break all this down but
                 // this is fine and / or works for now.
                 try {
-                  if (bean?.origin?.id) {
-                    await api.origins.partialUpdate(
-                      bean.origin.id,
-                      bean.origin
-                    );
-                    const response = await api.beans.get(bean.id);
-                    setBean(response.data);
-                  } else {
-                    const originResponse = await api.origins.create(
-                      bean.origin
-                    );
-                    await api.beans.partialUpdate(bean.id, {
-                      origin: originResponse.data.id,
-                    });
-                    const beanResponse = await api.beans.get(bean.id);
-                    setBean(beanResponse.data);
-                  }
+                  // we ALWAYS create a new origin if they change the data
+                  const originResponse = await api.origins.create(bean.origin);
+                  await api.beans.partialUpdate(bean.id, {
+                    origin: originResponse.data.id,
+                  });
+                  const beanResponse = await api.beans.get(bean.id);
+                  setBean(beanResponse.data);
                 } catch (error) {
                   console.error(error);
                 }

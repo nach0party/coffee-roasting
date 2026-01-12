@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -17,6 +17,13 @@ export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
   const [processing, setProcessing] = useState(
     bean?.processing || availableProcessing[0]
   );
+
+  useEffect(() => {
+    if (!bean?.processing) {
+      bean.processing = processing;
+      setBean(bean);
+    }
+  }, [bean?.id]);
 
   const handleGradeChange = (newValue) => {
     setScaGrade(null);
@@ -67,6 +74,9 @@ export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
     }
     return false;
   };
+
+  console.log(processing, "processing");
+  console.log(bean, "bean");
 
   return (
     <Grid
