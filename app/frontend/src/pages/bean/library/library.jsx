@@ -49,7 +49,7 @@ export const BeanLibrary = () => {
   //   setBean(bean);
   // };
 
-  console.log(bean, "bean");
+  // console.log(bean, "bean");
 
   return (
     <CoffeeRoastingMenu
@@ -94,7 +94,7 @@ export const BeanLibrary = () => {
             sx={{ width: 125, height: 125 }}
             name="New Bean"
             onClick={() => {
-              console.log("clicked?");
+              // console.log("clicked?");
               setBean({});
               setOpenBeanWorkflow(true);
             }}
@@ -124,7 +124,7 @@ export const BeanLibrary = () => {
             sx={{ borderRadius: 5, borderColor: "white", p: 1 }}
           >
             <ViewBean bean={bean} />
-            <Grid>
+            <Grid sx={{ mt: 2 }}>
               <Button
                 variant="outlined"
                 disabled={!bean?.id}

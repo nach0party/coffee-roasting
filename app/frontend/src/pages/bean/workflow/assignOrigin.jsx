@@ -4,11 +4,13 @@ import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import api from "../../../api/coffee-roasting-api";
 
-export const AssignOrigin = ({ beanId }) => {
+export const AssignOrigin = ({ bean, setBean }) => {
   const [availableCountries, setAvailableCountries] = useState([]);
-  const [country, setCountry] = useState("United States");
-  const [region, setRegion] = useState("");
-  const [municipality, setMunicipality] = useState("");
+  const [country, setCountry] = useState(bean?.origin?.country || "");
+  const [region, setRegion] = useState(bean?.origin?.region || "");
+  const [municipality, setMunicipality] = useState(
+    bean?.origin?.municipality || ""
+  );
   const [loading, setLoading] = useState(true);
 
   const getCountries = async () => {
@@ -32,6 +34,11 @@ export const AssignOrigin = ({ beanId }) => {
   const handleMunicipalityChange = (newValue) => {
     setMunicipality(newValue);
   };
+
+  // console.log(country, "country");
+  // console.log(region, "region");
+  // console.log(municipality, "municipality");
+  console.log(bean, "bean");
 
   return (
     <Grid
@@ -61,6 +68,11 @@ export const AssignOrigin = ({ beanId }) => {
                     value={availbleCountry}
                     onClick={() => {
                       setCountry(availbleCountry);
+                      if (!bean.origin) {
+                        bean.origin = {};
+                      }
+                      bean.origin.country = availbleCountry;
+                      setBean(bean);
                     }}
                   >
                     {availbleCountry}

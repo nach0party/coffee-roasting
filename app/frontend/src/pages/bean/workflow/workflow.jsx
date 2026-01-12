@@ -70,7 +70,7 @@ export const BeanWorkflow = ({
                       sca_grade: bean.sca_grade,
                       processing: bean.processing,
                     });
-                    console.log(response, "response");
+                    // console.log(response, "response");
                     setBean(response.data);
                   } else {
                     const response = await api.beans.create(bean);
@@ -88,13 +88,14 @@ export const BeanWorkflow = ({
           </>
         }
       />
+      {/** TODO really would prefer to separate some of this a bit more */}
       <CoffeRoastingModal
         open={openBeanWorkflow && step === stepHierarchy.AssignOrigin}
         setOpen={() => {
           setOpenBeanWorkflow(false);
         }}
         title={"Assign your bean an origin"}
-        content={<AssignOrigin bean={bean} />}
+        content={<AssignOrigin bean={bean} setBean={setBean} />}
         actions={
           <>
             <Button
@@ -104,7 +105,35 @@ export const BeanWorkflow = ({
             >
               Back
             </Button>
-            <Button onClick={async () => {}}>Finish</Button>
+            <Button
+              onClick={async () => {
+                // there's probably a more proper way to break all this down but
+                // this is fine and / or works for now.
+                try {
+                  if (bean?.origin?.id) {
+                    await api.origins.partialUpdate(
+                      bean.origin.id,
+                      bean.origin
+                    );
+                    const response = await api.beans.get(bean.id);
+                    setBean(response.data);
+                  } else {
+                    const originResponse = await api.origins.create(
+                      bean.origin
+                    );
+                    await api.beans.partialUpdate(bean.id, {
+                      origin: originResponse.data.id,
+                    });
+                    const beanResponse = await api.beans.get(bean.id);
+                    setBean(beanResponse.data);
+                  }
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+            >
+              Finish
+            </Button>
           </>
         }
       />

@@ -2,15 +2,6 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-// const generateDefaultBeanState = () => {
-//   return {
-//     name: "",
-//     sca_grade: "",
-//     processing: "",
-//     origin: { country: "", municipality: "", region: "" },
-//   };
-// };
-
 /**
  * Provides a view / display of a configurable bean?.  Does not handle
  * configuration but just all the properties of what we consider to be a bean? to

@@ -8,6 +8,7 @@ class BeanOriginSerializer(serializers.ModelSerializer):
     class Meta:
         model = Origin
         fields = (
+            "id",
             "country",
             "region",
             "municipality",
