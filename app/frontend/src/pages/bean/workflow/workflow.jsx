@@ -30,8 +30,8 @@ export const BeanWorkflow = ({
   useEffect(() => {
     if (!bean) {
       setBean({});
-      setStep(stepHierarchy.ManageBean);
     }
+    setStep(stepHierarchy.ManageBean);
   }, [bean]);
 
   console.log(bean, "beanworkflow (bean)");
@@ -114,6 +114,7 @@ export const BeanWorkflow = ({
               onClick={async () => {
                 // there's probably a more proper way to break all this down but
                 // this is fine and / or works for now.
+                // TODO if this origin already exists we should let them use that id of the already existing one
                 try {
                   // we ALWAYS create a new origin if they change the data
                   const originResponse = await api.origins.create(bean.origin);
@@ -122,6 +123,7 @@ export const BeanWorkflow = ({
                   });
                   const beanResponse = await api.beans.get(bean.id);
                   setBean(beanResponse.data);
+                  setOpenBeanWorkflow(false);
                 } catch (error) {
                   console.error(error);
                 }
