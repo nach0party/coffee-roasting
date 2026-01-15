@@ -72,6 +72,7 @@ class Bean(TimeStampMixin):
         blank=True,
         on_delete=models.DO_NOTHING,
     )
+    altitude = models.IntegerField(null=True, blank=True)
 
     # TODO probably want to setup a unique constraint
     # name / grade / processing method / origin constraint would be the "same bean" basically.

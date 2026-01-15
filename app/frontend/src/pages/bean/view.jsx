@@ -77,6 +77,23 @@ export const ViewBean = ({ bean }) => {
               size="small"
               sx={{ width: "100%", mt: 2, mb: 2 }}
             />
+          </Grid>{" "}
+          <Grid>
+            <TextField
+              value={bean?.altitude}
+              label="Altitude"
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+                input: {
+                  readOnly: true,
+                },
+              }}
+              helperText={`The altitude of the bean`}
+              size="small"
+              sx={{ width: "100%", mt: 2, mb: 2 }}
+            />
           </Grid>
         </Grid>
         {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
