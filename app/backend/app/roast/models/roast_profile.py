@@ -15,6 +15,8 @@ class RoastProfile(TimeStampMixin):
 
     TODO I'm basing this off of coffee bean corrals flavor profile,
          but, I could consider using different sources, or, make it fully customizable
+
+    TODO this is more of a flavor / cupping profile, renaming?
     """
 
     if TYPE_CHECKING:
@@ -22,6 +24,7 @@ class RoastProfile(TimeStampMixin):
 
     # TODO should this be customizable? I think so... there's a lot of ways to perceive roast tastes
     # TODO us this for json validation on save
+    # TODO these should just be basic examples, anyone should be able to describe this anyway they see fit....
     class Flavors(Enum):
         SPICY = "spicy"
         CHOCOLATEY = "chocolatey"
@@ -33,6 +36,7 @@ class RoastProfile(TimeStampMixin):
         EARTHY = "earthy"
 
     # TODO us this for json validation on save
+    # TODO these should just be basic examples, anyone should be able to describe this anyway they see fit....
     class Attributes(Enum):
         BRIGHTNESS = "brightness"
         BODY = "body"
@@ -41,11 +45,35 @@ class RoastProfile(TimeStampMixin):
         BALANCE = "balance"
         SWEETNESS = "sweetness"
 
-    # TODO make profiles customizable?
+    class RoastLevels(Enum):
+        """
+        Maybe it makes more sense to further break this down?
+        """
+
+        LIGHT = "light"
+        MEDIUM = "medium"
+        DARK = "dark"
+
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    roast = models.ForeignKey("roast.Roast", on_delete=models.CASCADE, related_name="roast_profile")
-    flavors = models.JSONField(null=True, blank=True)
-    attributes = models.JSONField(null=True, blank=True)
+    # Let's just keep it one profile to one roast for now....
+    roast = models.OneToOneField(
+        "roast.Roast", on_delete=models.CASCADE, related_name="roast_profile"
+    )
+    smell = models.JSONField(
+        null=True, blank=True
+    )  # TODO make totally custom, allow for any way to describe a flavor
+    flavors = models.JSONField(
+        null=True, blank=True
+    )  # TODO make totally custom, allow for any way to describe a flavor
+    attributes = models.JSONField(
+        null=True, blank=True
+    )  # TODO make totally custom, allow for any way to describe an attribute
+    level = models.CharField(
+        max_length=255,
+        choices=[(level.value, level.name) for level in RoastLevels],
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         db_table = "roast_profiles"
