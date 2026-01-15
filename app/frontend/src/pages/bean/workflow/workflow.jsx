@@ -71,6 +71,7 @@ export const BeanWorkflow = ({
                       name: bean.name,
                       sca_grade: bean.sca_grade,
                       processing: bean.processing,
+                      altitude: bean.altitude,
                     });
                     const beanResponse = await api.beans.get(bean.id);
                     setBean(beanResponse.data);

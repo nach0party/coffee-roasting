@@ -10,6 +10,7 @@ const gradeRange = {
 
 const availableProcessing = ["washed", "natural", "honey"];
 
+// TODO should we auto save any change?
 export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
   const [errors, setErrors] = useState({});
   const [name, setName] = useState(bean?.name || "");
@@ -17,6 +18,7 @@ export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
   const [processing, setProcessing] = useState(
     bean?.processing || availableProcessing[0]
   );
+  const [altitude, setAltitude] = useState(bean?.altitude || null);
 
   useEffect(() => {
     if (!bean?.processing) {
@@ -24,6 +26,20 @@ export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
       setBean(bean);
     }
   }, [bean?.id]);
+
+  const handleAltitudeChange = (newValue) => {
+    setAltitude(null);
+    if (isNaN(newValue)) {
+      setErrors({
+        grade: [`Grade must be a number.`],
+      });
+      setDisableManageBeanNextStep(true);
+      return;
+    }
+    bean.altitude = newValue;
+    setAltitude(newValue);
+    setBean(bean);
+  };
 
   const handleGradeChange = (newValue) => {
     setScaGrade(null);
@@ -157,6 +173,25 @@ export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
                 </MenuItem>
               );
             })}
+          </TextField>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
+          <TextField
+            label="Altitude"
+            value={altitude}
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              },
+            }}
+            onChange={(event) => {
+              handleAltitudeChange(event.target.value);
+            }}
+            helperText={`Provide the altitude if available.`}
+            size="small"
+            sx={{ width: "100%" }}
+          >
+            {altitude}
           </TextField>
         </Grid>
       </Grid>
