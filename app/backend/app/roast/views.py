@@ -11,8 +11,14 @@ from rest_framework.exceptions import ValidationError
 
 from app.roast.models.roast import Roast
 from app.roast.models.roast_event import RoastEvent
-from app.roast.serializers import RoastSerializer, RoastEventSerializer, RetrieveListRoastSerializer
+from app.roast.serializers import (
+    RoastSerializer,
+    RoastEventSerializer,
+    RetrieveListRoastSerializer,
+    RoastProfileSerializer,
+)
 from app.roast.filters import RoastFilter
+from app.roast.models.roast_profile import RoastProfile
 
 from app.shared.viewsets import CoffeeRoastingModelViewSet
 
@@ -110,3 +116,14 @@ class RoastEventViewSet(CoffeeRoastingModelViewSet):
         "roast",
         "type",
     )
+
+
+class RoastProfileViewSet(CoffeeRoastingModelViewSet):
+    """
+    Provides endpoints for the roast profiles, some information
+    to gauge how the coffee tastes / smells / and other relative attributes.
+    """
+
+    queryset = RoastProfile.objects.filter(deleted_when=None)
+    serializer_class = RoastProfileSerializer
+    filterset_fields = ("roast",)

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from app.bean.models.bean import Bean
 from app.roast.models.roast import Roast
 from app.roast.models.roast_event import RoastEvent
+from app.roast.models.roast_profile import RoastProfile
 
 
 # TODO should we also pull the origin
@@ -42,4 +43,10 @@ class RetrieveListRoastSerializer(serializers.ModelSerializer):
 class RoastSerializer(serializers.ModelSerializer):
     class Meta:
         model = Roast
+        fields = "__all__"
+
+
+class RoastProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoastProfile
         fields = "__all__"

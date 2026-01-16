@@ -21,6 +21,7 @@ import { RoastEventItem } from "../../components/events/roastEventItem";
 import { Stopwatch } from "../../components/stopwatch";
 import { Box } from "@mui/material";
 import { allEventTypes } from "../../components/events/utils";
+import { ManageRoastProfile } from "../../components/manageRoastProfile";
 
 /**
  * Quick little reference so we can define some logic and quickly change the UI.
@@ -368,6 +369,10 @@ export const ManageRoast = () => {
                   />
                 </Grid>
               </Grid>
+              <Divider sx={{ pb: 3 }}>
+                <Typography>Roast Profile</Typography>
+              </Divider>
+              <ManageRoastProfile roastId={roast.id} />
             </Grid>
           )}
           <CoffeRoastingModal

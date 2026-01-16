@@ -1,7 +1,9 @@
 import { Beans } from './beans'
 import { Origins } from './origins'
-import { RoastEvents } from './roastEvents'
+
 import { Roasts } from './roasts'
+import { RoastEvents } from './roastEvents'
+import { RoastProfiles } from './roastProfile'
 
 /**
  * Constructs and exposes the API ready to handle / 
@@ -14,6 +16,7 @@ class CoffeeRoastingApi{
     origins = new Origins()
     roasts = new Roasts()
     roastEvents = new RoastEvents()
+    roastProfiles = new RoastProfiles()
 }
     
 const api = new CoffeeRoastingApi()
