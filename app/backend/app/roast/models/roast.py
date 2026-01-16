@@ -40,6 +40,7 @@ class Roast(TimeStampMixin):
         blank=True,
         help_text="In correspondance with target_duration we just want the end time in plain timestamp format without having to do a bunch of math.  Easier to do it server side",
     )
+    target_temperature = models.IntegerField(null=True, blank=True)
     notes = models.TextField(
         blank=True,
         null=True,

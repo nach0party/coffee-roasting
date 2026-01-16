@@ -59,6 +59,7 @@ class RoastProfile(TimeStampMixin):
     roast = models.OneToOneField(
         "roast.Roast", on_delete=models.CASCADE, related_name="roast_profile"
     )
+    # TODO do we really want smell...?
     smell = models.JSONField(
         null=True, blank=True
     )  # TODO make totally custom, allow for any way to describe a flavor

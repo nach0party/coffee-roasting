@@ -80,6 +80,7 @@ export const ManageRoast = () => {
   const [openTargetModal, setOpenTargetModal] = useState(false);
   const [targetMinute, setTargetMinute] = useState("13");
   const [targetSecond, setTargetSecond] = useState("00");
+  const [targetTemperature, setTargetTemperature] = useState(null);
   const [timerRunning, setTimerRunning] = useState(false);
 
   const getRoast = async () => {
@@ -111,10 +112,11 @@ export const ManageRoast = () => {
   }, [roast]);
 
   // get roast returns events too... so, likely need to separate that into its own API call and whatnot...
-  const updateTargetTime = async () => {
+  const updateTargets = async () => {
     try {
       await api.roasts.partialUpdate(id, {
         target_duration: `${targetMinute}:${targetSecond}`,
+        target_temperature: targetTemperature,
       });
       await getRoast();
     } catch (error) {
@@ -248,7 +250,7 @@ export const ManageRoast = () => {
 
   const handleTopRightButtonDisplayState = () => {
     if (roastState === RoastState.PREP) {
-      return "Set Target Time";
+      return "Set Targets";
     } else if (roastState === RoastState.PRESTART) {
       return "Start Roast";
     } else if (roastState === RoastState.STARTED) {
@@ -371,22 +373,40 @@ export const ManageRoast = () => {
           <CoffeRoastingModal
             open={openTargetModal}
             setOpen={setOpenTargetModal}
-            title="Set Your Target Time"
+            title="Set Your Targets"
             content={
-              <RoastTargetTimePicker
-                disabled={disableTargets()}
-                minute={targetMinute}
-                setMinute={setTargetMinute}
-                second={targetSecond}
-                setSecond={setTargetSecond}
-              />
+              <Grid container>
+                <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+                  <RoastTargetTimePicker
+                    disabled={disableTargets()}
+                    minute={targetMinute}
+                    setMinute={setTargetMinute}
+                    second={targetSecond}
+                    setSecond={setTargetSecond}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
+                  <TextField
+                    sx={{ m: 1 }}
+                    label="Temperature"
+                    helperText="Select your target temperature"
+                    value={targetTemperature}
+                    onChange={(event) => {
+                      const newValue = event.target.value;
+                      if (!isNaN(newValue)) {
+                        setTargetTemperature(newValue);
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
             }
             actions={
               <Grid>
                 <Button
                   onClick={async () => {
                     try {
-                      await updateTargetTime();
+                      await updateTargets();
                       setOpenTargetModal(false);
                     } catch (error) {
                       console.error(error);
