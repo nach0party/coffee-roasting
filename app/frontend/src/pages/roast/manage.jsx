@@ -1,36 +1,36 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
-import toast from "react-hot-toast";
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import toast from 'react-hot-toast';
 
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import TimelineIcon from "@mui/icons-material/Timeline";
-import Grid from "@mui/material/Grid";
-import Divider from "@mui/material/Divider";
-import MenuItem from "@mui/material/MenuItem";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import TimelineIcon from '@mui/icons-material/Timeline';
+import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
-import api from "../../api/coffee-roasting-api";
-import { CoffeeRoastingMenu } from "../../components/menu";
-import { RoastBar } from "../../components/roastBar";
-import { RoastTargetTimePicker } from "../../components/roastTargetTimePicker";
-import { CoffeRoastingModal } from "../../components/modal";
-import { RoastEventItem } from "../../components/events/roastEventItem";
-import { Stopwatch } from "../../components/stopwatch";
-import { Box } from "@mui/material";
-import { allEventTypes } from "../../components/events/utils";
-import { ManageRoastProfile } from "../../components/manageRoastProfile";
+import api from '../../api/coffee-roasting-api';
+import { CoffeeRoastingMenu } from '../../components/menu';
+import { RoastBar } from '../../components/roastBar';
+import { RoastTargetTimePicker } from '../../components/roastTargetTimePicker';
+import { CoffeRoastingModal } from '../../components/modal';
+import { RoastEventItem } from '../../components/events/roastEventItem';
+import { Stopwatch } from '../../components/stopwatch';
+import { Box } from '@mui/material';
+import { allEventTypes } from '../../components/events/utils';
+import { ManageRoastProfile } from '../../components/manageRoastProfile';
 
 /**
  * Quick little reference so we can define some logic and quickly change the UI.
  */
 const RoastState = {
-  PREP: "prep",
-  PRESTART: "pre-started",
-  STARTED: "started",
-  ENDED: "ended",
+  PREP: 'prep',
+  PRESTART: 'pre-started',
+  STARTED: 'started',
+  ENDED: 'ended',
 };
 
 // TODO if this roast is "completed" we should mark everything as read only
@@ -40,28 +40,15 @@ export const ManageRoast = () => {
   const params = useParams();
   const id = params.id;
 
-  // could grab event types via api if it's easier to maintain
-  // This is ordered by liklihood, and we will compare last event to this one
-  // TODO maybe rank them in an object or something to make it more clear / maintainable?
-  // TODO move to util
-  // const allEventTypes = {
-  //   BEGIN: "begin",
-  //   NOTE: "note",
-  //   DRY_PHASE: "dry_phase",
-  //   FIRST_CRACK: "first_crack",
-  //   SECOND_CRACK: "second_crack",
-  //   DROP: "drop",
-  // };
-
   const availableEventTypes = [
-    "note",
-    "dry_phase_start",
-    "dry_phase_end",
-    "first_crack",
-    "second_crack",
-    "emergency_stop",
-    "cooling_start",
-    "cooling_stop",
+    'note',
+    'dry_phase_start',
+    'dry_phase_end',
+    'first_crack',
+    'second_crack',
+    'emergency_stop',
+    'cooling_start',
+    'cooling_stop',
   ];
 
   const [roast, setRoast] = useState();
@@ -79,10 +66,14 @@ export const ManageRoast = () => {
   // We use strings to handle the 00 and also it concatenates all
   // into a string to be passed to the API, easier this way.
   const [openTargetModal, setOpenTargetModal] = useState(false);
-  const [targetMinute, setTargetMinute] = useState("13");
-  const [targetSecond, setTargetSecond] = useState("00");
+  const [targetMinute, setTargetMinute] = useState('13');
+  const [targetSecond, setTargetSecond] = useState('00');
   const [targetTemperature, setTargetTemperature] = useState(null);
   const [timerRunning, setTimerRunning] = useState(false);
+
+  // TODO load in the roast profile (already) if we have it...
+  // Managing the roast profile itself
+  const [roastProfile, setRoastProfile] = useState();
 
   const getRoast = async () => {
     const response = await api.roasts.get(id);
@@ -91,9 +82,26 @@ export const ManageRoast = () => {
     setCurrentEvent(response.data.roast_event[0]);
   };
 
+  const getRoastProfile = async () => {
+    const response = await api.roastProfiles.list({ roast: id });
+    if (response.data.results.length > 0) {
+      setRoastProfile(response.data.results[0]);
+    }
+  };
+
+  const createRoastProfile = async () => {
+    try {
+      const response = await api.roastProfiles.create({ roast: id });
+      setRoastProfile(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const initialize = async () => {
       await getRoast();
+      await getRoastProfile();
       setLoading(false);
     };
     initialize();
@@ -137,11 +145,11 @@ export const ManageRoast = () => {
     try {
       await api.roasts.beginRoast(id);
       await getRoast();
-      toast.success("Roast has begun");
+      toast.success('Roast has begun');
     } catch (error) {
       // TODO not sure if I care for toast or would prefer just the MUI component...
       // TODO setup a service for using toast...
-      toast.error("There was an error");
+      toast.error('There was an error');
       console.error(error);
     }
   };
@@ -153,7 +161,7 @@ export const ManageRoast = () => {
       await api.roasts.endRoast(id);
       await getRoast();
     } catch (error) {
-      toast.error("There was an error");
+      toast.error('There was an error');
       console.error(error);
     }
   };
@@ -179,7 +187,7 @@ export const ManageRoast = () => {
   const deleteRoast = async () => {
     try {
       await api.roasts.delete(id);
-      navigate("/");
+      navigate('/');
     } catch (error) {
       console.error(error);
     }
@@ -187,25 +195,25 @@ export const ManageRoast = () => {
 
   const friendlyEventType = (name) => {
     if (name === allEventTypes.BEGIN) {
-      return "Begin";
+      return 'Begin';
     } else if (name === allEventTypes.NOTE) {
-      return "Note";
+      return 'Note';
     } else if (name === allEventTypes.DRY_PHASE_START) {
-      return "Dry Phase Starts";
+      return 'Dry Phase Starts';
     } else if (name === allEventTypes.DRY_PHASE_END) {
-      return "Dry Phase Ends";
+      return 'Dry Phase Ends';
     } else if (name === allEventTypes.FIRST_CRACK) {
-      return "First Crack";
+      return 'First Crack';
     } else if (name === allEventTypes.SECOND_CRACK) {
-      return "Second Crack";
+      return 'Second Crack';
     } else if (name === allEventTypes.EMERGENCY_STOP) {
-      return "Emergency Stop";
+      return 'Emergency Stop';
     } else if (name === allEventTypes.DROP) {
-      return "Drop";
+      return 'Drop';
     } else if (name === allEventTypes.COOLING_START) {
-      return "Cooling Starts";
+      return 'Cooling Starts';
     } else if (name === allEventTypes.COOLING_STOP) {
-      return "Cooling Ends";
+      return 'Cooling Ends';
     }
   };
 
@@ -251,13 +259,13 @@ export const ManageRoast = () => {
 
   const handleTopRightButtonDisplayState = () => {
     if (roastState === RoastState.PREP) {
-      return "Set Targets";
+      return 'Set Targets';
     } else if (roastState === RoastState.PRESTART) {
-      return "Start Roast";
+      return 'Start Roast';
     } else if (roastState === RoastState.STARTED) {
-      return "End Roast";
+      return 'End Roast';
     } else if (roastState === RoastState.ENDED) {
-      return "Delete Roast";
+      return 'Delete Roast';
     }
   };
 
@@ -275,7 +283,7 @@ export const ManageRoast = () => {
 
   return (
     <CoffeeRoastingMenu
-      title={"Manage Roast"}
+      title={'Manage Roast'}
       rightSideMenuBar={
         <Button
           onClick={async () => {
@@ -291,7 +299,7 @@ export const ManageRoast = () => {
           <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
             {roast.started_when && (
               <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}
               >
                 <AccessTimeIcon />
                 <Stopwatch
@@ -312,7 +320,7 @@ export const ManageRoast = () => {
           </Grid>
           <Grid sx={{ p: 3 }} size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
             <TimelineIcon /> Roast Event Timeline
-            <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
               {roast.roast_event.map((event) => {
                 return (
                   <RoastEventItem key={event.id} roast={roast} event={event} />
@@ -360,7 +368,7 @@ export const ManageRoast = () => {
                     slotProps={{
                       input: {
                         sx: {
-                          resize: "vertical",
+                          resize: 'vertical',
                           minHeight: 100,
                           maxHeight: 400,
                         },
@@ -369,10 +377,26 @@ export const ManageRoast = () => {
                   />
                 </Grid>
               </Grid>
-              <Divider sx={{ pb: 3 }}>
-                <Typography>Roast Profile</Typography>
-              </Divider>
-              <ManageRoastProfile roastId={roast.id} />
+              {roastProfile ? (
+                <Grid>
+                  <Divider sx={{ pb: 3 }}>
+                    <Typography>Roast Profile</Typography>
+                  </Divider>
+
+                  <ManageRoastProfile
+                    profile={roastProfile}
+                    setProfile={setRoastProfile}
+                  />
+                </Grid>
+              ) : (
+                <Button
+                  onClick={async () => {
+                    await createRoastProfile();
+                  }}
+                >
+                  Create Roast Profile
+                </Button>
+              )}
             </Grid>
           )}
           <CoffeRoastingModal
