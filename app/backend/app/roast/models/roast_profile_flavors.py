@@ -7,12 +7,9 @@ from app.shared.mixins import TimeStampMixin
 
 class RoastProfileFlavors(TimeStampMixin):
     """
-    Provides a set of customizable.
-
-    TODO another way to handle this is to make this table independent, and, to then
-         add this data to a json field on the roastProfile itself so it keeps this data independent...
-
-    TODO these should be INDIVIDUALLY.
+    Provides a set of customizable roast profile flavors, multiple flavors
+    per roast profile.  Flavors are independently maintained and independent
+    to keep data normalizedj.
     """
 
     class Suggestions(Enum):
@@ -20,10 +17,10 @@ class RoastProfileFlavors(TimeStampMixin):
         To be provided to the user when
         they're starting to add flavor profiles.
 
-        Why not right?
-
         TODO if you think of any other nice / useful suggestions
              just add them in here as time goes on.
+
+        TODO maybe move this to the RoastFlavors now
         """
 
         SPICY = "spicy"
@@ -36,17 +33,23 @@ class RoastProfileFlavors(TimeStampMixin):
         EARTHY = "earthy"
 
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    roast_profile = models.ManyToManyField(
+    roast_profile = models.ForeignKey(
         "roast.RoastProfile",
+        on_delete=models.CASCADE,
         related_name="roast_profile_flavors",
-        db_table="roast_profile_to_flavors",
     )
     roast_flavor = models.ForeignKey(
-        "roast.RoastFlavors", on_delete=models.CASCADE, related_name="roast_flavors"
+        "roast.RoastFlavors",
+        on_delete=models.CASCADE,
+        related_name="roast_profile_flavors",
+        null=True,
+        blank=True,
     )
     scale = models.PositiveSmallIntegerField(
         default=50,
         help_text="Provides a scale from 1-100 of how much of a certain flavor is detected in a roast profile.",
+        null=True,
+        blank=True,
     )
 
     def save(self, *args, **kwargs) -> None:

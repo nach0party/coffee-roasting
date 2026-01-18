@@ -5,6 +5,7 @@ import { Roasts } from "./roasts";
 import { RoastEvents } from "./roastEvents";
 import { RoastProfiles } from "./roastProfile";
 import { RoastProfileFlavors } from "./roastProfileFlavors";
+import { RoastFlavors } from "./roastFlavors";
 
 /**
  * Constructs and exposes the API ready to handle /
@@ -15,6 +16,7 @@ class CoffeeRoastingApi {
   beans = new Beans();
   origins = new Origins();
   roasts = new Roasts();
+  roastFlavors = new RoastFlavors();
   roastEvents = new RoastEvents();
   roastProfiles = new RoastProfiles();
   roastProfileFlavors = new RoastProfileFlavors();

@@ -10,17 +10,21 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
 from app.roast.models.roast import Roast
+from app.roast.models.roast_flavors import RoastFlavors
 from app.roast.models.roast_event import RoastEvent
+from app.roast.models.roast_profile import RoastProfile
 from app.roast.models.roast_profile_flavors import RoastProfileFlavors
+
 from app.roast.serializers import (
     RoastSerializer,
     RoastEventSerializer,
     RetrieveListRoastSerializer,
     RoastProfileSerializer,
-    RoastProfileFlavorSerializer,
+    RoastProfileFlavorSerializerReadSerializer,
+    RoastProfileFlavorUpsertSerializer,
 )
 from app.roast.filters import RoastFilter
-from app.roast.models.roast_profile import RoastProfile
+
 from app.shared.viewsets import CoffeeRoastingModelViewSet
 
 
@@ -132,9 +136,13 @@ class RoastProfileViewSet(CoffeeRoastingModelViewSet):
 
 class RoastProfileFlavorsViewSet(CoffeeRoastingModelViewSet):
 
-    queryset = RoastProfileFlavors.objects.filter(deleted_when=None)
-    serializer_class = RoastProfileFlavorSerializer
+    queryset = RoastProfileFlavors.objects.select_related("roast_flavor").filter(deleted_when=None)
     filterset_fields = ("scale",)
+
+    def get_serializer_class(self):
+        if self.action in ["retrieve", "list"]:
+            return RoastProfileFlavorSerializerReadSerializer
+        return RoastProfileFlavorUpsertSerializer
 
     @action(methods=["get"], detail=False, url_path="suggestions")
     def get_suggestions(self, request: Request) -> Response:
@@ -163,3 +171,7 @@ class RoastProfileFlavorsViewSet(CoffeeRoastingModelViewSet):
                 bean_name = flavor.roast_profile.roast.bean.namewe
             print(flavor, "flavor")
         return Response({"data": transformed_data})
+
+
+class RoastFlavorsViewSet(CoffeeRoastingModelViewSet):
+    queryset = RoastFlavors.objects.filter(deleted_when=None)

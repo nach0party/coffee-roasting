@@ -13,6 +13,10 @@ export class RoastProfileFlavors extends Resource {
     return await this.client.post(`/roasts/profiles/flavors`, data);
   };
 
+  delete = async (id) => {
+    return await this.client.delete(`/roasts/profiles/flavors/${id}`);
+  };
+
   getSuggestions = async () => {
     return await this.client.post(`/roasts/profiles/flavors/suggestions`);
   };

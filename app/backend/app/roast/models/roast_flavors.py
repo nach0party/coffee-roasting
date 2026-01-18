@@ -15,3 +15,16 @@ class RoastFlavors(TimeStampMixin):
 
     class Meta:
         db_table = "roast_flavors"
+        # TODO have a condition if it's deleted it doens't care about the uniqueness
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name"],
+                name="unique_flavor",
+                condition=models.Q(deleted_when=None),
+            )
+        ]
+
+    # we should use some fuzzy matching to see how close an option is to a
+    # # another (case wise) to make sure we're not fucking up this name field with junk
+    # def save(self, force_insert=..., force_update=..., using=..., update_fields=...):
+    #     return super().save(force_insert, force_update, using, update_fields)
