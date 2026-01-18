@@ -11,6 +11,8 @@ class RoastProfileFlavors(TimeStampMixin):
 
     TODO another way to handle this is to make this table independent, and, to then
          add this data to a json field on the roastProfile itself so it keeps this data independent...
+
+    TODO these should be INDIVIDUALLY.
     """
 
     class Suggestions(Enum):
@@ -39,7 +41,9 @@ class RoastProfileFlavors(TimeStampMixin):
         related_name="roast_profile_flavors",
         db_table="roast_profile_to_flavors",
     )
-    name = models.CharField(max_length=255)
+    roast_flavor = models.ForeignKey(
+        "roast.RoastFlavors", on_delete=models.CASCADE, related_name="roast_flavors"
+    )
     scale = models.PositiveSmallIntegerField(
         default=50,
         help_text="Provides a scale from 1-100 of how much of a certain flavor is detected in a roast profile.",
@@ -52,8 +56,9 @@ class RoastProfileFlavors(TimeStampMixin):
             raise ValidationError({"scale": ["Cannot be greater than 100"]})
         return super().save(*args, **kwargs)
 
-    def get_suggestions(self) -> list[str]:
-        return [suggestion.value for suggestion in self.Suggestions]
+    @classmethod
+    def get_suggestions(cls) -> list[str]:
+        return [suggestion.value for suggestion in cls.Suggestions]
 
     class Meta:
         db_table = "roast_profile_flavors"

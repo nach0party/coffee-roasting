@@ -3,6 +3,7 @@ from app.bean.models.bean import Bean
 from app.roast.models.roast import Roast
 from app.roast.models.roast_event import RoastEvent
 from app.roast.models.roast_profile import RoastProfile
+from app.roast.models.roast_profile_flavors import RoastProfileFlavors
 
 
 # TODO should we also pull the origin
@@ -49,4 +50,10 @@ class RoastSerializer(serializers.ModelSerializer):
 class RoastProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoastProfile
+        fields = "__all__"
+
+
+class RoastProfileFlavorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoastProfileFlavors
         fields = "__all__"

@@ -11,15 +11,16 @@ from rest_framework.exceptions import ValidationError
 
 from app.roast.models.roast import Roast
 from app.roast.models.roast_event import RoastEvent
+from app.roast.models.roast_profile_flavors import RoastProfileFlavors
 from app.roast.serializers import (
     RoastSerializer,
     RoastEventSerializer,
     RetrieveListRoastSerializer,
     RoastProfileSerializer,
+    RoastProfileFlavorSerializer,
 )
 from app.roast.filters import RoastFilter
 from app.roast.models.roast_profile import RoastProfile
-
 from app.shared.viewsets import CoffeeRoastingModelViewSet
 
 
@@ -127,3 +128,38 @@ class RoastProfileViewSet(CoffeeRoastingModelViewSet):
     queryset = RoastProfile.objects.filter(deleted_when=None)
     serializer_class = RoastProfileSerializer
     filterset_fields = ("roast",)
+
+
+class RoastProfileFlavorsViewSet(CoffeeRoastingModelViewSet):
+
+    queryset = RoastProfileFlavors.objects.filter(deleted_when=None)
+    serializer_class = RoastProfileFlavorSerializer
+    filterset_fields = ("scale",)
+
+    @action(methods=["get"], detail=False, url_path="suggestions")
+    def get_suggestions(self, request: Request) -> Response:
+        """
+        For populating some choices of roast profile flavors, to assist the user.
+        """
+        return Response({"data": RoastProfileFlavors.get_suggestions()})
+
+    @action(methods=["get"], detail=False, url_path="analytics")
+    def get_analytics(self, request: Request) -> Response:
+        """
+        Assists in formatting data to the radar component for quickly generating data.
+        """
+        profile = request.GET.get("profile")
+        if not profile:
+            raise ValidationError({"profile": ["must be provided as a query parameter"]})
+
+        current_flavors = RoastProfileFlavors.objects.prefetch_related(
+            "roast_profile__roast__bean"
+        ).filter(roast_profile=profile)
+
+        bean_name: str | None = None
+        transformed_data: dict = {}
+        for index, flavor in enumerate(current_flavors):
+            if index == 0:
+                bean_name = flavor.roast_profile.roast.bean.namewe
+            print(flavor, "flavor")
+        return Response({"data": transformed_data})

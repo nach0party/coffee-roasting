@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
+import { useEffect, useState } from 'react';
+import Grid from '@mui/material/Grid';
 
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import SearchIcon from "@mui/icons-material/Search";
-import Skeleton from "@mui/material/Skeleton";
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
+import Skeleton from '@mui/material/Skeleton';
 
-import api from "../../../api/coffee-roasting-api";
-import { RawBeanAvatar } from "../../../components/rawBeanAvatar/rawBeanAvatar";
-import { ViewBean } from "../view";
-import { CoffeeRoastingMenu } from "../../../components/menu";
-import CoffeeCuppingRadar from "../../../charts/cupping";
-import { BeanWorkflow } from "../workflow/workflow";
-import { CoffeRoastingModal } from "../../../components/modal";
+import api from '../../../api/coffee-roasting-api';
+import { RawBeanAvatar } from '../../../components/rawBeanAvatar/rawBeanAvatar';
+import { ViewBean } from '../view';
+import { CoffeeRoastingMenu } from '../../../components/menu';
+import { CoffeeCuppingRadar } from '../../../charts/cupping';
+import { BeanWorkflow } from '../workflow/workflow';
+import { CoffeRoastingModal } from '../../../components/modal';
 
 export const BeanLibrary = () => {
   const [existingBeans, setExistingBeans] = useState([]);
@@ -53,14 +53,14 @@ export const BeanLibrary = () => {
 
   return (
     <CoffeeRoastingMenu
-      title={"Library"}
+      title={'Library'}
       rightSideMenuBar={
         <TextField
           size="small"
           onChange={async (e) => {
             await getBeans(e.target.value);
           }}
-          sx={{ cursor: "pointer", width: "75%" }}
+          sx={{ cursor: 'pointer', width: '75%' }}
           label="Search"
           slotProps={{
             input: {
@@ -82,8 +82,8 @@ export const BeanLibrary = () => {
             // Enforces the area to remain if there's no data
             minHeight: 215,
             maxHeight: 215,
-            overflowX: "auto",
-            width: "100%",
+            overflowX: 'auto',
+            width: '100%',
             paddingY: 2,
             paddingX: 2,
             paddingBottom: 0,
@@ -98,7 +98,7 @@ export const BeanLibrary = () => {
               setBean({});
               setOpenBeanWorkflow(true);
             }}
-            src={"/new-bean3.avif"}
+            src={'/new-bean3.avif'}
           />
           {existingBeans.map((mappedBean) => {
             const isSelected = bean?.id === mappedBean.id;
@@ -111,7 +111,7 @@ export const BeanLibrary = () => {
                   setBean(mappedBean);
                 }}
                 isSelected={isSelected}
-                src={"/coffee-being-roasted.jpg"}
+                src={'/coffee-being-roasted.jpg'}
               />
             );
           })}
@@ -121,7 +121,7 @@ export const BeanLibrary = () => {
         <Grid container size={{ lg: 12 }}>
           <Grid
             size={{ xs: 12, sm: 12, lg: 8, xl: 8 }}
-            sx={{ borderRadius: 5, borderColor: "white", p: 1 }}
+            sx={{ borderRadius: 5, borderColor: 'white', p: 1 }}
           >
             <ViewBean bean={bean} />
             <Grid sx={{ mt: 2 }}>
