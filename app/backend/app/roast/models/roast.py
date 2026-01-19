@@ -66,8 +66,10 @@ class Roast(TimeStampMixin):
         for event in self.roast_event.all():
             event.delete()
 
-        for profile in self.roast_profile.all():
-            profile.delete()
+        if self.roast_profile:
+            self.roast_profile.delete()
+
+        # TODO delete all the other data like the flavor profile and whatnot
 
         count = Roast.objects.filter(id=self.id).update(deleted_when=timezone.now())
         return (count, {self._meta.label: count})

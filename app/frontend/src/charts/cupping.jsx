@@ -1,42 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 import { RadarChart } from '@mui/x-charts/RadarChart';
-import api from '../api/coffee-roasting-api';
 
 // TODO rename this file / component
 // TODO do we need a endpoint to generate this data?
-export const CoffeeCuppingRadar = ({ profileId, reload }) => {
-  const [analytics, setAnalytics] = useState();
+export const CoffeeCuppingRadar = ({ data }) => {
+  const muiTheme = useTheme();
+  const brandOrange = muiTheme.palette.primary.main;
 
-  const getData = async () => {
-    const response = await api.roastProfileFlavors.getAnalytics();
-  };
-
-  // you can flip the reload bool back and forth to control the reload functionality
-  // alternatively could just set it to an incremental counter to enforce useEffect reload
-  useEffect(() => {
-    const initialize = async () => {
-      await getData();
-    };
-
-    if (reload) {
-      initialize();
-    }
-  }, [reload]);
+  console.log(data, 'data');
 
   return (
     <RadarChart
+      colors={() => {
+        return [brandOrange];
+      }}
+      shape="sharp"
       height={300}
-      series={[{ label: 'Lisa', data: [120, 98, 86, 99, 85, 65] }]}
+      series={[{ label: data?.label || '', data: data?.series_data || [] }]}
       radar={{
-        max: 120,
-        metrics: [
-          'Math',
-          'Chinese',
-          'English',
-          'Geography',
-          'Physics',
-          'History',
-        ],
+        max: 100,
+        metrics: data?.metrics || [],
       }}
     />
   );

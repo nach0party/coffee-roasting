@@ -149,22 +149,44 @@ class RoastProfileFlavorsViewSet(CoffeeRoastingModelViewSet):
     def get_analytics(self, request: Request) -> Response:
         """
         Assists in formatting data to the radar component for quickly generating data.
+
+        TODO at the moment this only pull ONE analytic (one profile analytic)
+        TODO maybe centralize some of this into reusable functions
         """
         profile = request.GET.get("profile")
         if not profile:
             raise ValidationError({"profile": ["must be provided as a query parameter"]})
 
-        current_flavors = RoastProfileFlavors.objects.prefetch_related(
-            "roast_profile__roast__bean"
-        ).filter(roast_profile=profile)
+        current_flavors = (
+            RoastProfileFlavors.objects.prefetch_related("roast_profile__roast__bean")
+            .select_related("roast_flavor")
+            .filter(
+                roast_profile=profile,
+                deleted_when=None,
+                roast_profile__roast__bean__deleted_when=None,
+                roast_flavor__deleted_when=None,
+            )
+        )
 
         bean_name: str | None = None
-        transformed_data: dict = {}
+        transformed_data: dict | None = {}
         for index, flavor in enumerate(current_flavors):
             if index == 0:
-                bean_name = flavor.roast_profile.roast.bean.namewe
-            print(flavor, "flavor")
-        return Response({"data": transformed_data})
+                try:
+                    bean_name = flavor.roast_profile.roast.bean.name
+                except:
+                    pass
+                transformed_data["label"] = bean_name
+            if transformed_data.get("series_data") is None:
+                transformed_data["series_data"] = []
+            if transformed_data.get("metrics") is None:
+                transformed_data["metrics"] = []
+
+            # only chose the ones that have been fully established / selectd in the UI
+            if flavor.roast_flavor_id:
+                transformed_data["series_data"].append(flavor.scale)
+                transformed_data["metrics"].append(flavor.roast_flavor.name)
+        return Response(transformed_data)
 
 
 class RoastFlavorsViewSet(CoffeeRoastingModelViewSet):

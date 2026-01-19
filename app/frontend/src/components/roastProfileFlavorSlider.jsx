@@ -5,8 +5,10 @@ export const RoastProfileFlavorSlider = ({
   flavorProfile,
   updateRoastProfileFlavor,
   retrieveRoastProfileFlavors,
+  getRoastProfileFlavorAnalytics,
 }) => {
-  const [value, setValue] = useState(flavorProfile.scale);
+  const [value, setValue] = useState(flavorProfile?.scale || 50);
+
   return (
     <Slider
       value={value}
@@ -21,6 +23,7 @@ export const RoastProfileFlavorSlider = ({
           scale: newValue,
         });
         await retrieveRoastProfileFlavors();
+        await getRoastProfileFlavorAnalytics();
       }}
     />
   );

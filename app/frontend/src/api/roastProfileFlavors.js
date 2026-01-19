@@ -22,6 +22,6 @@ export class RoastProfileFlavors extends Resource {
   };
 
   getAnalytics = async (params) => {
-    return await this.client.post(`/roasts/profiles/flavors/analytics`, params);
+    return await this.client.get(`/roasts/profiles/flavors/analytics`, params);
   };
 }
