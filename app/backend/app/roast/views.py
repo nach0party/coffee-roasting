@@ -22,6 +22,7 @@ from app.roast.serializers import (
     RoastProfileSerializer,
     RoastProfileFlavorSerializerReadSerializer,
     RoastProfileFlavorUpsertSerializer,
+    RoastFlavorSerializer,
 )
 from app.roast.filters import RoastFilter
 
@@ -144,13 +145,6 @@ class RoastProfileFlavorsViewSet(CoffeeRoastingModelViewSet):
             return RoastProfileFlavorSerializerReadSerializer
         return RoastProfileFlavorUpsertSerializer
 
-    @action(methods=["get"], detail=False, url_path="suggestions")
-    def get_suggestions(self, request: Request) -> Response:
-        """
-        For populating some choices of roast profile flavors, to assist the user.
-        """
-        return Response({"data": RoastProfileFlavors.get_suggestions()})
-
     @action(methods=["get"], detail=False, url_path="analytics")
     def get_analytics(self, request: Request) -> Response:
         """
@@ -175,3 +169,4 @@ class RoastProfileFlavorsViewSet(CoffeeRoastingModelViewSet):
 
 class RoastFlavorsViewSet(CoffeeRoastingModelViewSet):
     queryset = RoastFlavors.objects.filter(deleted_when=None)
+    serializer_class = RoastFlavorSerializer

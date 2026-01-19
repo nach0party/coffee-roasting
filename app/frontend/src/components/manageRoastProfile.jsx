@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { Box, Button, IconButton } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
@@ -7,19 +8,10 @@ import AddIcon from '@mui/icons-material/Add';
 import Slider from '@mui/material/Slider';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import { RoastProfileFlavorSlider } from './roastProfileFlavorSlider';
 import { CoffeRoastingModal } from './modal';
 import { CoffeeCuppingRadar } from '../charts/cupping';
 import api from '../api/coffee-roasting-api';
-import {
-  Box,
-  Button,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@mui/material';
 
 const RoastLevelChoices = {
   Light: 'light',
@@ -27,13 +19,11 @@ const RoastLevelChoices = {
   Dark: 'dark',
 };
 
-// TODO maybe we could just pass the roast profile object
-// TODO ask the user if they want to generate a roast profile or not?
 export const ManageRoastProfile = ({ profile, setProfile }) => {
   const [level, setLevel] = useState(profile.level || '');
   const [openFlavorModal, setOpenFlavorModal] = useState(false);
   const [flavorProfiles, setFlavorProfiles] = useState();
-  const [flavors, setFlavors] = useState();
+  const [flavors, setFlavors] = useState([]);
 
   useEffect(() => {
     const initialize = async () => {
@@ -76,19 +66,17 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
     }
   };
 
-  const createRoastProfileFlavor = async () => {
+  const updateRoastProfileFlavor = async (id, data) => {
     try {
-      await api.roastProfileFlavors.create({ roast_profile: profile.id });
+      await api.roastProfileFlavors.partialUpdate(id, data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const saveRoastProfile = async () => {
+  const createRoastProfileFlavor = async () => {
     try {
-      const response = await api.roastProfiles.partialUpdate(profile.id, {
-        level: profile.level,
-      });
+      await api.roastProfileFlavors.create({ roast_profile: profile.id });
     } catch (error) {
       console.error(error);
     }
@@ -137,8 +125,8 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
           <>
             {flavorProfiles ? (
               <>
-                {flavorProfiles.map((flavor) => (
-                  <Grid container key={flavor.id} alignItems="center">
+                {flavorProfiles.map((flavorProfile) => (
+                  <Grid container key={flavorProfile.id} alignItems="center">
                     <Grid size={{ xs: 10, sm: 11 }}>
                       <Box
                         sx={{
@@ -148,13 +136,34 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
                         }}
                       >
                         <TextField
+                          select
                           fullWidth
                           label="Flavor Name"
                           variant="outlined"
                           size="small"
-                        />
+                          value={flavorProfile.roast_flavor?.id || ''}
+                          onChange={async (event) => {
+                            const selectedFlavorId = event.target.value;
+                            await updateRoastProfileFlavor(flavorProfile.id, {
+                              roast_flavor: selectedFlavorId,
+                            });
+                            await retrieveRoastProfileFlavors();
+                          }}
+                        >
+                          {flavors.map((flavor) => (
+                            <MenuItem key={flavor.id} value={flavor.id}>
+                              {flavor.name}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                         <Box sx={{ px: 1 }}>
-                          <Slider defaultValue={50} valueLabelDisplay="auto" />
+                          <RoastProfileFlavorSlider
+                            flavorProfile={flavorProfile}
+                            updateRoastProfileFlavor={updateRoastProfileFlavor}
+                            retrieveRoastProfileFlavors={
+                              retrieveRoastProfileFlavors
+                            }
+                          />
                         </Box>
                       </Box>
                     </Grid>
@@ -165,7 +174,7 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
                       <IconButton
                         color="error"
                         onClick={async () => {
-                          await deleteRoastProfileFlavors(flavor.id);
+                          await deleteRoastProfileFlavors(flavorProfile.id);
                           await retrieveRoastProfileFlavors();
                         }}
                       >

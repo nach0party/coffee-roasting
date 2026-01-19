@@ -12,26 +12,6 @@ class RoastProfileFlavors(TimeStampMixin):
     to keep data normalizedj.
     """
 
-    class Suggestions(Enum):
-        """
-        To be provided to the user when
-        they're starting to add flavor profiles.
-
-        TODO if you think of any other nice / useful suggestions
-             just add them in here as time goes on.
-
-        TODO maybe move this to the RoastFlavors now
-        """
-
-        SPICY = "spicy"
-        CHOCOLATEY = "chocolatey"
-        NUTTY = "nutty"
-        BUTTERY = "buttery"
-        FRUITY = "fruity"
-        FLOWERY = "flowery"
-        WINEY = "winey"
-        EARTHY = "earthy"
-
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     roast_profile = models.ForeignKey(
         "roast.RoastProfile",
@@ -59,9 +39,6 @@ class RoastProfileFlavors(TimeStampMixin):
             raise ValidationError({"scale": ["Cannot be greater than 100"]})
         return super().save(*args, **kwargs)
 
-    @classmethod
-    def get_suggestions(cls) -> list[str]:
-        return [suggestion.value for suggestion in cls.Suggestions]
-
     class Meta:
         db_table = "roast_profile_flavors"
+        ordering = ["created_when"]

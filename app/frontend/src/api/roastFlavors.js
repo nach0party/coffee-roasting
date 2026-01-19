@@ -12,12 +12,4 @@ export class RoastFlavors extends Resource {
   create = async (data) => {
     return await this.client.post(`/roasts/flavors`, data);
   };
-
-  //   getSuggestions = async () => {
-  //     return await this.client.post(`/roasts/flavors/suggestions`);
-  //   };
-
-  //   getAnalytics = async (params) => {
-  //     return await this.client.post(`/roasts/profiles/flavors/analytics`, params);
-  //   };
 }

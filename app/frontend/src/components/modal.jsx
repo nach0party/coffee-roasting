@@ -34,6 +34,7 @@ export const CoffeRoastingModal = ({
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        disableScrollLock={true}
       >
         <DialogTitle
           sx={{ m: 0, p: 2, minWidth: 300, minHeight: 50 }}

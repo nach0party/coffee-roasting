@@ -87,3 +87,10 @@ class RoastProfileFlavorUpsertSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoastProfileFlavors
         fields = "__all__"
+
+
+class RoastFlavorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RoastFlavors
+        fields = "__all__"
