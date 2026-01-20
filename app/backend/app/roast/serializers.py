@@ -2,6 +2,9 @@ from rest_framework import serializers
 from app.bean.models.bean import Bean
 from app.roast.models.roast import Roast
 from app.roast.models.roast_event import RoastEvent
+from app.roast.models.roast_profile import RoastProfile
+from app.roast.models.roast_profile_flavors import RoastProfileFlavors
+from app.roast.models.roast_flavors import RoastFlavors
 
 
 # TODO should we also pull the origin
@@ -42,4 +45,52 @@ class RetrieveListRoastSerializer(serializers.ModelSerializer):
 class RoastSerializer(serializers.ModelSerializer):
     class Meta:
         model = Roast
+        fields = "__all__"
+
+
+class RoastProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoastProfile
+        fields = "__all__"
+
+
+class RoastProfileFlavorDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoastFlavors
+        fields = (
+            "id",
+            "name",
+        )
+        read_only_fields = (
+            "id",
+            "name",
+        )
+
+
+class RoastProfileFlavorSerializerReadSerializer(serializers.ModelSerializer):
+    """
+    For get / list.
+    """
+
+    roast_flavor = RoastProfileFlavorDetailsSerializer(read_only=True)
+
+    class Meta:
+        model = RoastProfileFlavors
+        fields = "__all__"
+
+
+class RoastProfileFlavorUpsertSerializer(serializers.ModelSerializer):
+    """
+    For update, create.
+    """
+
+    class Meta:
+        model = RoastProfileFlavors
+        fields = "__all__"
+
+
+class RoastFlavorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RoastFlavors
         fields = "__all__"

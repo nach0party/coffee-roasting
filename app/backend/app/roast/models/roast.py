@@ -40,6 +40,7 @@ class Roast(TimeStampMixin):
         blank=True,
         help_text="In correspondance with target_duration we just want the end time in plain timestamp format without having to do a bunch of math.  Easier to do it server side",
     )
+    target_temperature = models.IntegerField(null=True, blank=True)
     notes = models.TextField(
         blank=True,
         null=True,
@@ -65,8 +66,8 @@ class Roast(TimeStampMixin):
         for event in self.roast_event.all():
             event.delete()
 
-        for profile in self.roast_profile.all():
-            profile.delete()
+        if self.roast_profile:
+            self.roast_profile.delete()
 
         count = Roast.objects.filter(id=self.id).update(deleted_when=timezone.now())
         return (count, {self._meta.label: count})

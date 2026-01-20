@@ -1,32 +1,31 @@
-import { Resource } from './resource'
+import { Resource } from "./resource";
 
 export class Roasts extends Resource {
+  get = async (id) => {
+    return this.client.get(`/roasts/${id}`);
+  };
 
-    get = async (id) => {
-        return this.client.get(`/roasts/${id}`)
-    }
+  list = async (params) => {
+    return await this.client.get(`/roasts`, params);
+  };
 
-    list = async (params) => {
-        return await this.client.get(`/roasts`, params)
-    }
-    
-    create = async (data) => {
-        return await this.client.post(`/roasts`, data)
-    }
+  create = async (data) => {
+    return await this.client.post(`/roasts`, data);
+  };
 
-    partialUpdate = async (id, data) => {
-        return await this.client.patch(`/roasts/${id}`, data)
-    }
+  partialUpdate = async (id, data) => {
+    return await this.client.patch(`/roasts/${id}`, data);
+  };
 
-    beginRoast = async (id) => {
-        return await this.client.post(`/roasts/${id}/begin`)
-    }
+  beginRoast = async (id) => {
+    return await this.client.post(`/roasts/${id}/begin`);
+  };
 
-    endRoast = async (id) => {
-        return await this.client.post(`/roasts/${id}/end`)
-    }
+  endRoast = async (id) => {
+    return await this.client.post(`/roasts/${id}/end`);
+  };
 
-    delete = async (id) => {
-        return await this.client.delete(`/roasts/${id}`)
-    }
+  delete = async (id) => {
+    return await this.client.delete(`/roasts/${id}`);
+  };
 }
