@@ -22,6 +22,7 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
   const [level, setLevel] = useState(profile.level || '');
   const [openFlavorModal, setOpenFlavorModal] = useState(false);
   const [flavorProfiles, setFlavorProfiles] = useState([]);
+  const [filteredFlavors, setFilteredFlavors] = useState([]);
   const [flavors, setFlavors] = useState([]);
   const [analyticsData, setAnalyticsData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -40,7 +41,9 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
   const retrieveFlavors = async () => {
     try {
       const response = await api.roastFlavors.list();
-      setFlavors(response.data.results);
+      const flavorData = response.data.results;
+      setFlavors(flavorData);
+      setFilteredFlavors(flavorData);
     } catch (error) {
       console.error(error);
     }
@@ -53,7 +56,7 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
   const retrieveRoastProfileFlavors = async () => {
     try {
       const response = await api.roastProfileFlavors.list({
-        profile: profile.id,
+        roast_profile: profile.id,
       });
       setFlavorProfiles(response.data.results);
     } catch (error) {
@@ -104,8 +107,6 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
     }
   };
 
-  console.log(analyticsData, 'analyticsData');
-
   return (
     <>
       {!loading && (
@@ -116,6 +117,7 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
               select
               label="Roast Level"
               value={level}
+              variant="standard"
               onChange={async (event) => {
                 setLevel(event.target.value);
                 await updateRoastProfile(profile.id, {
@@ -195,11 +197,26 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
                                 await getRoastProfileFlavorAnalytics();
                               }}
                             >
-                              {flavors.map((flavor) => (
-                                <MenuItem key={flavor.id} value={flavor.id}>
-                                  {flavor.name}
-                                </MenuItem>
-                              ))}
+                              {filteredFlavors.map((flavor) => {
+                                const disable = !!(
+                                  flavorProfiles.filter(
+                                    (data) =>
+                                      data?.roast_flavor?.name === flavor.name,
+                                  ).length > 0
+                                );
+                                console.log(disable, 'disable');
+
+                                // TODO determine the filtering here?
+                                return (
+                                  <MenuItem
+                                    disabled={disable}
+                                    key={flavor.id}
+                                    value={flavor.id}
+                                  >
+                                    {flavor.name}
+                                  </MenuItem>
+                                );
+                              })}
                             </TextField>
                             <Box sx={{ px: 1 }}>
                               <RoastProfileFlavorSlider

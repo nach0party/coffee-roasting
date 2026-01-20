@@ -1,9 +1,12 @@
 from typing import TYPE_CHECKING, Any
 from uuid import uuid4, UUID
 from enum import Enum
-from app.shared.mixins import TimeStampMixin
+
 from django.db import models
 from django.utils import timezone
+from django.db import transaction
+
+from app.shared.mixins import TimeStampMixin
 
 
 class RoastProfile(TimeStampMixin):
@@ -21,7 +24,10 @@ class RoastProfile(TimeStampMixin):
     """
 
     if TYPE_CHECKING:
+        from .roast_profile_flavors import RoastProfileFlavors
+
         roast_id: UUID
+        roast_profile_flavors: models.QuerySet[RoastProfileFlavors]
 
     class RoastLevels(Enum):
         """
@@ -48,6 +54,9 @@ class RoastProfile(TimeStampMixin):
     class Meta:
         db_table = "roast_profiles"
 
+    @transaction.atomic()
     def delete(self, using: Any = None, keep_parents: bool = False) -> tuple[int, dict[str, int]]:
         count = RoastProfile.objects.filter(id=self.id).update(deleted_when=timezone.now())
+        for flavor_profile in self.roast_profile_flavors.all():
+            flavor_profile.delete()
         return (count, {self._meta.label: count})

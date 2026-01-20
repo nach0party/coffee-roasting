@@ -1,6 +1,7 @@
-from enum import Enum
-from django.db import models
+from __future__ import annotations
 from uuid import uuid4
+from django.db import models
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from app.shared.mixins import TimeStampMixin
 
@@ -42,3 +43,7 @@ class RoastProfileFlavors(TimeStampMixin):
     class Meta:
         db_table = "roast_profile_flavors"
         ordering = ["created_when"]
+
+    def delete(self, using: Any = None, keep_parents: bool = False) -> tuple[int, dict[str, int]]:
+        count = RoastProfileFlavors.objects.filter(id=self.id).update(deleted_when=timezone.now())
+        return (count, {self._meta.label: count})

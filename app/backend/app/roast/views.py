@@ -138,7 +138,10 @@ class RoastProfileViewSet(CoffeeRoastingModelViewSet):
 class RoastProfileFlavorsViewSet(CoffeeRoastingModelViewSet):
 
     queryset = RoastProfileFlavors.objects.select_related("roast_flavor").filter(deleted_when=None)
-    filterset_fields = ("scale",)
+    filterset_fields = (
+        "scale",
+        "roast_profile",
+    )
 
     def get_serializer_class(self):
         if self.action in ["retrieve", "list"]:
