@@ -20,4 +20,8 @@ export class Beans extends Resource {
   partialUpdate = async (id, data) => {
     return await this.client.patch(`beans/${id}`, data);
   };
+
+  retrieveAllRoastsAnalytics = async (id) => {
+    return await this.client.get(`beans/${id}/roasts/analytics`);
+  };
 }

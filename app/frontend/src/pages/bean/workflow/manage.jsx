@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
+import { useEffect, useState } from 'react';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 
 const gradeRange = {
   MIN: 0,
   MAX: 100,
 };
 
-const availableProcessing = ["washed", "natural", "honey"];
+const availableProcessing = ['washed', 'natural', 'honey'];
 
 // TODO should we auto save any change?
 export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
   const [errors, setErrors] = useState({});
-  const [name, setName] = useState(bean?.name || "");
+  const [name, setName] = useState(bean?.name || '');
   const [scaGrade, setScaGrade] = useState(bean?.sca_grade || null);
   const [processing, setProcessing] = useState(
-    bean?.processing || availableProcessing[0]
+    bean?.processing || availableProcessing[0],
   );
   const [altitude, setAltitude] = useState(bean?.altitude || null);
 
@@ -91,9 +91,6 @@ export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
     return false;
   };
 
-  console.log(processing, "processing");
-  console.log(bean, "bean");
-
   return (
     <Grid
       sx={(theme) => ({
@@ -124,14 +121,14 @@ export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
             }}
             helperText="Provide the name of the Bean"
             size="small"
-            sx={{ width: "100%" }}
+            sx={{ width: '100%' }}
           >
             {name}
           </TextField>
         </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
           <TextField
-            error={hasErrors("grade")}
+            error={hasErrors('grade')}
             label="Grade"
             value={scaGrade}
             slotProps={{
@@ -144,7 +141,7 @@ export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
             }}
             helperText={`Provide the grade of the bean, must be a number between ${gradeRange.MIN} and ${gradeRange.MAX}`}
             size="small"
-            sx={{ width: "100%" }}
+            sx={{ width: '100%' }}
           >
             {scaGrade}
           </TextField>
@@ -156,7 +153,7 @@ export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
             value={processing}
             helperText={`Provide the processing method`}
             size="small"
-            sx={{ width: "100%" }}
+            sx={{ width: '100%' }}
           >
             {availableProcessing.map((process, index) => {
               return (
@@ -189,7 +186,7 @@ export const ManageBean = ({ bean, setBean, setDisableManageBeanNextStep }) => {
             }}
             helperText={`Provide the altitude if available.`}
             size="small"
-            sx={{ width: "100%" }}
+            sx={{ width: '100%' }}
           >
             {altitude}
           </TextField>

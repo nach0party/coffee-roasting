@@ -23,6 +23,7 @@ export const BeanLibrary = () => {
   const [bean, setBean] = useState({});
   const [openBeanWorkflow, setOpenBeanWorkflow] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [roastProfileAnalytics, setRoastProfileAnalytics] = useState({});
 
   const getBeans = async (search) => {
     const params = {};
@@ -41,15 +42,14 @@ export const BeanLibrary = () => {
     initialize();
   }, []);
 
-  // const selectBean = async (bean) => {
-  //   if (bean?.id === bean?.id) {
-  //     setBean({});
-  //     return;
-  //   }
-  //   setBean(bean);
-  // };
-
-  // console.log(bean, "(selected) bean");
+  const retrieveBeanRoastProfileAnalytics = async (id) => {
+    try {
+      const response = await api.beans.retrieveAllRoastsAnalytics(id);
+      setRoastProfileAnalytics(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <CoffeeRoastingMenu
@@ -94,7 +94,6 @@ export const BeanLibrary = () => {
             sx={{ width: 125, height: 125 }}
             name="New Bean"
             onClick={() => {
-              // console.log("clicked?");
               setBean({});
               setOpenBeanWorkflow(true);
             }}
@@ -107,8 +106,9 @@ export const BeanLibrary = () => {
                 key={mappedBean.id}
                 sx={{ width: 125, height: 125 }}
                 name={mappedBean.name}
-                onClick={() => {
+                onClick={async () => {
                   setBean(mappedBean);
+                  await retrieveBeanRoastProfileAnalytics(mappedBean.id);
                 }}
                 isSelected={isSelected}
                 src={'/coffee-being-roasted.jpg'}
@@ -147,7 +147,9 @@ export const BeanLibrary = () => {
             </Grid>
           </Grid>
           <Grid size={{ xs: 12, sm: 12, lg: 4, xl: 4 }} sx={{ p: 2 }}>
-            <CoffeeCuppingRadar />
+            {roastProfileAnalytics && (
+              <CoffeeCuppingRadar data={roastProfileAnalytics} />
+            )}
           </Grid>
         </Grid>
       </Grid>

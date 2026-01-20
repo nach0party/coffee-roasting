@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
-import { ManageBean } from "./manage";
-import { AssignOrigin } from "./assignOrigin";
-import { CoffeRoastingModal } from "../../../components/modal";
-import api from "../../../api/coffee-roasting-api";
+import { useState, useEffect } from 'react';
+import Button from '@mui/material/Button';
+import { ManageBean } from './manage';
+import { AssignOrigin } from './assignOrigin';
+import { CoffeRoastingModal } from '../../../components/modal';
+import api from '../../../api/coffee-roasting-api';
 
 const stepHierarchy = {
-  ManageBean: "manageBean",
-  AssignOrigin: "assignOrigin",
+  ManageBean: 'manageBean',
+  AssignOrigin: 'assignOrigin',
 };
 
 /**
@@ -34,8 +34,6 @@ export const BeanWorkflow = ({
     setStep(stepHierarchy.ManageBean);
   }, [bean]);
 
-  console.log(bean, "beanworkflow (bean)");
-
   // TODO manage the bean state depending on the things we want updated per component??
   return (
     <>
@@ -44,7 +42,7 @@ export const BeanWorkflow = ({
         setOpen={() => {
           setOpenBeanWorkflow(false);
         }}
-        title={"Manage your bean"}
+        title={'Manage your bean'}
         content={
           <ManageBean
             bean={bean}
@@ -78,12 +76,12 @@ export const BeanWorkflow = ({
                   } else {
                     const createResponse = await api.beans.create(bean);
                     const beanResponse = await api.beans.get(
-                      createResponse.data.id
+                      createResponse.data.id,
                     );
                     setBean(beanResponse.data);
                   }
                   await getBeans();
-                  setStep("assignOrigin");
+                  setStep('assignOrigin');
                 } catch (error) {
                   console.error(error);
                 }
@@ -100,7 +98,7 @@ export const BeanWorkflow = ({
         setOpen={() => {
           setOpenBeanWorkflow(false);
         }}
-        title={"Assign your bean an origin"}
+        title={'Assign your bean an origin'}
         content={<AssignOrigin bean={bean} setBean={setBean} />}
         actions={
           <>

@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid";
-import MenuItem from "@mui/material/MenuItem";
-import TextField from "@mui/material/TextField";
-import api from "../../../api/coffee-roasting-api";
+import { useState, useEffect } from 'react';
+import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import api from '../../../api/coffee-roasting-api';
 
 export const AssignOrigin = ({ bean, setBean }) => {
   const [availableCountries, setAvailableCountries] = useState([]);
-  const [country, setCountry] = useState(bean?.origin?.country || "");
-  const [region, setRegion] = useState(bean?.origin?.region || "");
+  const [country, setCountry] = useState(bean?.origin?.country || '');
+  const [region, setRegion] = useState(bean?.origin?.region || '');
   const [municipality, setMunicipality] = useState(
-    bean?.origin?.municipality || ""
+    bean?.origin?.municipality || '',
   );
   const [loading, setLoading] = useState(true);
 
@@ -33,8 +33,6 @@ export const AssignOrigin = ({ bean, setBean }) => {
     }
   }, [bean]);
 
-  console.log(bean, "bean");
-
   return (
     <Grid
       sx={(theme) => ({
@@ -54,7 +52,7 @@ export const AssignOrigin = ({ bean, setBean }) => {
               defaultValue={availableCountries[0]}
               helperText={`Provide the country the bean is from`}
               size="small"
-              sx={{ width: "100%" }}
+              sx={{ width: '100%' }}
             >
               {availableCountries.map((availbleCountry) => {
                 return (
@@ -93,7 +91,7 @@ export const AssignOrigin = ({ bean, setBean }) => {
               }}
               helperText="Provide The Region Of the Bean"
               size="small"
-              sx={{ width: "100%" }}
+              sx={{ width: '100%' }}
             >
               {name}
             </TextField>
@@ -118,7 +116,7 @@ export const AssignOrigin = ({ bean, setBean }) => {
               }}
               helperText="Provide The Municipality Of The Bean"
               size="small"
-              sx={{ width: "100%" }}
+              sx={{ width: '100%' }}
             >
               {municipality}
             </TextField>

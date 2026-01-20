@@ -204,7 +204,6 @@ export const ManageRoastProfile = ({ profile, setProfile }) => {
                                       data?.roast_flavor?.name === flavor.name,
                                   ).length > 0
                                 );
-                                console.log(disable, 'disable');
 
                                 // TODO determine the filtering here?
                                 return (
