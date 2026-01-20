@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import SearchIcon from "@mui/icons-material/Search";
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
 
-import { CoffeeRoastingMenu } from "../../../components/menu";
-import { RawBeanAvatar } from "../../../components/rawBeanAvatar/rawBeanAvatar";
-import api from "../../../api/coffee-roasting-api";
-import "./selection.css";
+import { CoffeeRoastingMenu } from '../../../components/menu';
+import { RawBeanAvatar } from '../../../components/rawBeanAvatar/rawBeanAvatar';
+import api from '../../../api/coffee-roasting-api';
+import './selection.css';
 
 /**
  * Component for selecting beans out of the bean library.
@@ -77,7 +77,7 @@ export const BeanSelection = () => {
             onChange={async (e) => {
               await getBeans(e.target.value);
             }}
-            sx={{ pl: 1, pb: 3, cursor: "pointer" }}
+            sx={{ pl: 1, pb: 3, cursor: 'pointer' }}
             label="Search"
             slotProps={{
               input: {
@@ -89,11 +89,14 @@ export const BeanSelection = () => {
               },
             }}
           />
-          <Grid container spacing={{ xs: 2, md: 3, lg: 4, xl: 4 }}>
+          <Grid container spacing={{ xs: 1, sm: 1, md: 1, lg: 1, xl: 25 }}>
             {existingBeans.map((bean) => {
               const isSelected = selectedBean === bean.id;
               return (
-                <Grid key={bean.id}>
+                <Grid
+                  size={{ xs: 6, sm: 4, md: 3, lg: 2, xl: 1 }}
+                  key={bean.id}
+                >
                   <RawBeanAvatar
                     name={bean.name}
                     onClick={() => {
