@@ -10,20 +10,13 @@ export const CoffeeCuppingRadar = ({ data }) => {
   const muiTheme = useTheme();
   const brandOrange = muiTheme.palette.primary.main;
 
-  // prevents crashes... this MUI component is finnicky.
-  if (!data?.label) {
-    data.label = '';
-  }
-
-  if (!data?.series_data) {
+  if (!data?.series_data || data.series_data.length === 0) {
     return null;
   }
 
-  if (!data?.metrics) {
+  if (!data?.metrics || data.series_data.length === 0) {
     return null;
   }
-
-  console.log(data, 'data');
 
   return (
     <>
