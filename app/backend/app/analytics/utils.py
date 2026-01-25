@@ -24,11 +24,11 @@ def transform_roast_flavor_profiles(
     transformed_aggregate_data["series_data"] = []
     transformed_aggregate_data["metrics"] = []
     for roast_flavor_name, index_list in pre_analytic_data.items():
-        transformed_aggregate_data["series_data"].append(roast_flavor_name)
+        transformed_aggregate_data["metrics"].append(roast_flavor_name)
         value_length = len(index_list)
         if value_length > 1:
-            transformed_aggregate_data["metrics"].append(round(sum(index_list) / value_length))
+            transformed_aggregate_data["series_data"].append(round(sum(index_list) / value_length))
         else:
-            transformed_aggregate_data["metrics"].append(index_list[0] if index_list else None)
+            transformed_aggregate_data["series_data"].append(index_list[0] if index_list else None)
 
     return transformed_aggregate_data
