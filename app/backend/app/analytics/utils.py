@@ -12,19 +12,23 @@ def transform_roast_flavor_profiles(
     our frontend recognizes as analytics to power our profile graph.
     """
 
-    transformed_data = cast(RoastFlavorProfileAnalytics, {})
-    for index, flavor in enumerate(roast_profile_flavors):
-        if index == 0:
-            transformed_data["label"] = bean_name
-
-        if transformed_data.get("series_data") is None:
-            transformed_data["series_data"] = []
-        if transformed_data.get("metrics") is None:
-            transformed_data["metrics"] = []
-
-        # only chose the ones that have been fully established / selected in the UI
+    pre_analytic_data: dict[str, list[int]] = {}
+    for flavor in roast_profile_flavors:
         if flavor.roast_flavor_id:
-            transformed_data["series_data"].append(flavor.scale)
-            transformed_data["metrics"].append(flavor.roast_flavor.name)
+            if not pre_analytic_data.get(flavor.roast_flavor.name):
+                pre_analytic_data[flavor.roast_flavor.name] = []
+            pre_analytic_data[flavor.roast_flavor.name].append(flavor.scale)
 
-    return transformed_data
+    transformed_aggregate_data = cast(RoastFlavorProfileAnalytics, {})
+    transformed_aggregate_data["label"] = bean_name
+    transformed_aggregate_data["series_data"] = []
+    transformed_aggregate_data["metrics"] = []
+    for roast_flavor_name, index_list in pre_analytic_data.items():
+        transformed_aggregate_data["series_data"].append(roast_flavor_name)
+        value_length = len(index_list)
+        if value_length > 1:
+            transformed_aggregate_data["metrics"].append(round(sum(index_list) / value_length))
+        else:
+            transformed_aggregate_data["metrics"].append(index_list[0] if index_list else None)
+
+    return transformed_aggregate_data

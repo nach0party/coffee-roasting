@@ -66,7 +66,8 @@ class Roast(TimeStampMixin):
         for event in self.roast_event.all():
             event.delete()
 
-        if self.roast_profile:
+        # dumb 'gotcha' with reverse accessor / one to one stuff
+        if hasattr(self, "roast_profile"):
             self.roast_profile.delete()
 
         count = Roast.objects.filter(id=self.id).update(deleted_when=timezone.now())
