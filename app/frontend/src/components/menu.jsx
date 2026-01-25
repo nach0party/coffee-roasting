@@ -1,25 +1,26 @@
-import { Fragment, useState } from "react";
-import { useNavigate } from "react-router";
+import { Fragment, useState } from 'react';
+import { useNavigate } from 'react-router';
 
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import WhatshotOutlinedIcon from "@mui/icons-material/WhatshotOutlined";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import Typography from "@mui/material/Typography";
-import SettingsIcon from "@mui/icons-material/Settings";
-import WidgetsOutlinedIcon from "@mui/icons-material/WidgetsOutlined";
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import WhatshotOutlinedIcon from '@mui/icons-material/WhatshotOutlined';
+import Drawer from '@mui/material/Drawer';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import Typography from '@mui/material/Typography';
+import SettingsIcon from '@mui/icons-material/Settings';
+import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
 
-import { CoffeRoastingModal } from "./modal";
+import { CoffeRoastingModal } from './modal';
 
 /**
  * Main wrapper component for the app, including the header strip and menu.
@@ -36,8 +37,8 @@ export const CoffeeRoastingMenu = ({
 
   const toggleDrawer = (event, shouldOpen = false) => {
     if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
     ) {
       return;
     }
@@ -45,37 +46,37 @@ export const CoffeeRoastingMenu = ({
   };
 
   const goToDashboard = () => {
-    navigate("/");
+    navigate('/');
   };
   const goToRawCoffeeBeanLibrary = () => {
-    navigate("/bean/library");
+    navigate('/bean/library');
   };
   const startRoast = async () => {
     if (hasActiveRoasts) {
       setOpenRoastWarningModal(true);
       return;
     }
-    navigate("/bean/select");
+    navigate('/bean/select');
   };
 
   return (
     <Grid>
       <Box
         sx={(theme) => ({
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "100%",
-          height: "64px",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          height: '64px',
           backgroundColor: theme.palette.background.paper,
-          position: "sticky",
+          position: 'sticky',
           top: 0,
           zIndex: 1100,
           padding: theme.spacing(0, 3),
           boxShadow: theme.shadows[1],
         })}
       >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -92,13 +93,13 @@ export const CoffeeRoastingMenu = ({
         </Box>
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "right",
-            alignItems: "center",
-            height: "100%",
+            display: 'flex',
+            justifyContent: 'right',
+            alignItems: 'center',
+            height: '100%',
             paddingY: 0,
             marginY: 0,
-            "& > *": {
+            '& > *': {
               marginTop: 0,
               marginBottom: 0,
             },
@@ -107,18 +108,18 @@ export const CoffeeRoastingMenu = ({
           {rightSideMenuBar}
         </Box>
       </Box>
-      <Fragment key={"anchor"}>
+      <Fragment key={'anchor'}>
         <Drawer
-          anchor={"left"}
+          anchor={'left'}
           open={openMenu}
           onClose={(e) => toggleDrawer(e)}
         >
           <Box
             sx={{
               width: 300,
-              display: "flex",
-              flexDirection: "column",
-              height: "100%",
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
             }}
             role="presentation"
             onClick={(e) => toggleDrawer(e)}
@@ -129,40 +130,40 @@ export const CoffeeRoastingMenu = ({
               <List>
                 <ListItem
                   onClick={goToDashboard}
-                  key={"dashboard"}
+                  key={'dashboard'}
                   disablePadding
                 >
                   <ListItemButton>
                     <ListItemIcon>
-                      <LocalFireDepartmentIcon />
+                      <DashboardIcon />
                     </ListItemIcon>
-                    <ListItemText primary={"Dashboard"} />
+                    <ListItemText primary={'Dashboard'} />
                   </ListItemButton>
                 </ListItem>
                 <ListItem
                   onClick={async () => {
                     await startRoast();
                   }}
-                  key={"roast-menu"}
+                  key={'roast-menu'}
                   disablePadding
                 >
                   <ListItemButton>
                     <ListItemIcon>
                       <LocalFireDepartmentIcon />
                     </ListItemIcon>
-                    <ListItemText primary={"Start Roast"} />
+                    <ListItemText primary={'Start Roast'} />
                   </ListItemButton>
                 </ListItem>
                 <ListItem
                   onClick={goToRawCoffeeBeanLibrary}
-                  key={"Coffee Bean Library"}
+                  key={'Coffee Bean Library'}
                   disablePadding
                 >
                   <ListItemButton>
                     <ListItemIcon>
                       <WhatshotOutlinedIcon />
                     </ListItemIcon>
-                    <ListItemText primary={"Coffee Bean Library"} />
+                    <ListItemText primary={'Coffee Bean Library'} />
                   </ListItemButton>
                 </ListItem>
               </List>
@@ -172,12 +173,12 @@ export const CoffeeRoastingMenu = ({
             <Box>
               <Divider />
               <List>
-                <ListItem key={"settings"} disablePadding>
+                <ListItem key={'settings'} disablePadding>
                   <ListItemButton>
                     <ListItemIcon>
                       <SettingsIcon />
                     </ListItemIcon>
-                    <ListItemText primary={"Settings"} />
+                    <ListItemText primary={'Settings'} />
                   </ListItemButton>
                 </ListItem>
               </List>
@@ -185,7 +186,7 @@ export const CoffeeRoastingMenu = ({
           </Box>
         </Drawer>
       </Fragment>
-      <Grid sx={{ padding: "10px", marginTop: "10px" }}>{children}</Grid>
+      <Grid sx={{ padding: '10px', marginTop: '10px' }}>{children}</Grid>
       <CoffeRoastingModal
         open={openRoastWarningModal}
         setOpen={setOpenRoastWarningModal}
@@ -212,7 +213,7 @@ export const CoffeeRoastingMenu = ({
               autoFocus
               onClick={() => {
                 setOpenRoastWarningModal(false);
-                navigate("/bean/select");
+                navigate('/bean/select');
               }}
             >
               Continue

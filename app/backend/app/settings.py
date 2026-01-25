@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     "app.bean",
     "app.origin",
     "app.roast",
+    "app.analytics",
 ]
 
 MIDDLEWARE = [

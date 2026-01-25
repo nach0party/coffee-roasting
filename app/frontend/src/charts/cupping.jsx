@@ -10,9 +10,24 @@ export const CoffeeCuppingRadar = ({ data }) => {
   const muiTheme = useTheme();
   const brandOrange = muiTheme.palette.primary.main;
 
+  // prevents crashes... this MUI component is finnicky.
+  if (!data?.label) {
+    data.label = '';
+  }
+
+  if (!data?.series_data) {
+    return null;
+  }
+
+  if (!data?.metrics) {
+    return null;
+  }
+
+  console.log(data, 'data');
+
   return (
     <>
-      {data?.label && data?.series_data && data?.metrics && (
+      {data.series_data.length === data.metrics.length && (
         <RadarChart
           colors={() => {
             return [brandOrange];
@@ -24,6 +39,7 @@ export const CoffeeCuppingRadar = ({ data }) => {
             max: 100,
             metrics: data?.metrics || [],
           }}
+          disableAxisHighlight
         />
       )}
     </>
