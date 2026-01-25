@@ -172,18 +172,14 @@ class RoastProfileFlavorsViewSet(CoffeeRoastingModelViewSet):
         )
 
         bean_name: str | None = None
-        transformed_data: dict | None = {}
+        transformed_data: dict | None = {"label": "", "series_data": [], "metrics": []}
         for index, flavor in enumerate(current_flavors):
             if index == 0:
                 try:
                     bean_name = flavor.roast_profile.roast.bean.name
+                    transformed_data["label"] = bean_name
                 except:
                     pass
-                transformed_data["label"] = bean_name
-            if transformed_data.get("series_data") is None:
-                transformed_data["series_data"] = []
-            if transformed_data.get("metrics") is None:
-                transformed_data["metrics"] = []
 
             # only chose the ones that have been fully established / selectd in the UI
             if flavor.roast_flavor_id:
