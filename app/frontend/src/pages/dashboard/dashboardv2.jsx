@@ -16,8 +16,16 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { CoffeeRoastingMenu } from '../../components/menu';
+import {
+  determineRoastState,
+  displayFriendlyRoastState,
+  RoastState,
+} from '../../utils';
+import { ActiveRoastCard } from '../../components/activeRoastCard/activeRoastCard';
+import { TableContainer, Typography } from '@mui/material';
 
 const RowsPerpageOptions = {
+  FIVE: 5,
   TEN: 10,
   TWENTY_FIVE: 25,
   FIFTY: 50,
@@ -26,89 +34,116 @@ const RowsPerpageOptions = {
 };
 
 // TODO rename to the normal one once done...
-export function CoffeeRoastingDashboardV2() {
+export const CoffeeRoastingDashboardV2 = () => {
   let navigate = useNavigate();
-  const [roasts, setRoasts] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(RowsPerpageOptions.TEN);
+  const [completedRoasts, setCompletedRoasts] = useState([]);
+  const [pendingOrStartedRoasts, setPendingOrStartedRoasts] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(RowsPerpageOptions.FIVE);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [page, setPage] = useState(1);
+
+  const loadPendingOrStartedRoasts = async () => {
+    const response = await api.roasts.list({ ended: false });
+    setTotalRecords(response.data.count);
+    setPendingOrStartedRoasts(response.data.results);
+  };
 
   // TODO setup a generic search?
-  const loadRoasts = async () => {
-    const response = await api.roasts.list();
-    setRoasts(response.data.results);
+  const loadCompletedRoasts = async () => {
+    const response = await api.roasts.list({
+      started: true,
+      ended: true,
+      limit: rowsPerPage,
+    });
+    console.log(response, 'response');
+    setCompletedRoasts(response.data.results);
   };
 
   useEffect(() => {
     const initialize = async () => {
-      await loadRoasts();
+      await loadCompletedRoasts();
+      await loadPendingOrStartedRoasts();
     };
     initialize();
   }, []);
 
   return (
-    <CoffeeRoastingMenu>
+    <CoffeeRoastingMenu title={'Dashboard V2'}>
       <Grid container>
+        {/* {pendingOrStartedRoasts.length > 0 && <Typography></Typography>} */}
+        {pendingOrStartedRoasts.map((roast) => (
+          <Grid
+            size={{ xs: 12, sm: 6, md: 6, lg: 6, xl: 6 }}
+            key={roast.id}
+            sx={{ p: 2 }}
+          >
+            <ActiveRoastCard roast={roast} />
+          </Grid>
+        ))}
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-          This is some graphing sections / stuff
-        </Grid>
-        <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  {/** TODO I do think this should be a standardized component */}
-                  <TextField
-                    onChange={async (e) => {
-                      // await loadRoasts();
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Bean Name</TableCell>
+                  <TableCell>Roast Date</TableCell>
+                  <TableCell>State</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {completedRoasts.map((roastData) => {
+                  return (
+                    <TableRow
+                      hover
+                      key={roastData.id}
+                      onClick={() => {
+                        console.log('ye?');
+                        navigate(`/roast/${roastData.id}`);
+                      }}
+                    >
+                      <TableCell>{roastData.bean.name}</TableCell>
+                      <TableCell>{roastData.created_when}</TableCell>
+                      <TableCell>
+                        {displayFriendlyRoastState(roastData)}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[
+                      RowsPerpageOptions.FIVE,
+                      RowsPerpageOptions.TEN,
+                      RowsPerpageOptions.TWENTY_FIVE,
+                      RowsPerpageOptions.FIFTY,
+                      RowsPerpageOptions.SEVENTY_FIVE,
+                      RowsPerpageOptions.ONE_HUNDRED,
+                      // { label: 'All', value: -1 },
+                    ]}
+                    colSpan={3}
+                    count={totalRecords}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onRowsPerPageChange={(e) => {
+                      setRowsPerPage(e.target.value);
                     }}
-                    sx={{ pl: 1, pb: 3, cursor: 'pointer' }}
-                    label="Search"
                     slotProps={{
-                      input: {
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <SearchIcon />
-                          </InputAdornment>
-                        ),
+                      select: {
+                        inputProps: {
+                          'aria-label': 'rows per page',
+                        },
+                        native: true,
                       },
                     }}
                   />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Bean Name</TableCell>
-                <TableCell>Roast Date</TableCell>
-                <TableCell>Status</TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {roasts.map((roastData) => {
-                return (
-                  <TableRow
-                    key={roastData.id}
-                    onClick={() => {
-                      console.log('ye?');
-                      navigate(`/roast/${roastData.id}`);
-                    }}
-                  >
-                    <TableCell>{roastData.bean.name}</TableCell>
-                    <TableCell>{roastData.created_when}</TableCell>
-                    <TableCell>nope</TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-            {/* <TableFooter> */}
-            {/* <TablePagination
-              onChange={() => {
-                console.log('okay');
-              }}
-              rowsPerPage={rowsPerPage}
-            ></TablePagination> */}
-            {/* </TableFooter> */}
-          </Table>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableContainer>
         </Grid>
       </Grid>
     </CoffeeRoastingMenu>
   );
-}
+};

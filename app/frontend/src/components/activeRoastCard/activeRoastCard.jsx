@@ -1,31 +1,32 @@
-import { useNavigate } from "react-router";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import LinearProgress from "@mui/material/LinearProgress";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardMedia from "@mui/material/CardMedia";
+import { useNavigate } from 'react-router';
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardMedia from '@mui/material/CardMedia';
+import { RoastBar } from '../roastBar';
+import './activeRoastCard.css';
 
-import "./activeRoastCard.css";
-
-// TODO make inactive roast card...
 export const ActiveRoastCard = ({ roast }) => {
   let navigate = useNavigate();
+  const theme = useTheme();
 
   const openRoast = (id) => {
     navigate(`/roast/${id}`);
   };
 
+  // TODO get the colors more in line with the styling...
   return (
     <Card
       sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        border: "2px solid orange",
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        border: `2px solid ${theme.palette.primary.dark}`,
       }}
-      className={"active-roast-card"}
+      className={'active-roast-card'}
     >
       <CardActionArea
         onClick={() => {
@@ -34,7 +35,7 @@ export const ActiveRoastCard = ({ roast }) => {
       >
         <CardMedia
           component="img"
-          height={140}
+          height={100}
           image="/coffee-being-roasted.jpg"
         />
       </CardActionArea>
@@ -42,29 +43,24 @@ export const ActiveRoastCard = ({ roast }) => {
         <Typography variant="h6" component="div">
           {roast.name}
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-          Status: {"In Progress"}
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+          Status: {'In Progress'}
         </Typography>
 
-        <Box sx={{ mt: 2 }}>
+        <Box>
           {/** Roast temp / time would be awesome, expected time and the expected temp */}
           <Typography variant="caption" color="primary">
-            Current Temp: 455 | Time Elapsed: 12:50
+            Target Temp: {roast.target_temperature || 'Unset'} | Time Elapsed:
+            12:50
           </Typography>
-          <LinearProgress
-            variant="determinate"
-            value={"50"} // TODO figure out how to determine general progress based on time, start collectin averages
-            color="warning"
-            sx={{ height: 10, borderRadius: 5, mt: 1 }}
+          <RoastBar
+            startedWhen={roast.started_when}
+            targetWhen={roast.target_when}
+            endedWhen={roast.ended_when}
           />
-          <Typography variant="body2" align="right">
-            {roast.progress}%
-          </Typography>
         </Box>
-
-        <Typography variant="body2" sx={{ mt: 2 }}>
-          Final Temp: {roast.temp} | Total Time: {roast.time}
-        </Typography>
+        {/** TODO draw out components out of the manage roast section for reuse */}
+        {/* <Typography variant="body2">Total Time: {roast.time}</Typography> */}
       </CardContent>
     </Card>
   );

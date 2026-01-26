@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 
-import { CoffeeRoastingMenu } from "../../components/menu";
-import { ActiveRoastCard } from "../../components/activeRoastCard/activeRoastCard";
-import { CompletedRoastCard } from "../../components/completedRoastCard";
-import { PendingRoastCard } from "../../components/pendingRoastCard/pendingRoastCard";
+import { CoffeeRoastingMenu } from '../../components/menu';
+import { ActiveRoastCard } from '../../components/activeRoastCard/activeRoastCard';
+import { CompletedRoastCard } from '../../components/completedRoastCard';
+import { PendingRoastCard } from '../../components/pendingRoastCard/pendingRoastCard';
 
-import api from "../../api/coffee-roasting-api";
+import api from '../../api/coffee-roasting-api';
 
-export function CoffeeRoastingDashboard() {
+export const CoffeeRoastingDashboard = () => {
   const [activeRoasts, setActiveRoasts] = useState([]);
   const [completedRoasts, setCompletedRoasts] = useState([]);
   const [pendingRoasts, setPendingRoasts] = useState([]);
@@ -92,4 +92,4 @@ export function CoffeeRoastingDashboard() {
       </Box>
     </CoffeeRoastingMenu>
   );
-}
+};

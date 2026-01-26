@@ -43,13 +43,6 @@ class RoastViewSet(CoffeeRoastingModelViewSet):
             return RetrieveListRoastSerializer
         return RoastSerializer
 
-    # def create(self, request, *args, **kwargs):
-    #     print(request, "request")
-    #     print(args, "args")
-    #     print(kwargs, "kwargs")
-    #     return super().create(request, *args, **kwargs)
-
-    # TODO should we be removing this?
     @transaction.atomic()
     @action(methods=["post"], detail=True)
     def begin(self, request: Request, pk: str | None = None) -> Response:
