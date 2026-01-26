@@ -48,6 +48,7 @@ export const CoffeeRoastingMenu = ({
   const goToDashboard = () => {
     navigate('/');
   };
+
   const goToRawCoffeeBeanLibrary = () => {
     navigate('/bean/library');
   };

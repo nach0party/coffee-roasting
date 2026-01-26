@@ -39,6 +39,7 @@ class RetrieveListRoastSerializer(serializers.ModelSerializer):
             "deleted_when",
             "target_duration",
             "target_when",
+            "target_temperature",
         )
 
 

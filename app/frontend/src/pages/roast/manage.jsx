@@ -22,16 +22,7 @@ import { Stopwatch } from '../../components/stopwatch';
 import { Box } from '@mui/material';
 import { allEventTypes } from '../../components/events/utils';
 import { ManageRoastProfile } from '../../components/manageRoastProfile';
-
-/**
- * Quick little reference so we can define some logic and quickly change the UI.
- */
-const RoastState = {
-  PREP: 'prep',
-  PRESTART: 'pre-started',
-  STARTED: 'started',
-  ENDED: 'ended',
-};
+import { determineRoastState, RoastState } from '../../utils';
 
 // TODO if this roast is "completed" we should mark everything as read only
 // TODO separate the roasts from the events, it's just easier to handle them separately at this point
@@ -59,7 +50,7 @@ export const ManageRoast = () => {
   const [generalNotes, setGeneralNotes] = useState();
   // TODO maybe define the default in just 1 place
   const [selectedEventType, setSelectedEventType] = useState(
-    availableEventTypes[0]
+    availableEventTypes[0],
   );
   const [openDeleteRoastModal, setOpenDeleteRoastModal] = useState(false);
 
@@ -109,7 +100,7 @@ export const ManageRoast = () => {
 
   useEffect(() => {
     if (roast) {
-      setRoastState(determineRoastState());
+      setRoastState(determineRoastState(roast));
 
       // control timer
       if (roast.started_when && !roast.ended_when) {
@@ -240,21 +231,6 @@ export const ManageRoast = () => {
       return true;
     }
     return false;
-  };
-
-  const determineRoastState = () => {
-    if (!roast.target_duration && !roast.started_when) {
-      return RoastState.PREP;
-    } else if (roast.target_duration && !roast.started_when) {
-      return RoastState.PRESTART;
-    } else if (
-      roast.target_duration &&
-      roast.started_when &&
-      !roast.ended_when
-    ) {
-      return RoastState.STARTED;
-    }
-    return RoastState.ENDED;
   };
 
   const handleTopRightButtonDisplayState = () => {
