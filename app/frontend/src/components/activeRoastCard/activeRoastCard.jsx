@@ -65,13 +65,14 @@ export const ActiveRoastCard = ({ roast }) => {
           {/** Roast temp / time would be awesome, expected time and the expected temp */}
           <Typography variant="caption" color="primary">
             Target Temp: {roast.target_temperature || 'Unset'}
-            <Stopwatch
-              startTime={roast.started_when}
-              endTime={roast.ended_when}
-              run={timerRunning}
-              setRun={setTimerRunning}
-              // variant="h5"
-            />
+            {roast.started_when && (
+              <Stopwatch
+                startTime={roast.started_when}
+                endTime={roast.ended_when}
+                run={timerRunning}
+                setRun={setTimerRunning}
+              />
+            )}
           </Typography>
           <RoastBar
             startedWhen={roast.started_when}

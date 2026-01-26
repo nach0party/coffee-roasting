@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { format } from 'date-fns';
 
 import Grid from '@mui/material/Grid';
 import Table from '@mui/material/Table';
@@ -14,7 +15,7 @@ import TablePagination from '@mui/material/TablePagination';
 import { CoffeeRoastingMenu } from '../../components/menu';
 import { displayFriendlyRoastState } from '../../utils';
 import { ActiveRoastCard } from '../../components/activeRoastCard/activeRoastCard';
-import { TableContainer } from '@mui/material';
+import { Button, TableContainer } from '@mui/material';
 
 const RowsPerpageOptions = {
   FIVE: 5,
@@ -60,7 +61,18 @@ export const CoffeeRoastingDashboardV2 = () => {
   }, []);
 
   return (
-    <CoffeeRoastingMenu title={'Dashboard V2'}>
+    <CoffeeRoastingMenu
+      title={'Dashboard'}
+      rightSideMenuBar={
+        <Button
+          onClick={() => {
+            navigate('bean/select');
+          }}
+        >
+          Setup A New Roast
+        </Button>
+      }
+    >
       <Grid container>
         {pendingOrStartedRoasts.map((roast) => (
           <Grid
@@ -92,7 +104,9 @@ export const CoffeeRoastingDashboardV2 = () => {
                       }}
                     >
                       <TableCell>{roastData.bean.name}</TableCell>
-                      <TableCell>{roastData.created_when}</TableCell>
+                      <TableCell>
+                        {format(roastData.created_when, 'MMMM do, h:mm a')}
+                      </TableCell>
                       <TableCell>
                         {displayFriendlyRoastState(roastData)}
                       </TableCell>
@@ -119,6 +133,7 @@ export const CoffeeRoastingDashboardV2 = () => {
                     onRowsPerPageChange={async (e) => {
                       const newRowsPerPage = e.target.value;
                       setRowsPerPage(newRowsPerPage);
+                      setPage(0);
                       await loadCompletedRoasts(newRowsPerPage);
                     }}
                     slotProps={{
