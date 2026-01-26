@@ -40,28 +40,28 @@ export const CoffeeRoastingDashboardV2 = () => {
   const [pendingOrStartedRoasts, setPendingOrStartedRoasts] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(RowsPerpageOptions.FIVE);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
 
   const loadPendingOrStartedRoasts = async () => {
     const response = await api.roasts.list({ ended: false });
-    setTotalRecords(response.data.count);
     setPendingOrStartedRoasts(response.data.results);
   };
 
   // TODO setup a generic search?
-  const loadCompletedRoasts = async () => {
+  const loadCompletedRoasts = async (limit, offset) => {
     const response = await api.roasts.list({
       started: true,
       ended: true,
-      limit: rowsPerPage,
+      limit: limit,
+      offset: offset,
     });
-    console.log(response, 'response');
+    setTotalRecords(response.data.count);
     setCompletedRoasts(response.data.results);
   };
 
   useEffect(() => {
     const initialize = async () => {
-      await loadCompletedRoasts();
+      await loadCompletedRoasts(rowsPerPage);
       await loadPendingOrStartedRoasts();
     };
     initialize();
@@ -97,7 +97,6 @@ export const CoffeeRoastingDashboardV2 = () => {
                       hover
                       key={roastData.id}
                       onClick={() => {
-                        console.log('ye?');
                         navigate(`/roast/${roastData.id}`);
                       }}
                     >
@@ -126,8 +125,10 @@ export const CoffeeRoastingDashboardV2 = () => {
                     count={totalRecords}
                     rowsPerPage={rowsPerPage}
                     page={page}
-                    onRowsPerPageChange={(e) => {
-                      setRowsPerPage(e.target.value);
+                    onRowsPerPageChange={async (e) => {
+                      const newRowsPerPage = e.target.value;
+                      setRowsPerPage(newRowsPerPage);
+                      await loadCompletedRoasts(newRowsPerPage);
                     }}
                     slotProps={{
                       select: {
@@ -136,6 +137,11 @@ export const CoffeeRoastingDashboardV2 = () => {
                         },
                         native: true,
                       },
+                    }}
+                    onPageChange={async (e, newPage) => {
+                      const offset = rowsPerPage * newPage;
+                      await loadCompletedRoasts(rowsPerPage, offset);
+                      setPage(newPage);
                     }}
                   />
                 </TableRow>
