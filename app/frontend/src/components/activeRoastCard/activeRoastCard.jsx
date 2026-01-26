@@ -8,14 +8,28 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardMedia from '@mui/material/CardMedia';
 import { RoastBar } from '../roastBar';
 import './activeRoastCard.css';
+import { Stopwatch } from '../stopwatch';
+import { useEffect, useState } from 'react';
 
 export const ActiveRoastCard = ({ roast }) => {
   let navigate = useNavigate();
   const theme = useTheme();
+  const [timerRunning, setTimerRunning] = useState(false);
 
   const openRoast = (id) => {
     navigate(`/roast/${id}`);
   };
+
+  // this logic is reused, consolidate
+  useEffect(() => {
+    if (roast) {
+      if (roast.started_when && !roast.ended_when) {
+        setTimerRunning(true);
+      } else if (roast.started_when && !roast.ended_when) {
+        setTimerRunning(false);
+      }
+    }
+  }, [roast]);
 
   // TODO get the colors more in line with the styling...
   return (
@@ -50,8 +64,14 @@ export const ActiveRoastCard = ({ roast }) => {
         <Box>
           {/** Roast temp / time would be awesome, expected time and the expected temp */}
           <Typography variant="caption" color="primary">
-            Target Temp: {roast.target_temperature || 'Unset'} | Time Elapsed:
-            12:50
+            Target Temp: {roast.target_temperature || 'Unset'}
+            <Stopwatch
+              startTime={roast.started_when}
+              endTime={roast.ended_when}
+              run={timerRunning}
+              setRun={setTimerRunning}
+              // variant="h5"
+            />
           </Typography>
           <RoastBar
             startedWhen={roast.started_when}

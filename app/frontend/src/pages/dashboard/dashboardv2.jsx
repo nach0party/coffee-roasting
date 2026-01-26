@@ -64,7 +64,7 @@ export const CoffeeRoastingDashboardV2 = () => {
       <Grid container>
         {pendingOrStartedRoasts.map((roast) => (
           <Grid
-            size={{ xs: 12, sm: 6, md: 6, lg: 6, xl: 6 }}
+            size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}
             key={roast.id}
             sx={{ p: 2 }}
           >

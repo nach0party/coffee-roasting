@@ -49,10 +49,6 @@ export const CoffeeRoastingMenu = ({
     navigate('/');
   };
 
-  const goToDashboardv2 = () => {
-    navigate('/dashboard');
-  };
-
   const goToRawCoffeeBeanLibrary = () => {
     navigate('/bean/library');
   };
@@ -133,18 +129,6 @@ export const CoffeeRoastingMenu = ({
             {/** Top content of the drawer */}
             <Box sx={{ flexGrow: 1 }}>
               <List>
-                <ListItem
-                  onClick={goToDashboardv2}
-                  key={'dashboard'}
-                  disablePadding
-                >
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <DashboardIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={'Dashboard v2'} />
-                  </ListItemButton>
-                </ListItem>
                 <ListItem
                   onClick={goToDashboard}
                   key={'dashboard'}

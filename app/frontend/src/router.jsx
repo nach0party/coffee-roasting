@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router';
 
 // Internal app routes
-import { CoffeeRoastingDashboard } from './pages/dashboard/dashboard.jsx';
+// import { CoffeeRoastingDashboard } from './pages/dashboard/dashboard.jsx';
 import { BeanSelection } from './pages/bean/selection/selection.jsx';
 import { ManageRoast } from './pages/roast/manage.jsx';
 import { BeanLibrary } from './pages/bean/library/library.jsx';
@@ -10,10 +10,6 @@ import { CoffeeRoastingDashboardV2 } from './pages/dashboard/dashboardv2.jsx';
 export const appRoutes = createBrowserRouter([
   {
     path: '/',
-    element: <CoffeeRoastingDashboard />,
-  },
-  {
-    path: '/dashboard',
     element: <CoffeeRoastingDashboardV2 />,
   },
   {
