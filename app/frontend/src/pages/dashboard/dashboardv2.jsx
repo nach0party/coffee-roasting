@@ -10,19 +10,11 @@ import api from '../../api/coffee-roasting-api';
 import TableBody from '@mui/material/TableBody';
 import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchIcon from '@mui/icons-material/Search';
 
 import { CoffeeRoastingMenu } from '../../components/menu';
-import {
-  determineRoastState,
-  displayFriendlyRoastState,
-  RoastState,
-} from '../../utils';
+import { displayFriendlyRoastState } from '../../utils';
 import { ActiveRoastCard } from '../../components/activeRoastCard/activeRoastCard';
-import { TableContainer, Typography } from '@mui/material';
+import { TableContainer } from '@mui/material';
 
 const RowsPerpageOptions = {
   FIVE: 5,
@@ -70,7 +62,6 @@ export const CoffeeRoastingDashboardV2 = () => {
   return (
     <CoffeeRoastingMenu title={'Dashboard V2'}>
       <Grid container>
-        {/* {pendingOrStartedRoasts.length > 0 && <Typography></Typography>} */}
         {pendingOrStartedRoasts.map((roast) => (
           <Grid
             size={{ xs: 12, sm: 6, md: 6, lg: 6, xl: 6 }}
