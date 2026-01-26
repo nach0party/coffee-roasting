@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import LinearProgress from "@mui/material/LinearProgress";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardMedia from "@mui/material/CardMedia";
+import { useNavigate } from 'react-router';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import LinearProgress from '@mui/material/LinearProgress';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardMedia from '@mui/material/CardMedia';
 
 /***
  * Handles completed roasts, more or less
@@ -21,10 +21,10 @@ export const CompletedRoastCard = ({ roast }) => {
   return (
     <Card
       sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        border: "2px solid blue",
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        border: '2px solid blue',
       }}
     >
       <CardActionArea
@@ -43,7 +43,7 @@ export const CompletedRoastCard = ({ roast }) => {
           {roast.name}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-          Status: {"In Progress"}
+          Status: {'In Progress'}
         </Typography>
 
         <Box sx={{ mt: 2 }}>
@@ -53,7 +53,7 @@ export const CompletedRoastCard = ({ roast }) => {
           </Typography>
           <LinearProgress
             variant="determinate"
-            value={"50"} // TODO figure out how to determine general progress based on time, start collectin averages
+            value={'50'} // TODO figure out how to determine general progress based on time, start collectin averages
             color="warning"
             sx={{ height: 10, borderRadius: 5, mt: 1 }}
           />

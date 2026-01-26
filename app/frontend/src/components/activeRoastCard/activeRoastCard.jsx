@@ -10,6 +10,7 @@ import { RoastBar } from '../roastBar';
 import './activeRoastCard.css';
 import { Stopwatch } from '../stopwatch';
 import { useEffect, useState } from 'react';
+import { displayFriendlyRoastState } from '../../utils';
 
 export const ActiveRoastCard = ({ roast }) => {
   let navigate = useNavigate();
@@ -58,7 +59,7 @@ export const ActiveRoastCard = ({ roast }) => {
           {roast.name}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          Status: {'In Progress'}
+          Status: {displayFriendlyRoastState(roast)}
         </Typography>
 
         <Box>

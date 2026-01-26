@@ -88,6 +88,7 @@ export const BeanLibrary = () => {
             paddingX: 2,
             paddingBottom: 0,
             marginBottom: 0,
+            scrollbarWidth: 'none',
           }}
         >
           <RawBeanAvatar
